@@ -1,109 +1,243 @@
-# FullstarckTemp
+# Fullstarck Monorepo
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+这是一个基于 Nx 的 Monorepo 项目，包含 NestJS 后端、Next.js Web 端和 React Native 移动端。
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
-
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
-
-## Generate a library
-
-```sh
-npx nx g @nx/js:lib packages/pkg1 --publishable --importPath=@my-org/pkg1
-```
-
-## Run tasks
-
-To build the library use:
-
-```sh
-npx nx build pkg1
-```
-
-To run any task with Nx use:
-
-```sh
-npx nx <target> <project-name>
-```
-
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
-
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Versioning and releasing
-
-To version and release the library use
+## 📦 项目结构
 
 ```
-npx nx release
+fullstarck/
+├── apps/
+│   ├── backend/          # NestJS 后端 API
+│   ├── web/             # Next.js Web 应用 (Ant Design + CSS Modules)
+│   └── mobile/          # React Native 移动应用 (Gluestack UI)
+├── libs/
+│   ├── api-contracts/   # 共享 DTO (使用 class-validator)
+│   └── shared-utils/    # 共享工具函数
+└── package.json
 ```
 
-Pass `--dry-run` to see what would happen without actually releasing the library.
+## 🚀 快速开始
 
-[Learn more about Nx release &raquo;](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+### 安装依赖
 
-## Keep TypeScript project references up to date
-
-Nx automatically updates TypeScript [project references](https://www.typescriptlang.org/docs/handbook/project-references.html) in `tsconfig.json` files to ensure they remain accurate based on your project dependencies (`import` or `require` statements). This sync is automatically done when running tasks such as `build` or `typecheck`, which require updated references to function correctly.
-
-To manually trigger the process to sync the project graph dependencies information to the TypeScript project references, run the following command:
-
-```sh
-npx nx sync
+```bash
+pnpm install
 ```
 
-You can enforce that the TypeScript project references are always in the correct state when running in CI by adding a step to your CI job configuration that runs the following command:
+### 运行应用
 
-```sh
-npx nx sync:check
+#### 1. 运行后端 (NestJS)
+
+```bash
+pnpm nx serve backend
 ```
 
-[Learn more about nx sync](https://nx.dev/reference/nx-commands#sync)
+后端将在 http://localhost:3000 运行
 
-## Set up CI!
+#### 2. 运行 Web 端 (Next.js)
 
-### Step 1
-
-To connect to Nx Cloud, run the following command:
-
-```sh
-npx nx connect
+```bash
+pnpm nx serve web
 ```
 
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
+Web 应用将在 http://localhost:4200 运行
 
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+#### 3. 运行移动端 (React Native)
 
-### Step 2
+```bash
+# iOS
+pnpm nx run mobile:run-ios
 
-Use the following command to configure a CI workflow for your workspace:
+# Android
+pnpm nx run mobile:run-android
 
-```sh
-npx nx g ci-workflow
+# Web 预览（使用 Vite）
+pnpm nx serve mobile
 ```
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+> **关于 Vite**: Vite 配置用于 Web 预览 (react-native-web)，不影响原生应用。原生应用仍使用 Metro bundler。
 
-## Install Nx Console
+## 🎯 主要特性
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+### 1. 代码共享
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+所有三个应用都可以使用共享库：
 
-## Useful links
+```typescript
+// 在任何应用中导入共享 DTO
+import { LoginDto, UserDto, CreateNoteDto, NoteDto } from '@fullstarck/api-contracts'
 
-Learn more:
+// 在任何应用中导入共享工具
+import { formatDate, capitalize } from '@fullstarck/shared-utils'
+```
 
-- [Learn more about this workspace setup](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+### 2. 类型安全
 
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+使用 class-validator 在后端和前端之间共享验证逻辑：
+
+```typescript
+// libs/api-contracts/src/lib/dto/login.dto.ts
+export class LoginDto {
+  @IsEmail()
+  email: string
+
+  @IsString()
+  @MinLength(6)
+  password: string
+}
+```
+
+### 3. UI 框架
+
+- **Web**: Ant Design 5 + CSS Modules
+- **Mobile**: Gluestack UI (无需 Tailwind)
+
+### 4. React 版本统一
+
+通过 pnpm overrides 强制统一 React 版本，避免多实例问题：
+
+```json
+{
+  "pnpm": {
+    "overrides": {
+      "react": "^19.0.0",
+      "react-dom": "^19.0.0"
+    }
+  }
+}
+```
+
+## 📝 API 示例
+
+### 后端 API 端点
+
+```typescript
+// POST http://localhost:3000/api/auth/login
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+
+// Notes API
+GET    /api/notes       - 获取所有手帐
+GET    /api/notes/:id   - 获取单个手帐
+POST   /api/notes       - 创建手帐
+PUT    /api/notes/:id   - 更新手帐
+DELETE /api/notes/:id   - 删除手帐
+```
+
+## 🛠️ 开发命令
+
+### 构建
+
+```bash
+# 构建所有应用
+pnpm nx run-many -t build
+
+# 构建特定应用
+pnpm nx build backend
+pnpm nx build web
+pnpm nx build mobile
+```
+
+### Lint
+
+```bash
+# Lint 所有代码
+pnpm nx run-many -t lint
+
+# Lint 特定应用
+pnpm nx lint backend
+```
+
+### 查看项目图
+
+```bash
+pnpm nx graph
+```
+
+## 📚 技术栈
+
+### 后端
+- NestJS 11.x
+- TypeScript
+- class-validator & class-transformer
+
+### Web 端
+- Next.js 16 (App Router)
+- React 19
+- Ant Design 5
+- CSS Modules
+
+### 移动端
+- React Native 0.79
+- Gluestack UI (不使用 Tailwind)
+- React 19
+
+### Monorepo 工具
+- Nx 22
+- pnpm 10
+
+## 🔍 关键配置文件
+
+- `package.json` - pnpm overrides 配置
+- `pnpm-workspace.yaml` - workspace 配置
+- `apps/mobile/metro.config.js` - Metro bundler 配置（原生应用）
+- `apps/mobile/vite.config.mts` - Vite 配置（Web 预览）
+- `apps/mobile/.babelrc.js` - Babel 转译配置
+- `apps/mobile/gluestack-ui.config.ts` - Gluestack UI 配置
+- `apps/web/next.config.js` - Next.js 配置
+- `libs/api-contracts/tsconfig.lib.json` - 启用装饰器支持
+- `apps/backend/src/main.ts` - NestJS ValidationPipe 配置
+
+## ⚙️ Metro 与 Vite
+
+本项目移动端使用双构建工具：
+
+- **Metro**: 用于 iOS/Android 原生应用构建
+- **Vite**: 用于 Web 预览（通过 react-native-web）
+
+两者互不干扰，Metro 配置已优化支持 Monorepo：
+- ✅ 正确解析 libs 目录
+- ✅ 正确解析根目录的 node_modules
+- ✅ 支持 .svg 文件
+- ✅ 支持 .cjs 和 .mjs 扩展名
+
+## 🎨 Gluestack UI 特性
+
+移动端使用 Gluestack UI，提供：
+- 🎯 类型安全的组件
+- 🎨 美观的默认主题
+- ♿ 内置无障碍支持
+- 📱 响应式设计
+- 🚀 高性能
+
+**不需要 Tailwind/NativeWind**，所有样式通过 Gluestack 的配置系统管理。
+
+## 🐛 故障排除
+
+### Metro 缓存问题
+
+```bash
+pnpm nx reset
+pnpm nx run mobile:start --reset-cache
+```
+
+### iOS Pod 安装问题
+
+```bash
+cd apps/mobile/ios
+pod install
+cd ../../..
+```
+
+### pnpm 依赖问题
+
+```bash
+rm -rf node_modules pnpm-lock.yaml
+pnpm install
+```
+
+## 📄 许可证
+
+MIT
