@@ -3,8 +3,8 @@
 import './global.css'
 import { ConfigProvider, Layout } from 'antd'
 import zhCN from 'antd/locale/zh_CN'
-import { Navbar } from '../components/Navbar'
-import { Footer } from '../components/Footer'
+import { Navbar } from '@components/Navbar'
+import { Footer } from '@components/Footer'
 
 const { Content } = Layout
 

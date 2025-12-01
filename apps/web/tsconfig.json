@@ -9,6 +9,8 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "baseUrl": ".",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "lib": [
       "dom",
       "dom.iterable",
@@ -26,6 +28,18 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@components/*": [
+        "./src/components/*"
+      ],
+      "@app/*": [
+        "./src/app/*"
+      ],
+      "@lib/*": [
+        "./src/lib/*"
+      ],
+      "@utils/*": [
+        "./src/utils/*"
       ],
       "@fullstarck/api-contracts": [
         "../../libs/api-contracts/src/index.ts",

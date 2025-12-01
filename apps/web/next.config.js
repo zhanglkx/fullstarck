@@ -14,6 +14,11 @@ const nextConfig = {
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
+      '@': path.resolve(__dirname, 'src'),
+      '@components': path.resolve(__dirname, 'src/components'),
+      '@app': path.resolve(__dirname, 'src/app'),
+      '@lib': path.resolve(__dirname, 'src/lib'),
+      '@utils': path.resolve(__dirname, 'src/utils'),
       '@fullstarck/api-contracts': path.resolve(__dirname, '../../libs/api-contracts/src/index.ts'),
       '@fullstarck/shared-utils': path.resolve(__dirname, '../../libs/shared-utils/src/index.ts'),
     }

@@ -56,7 +56,7 @@ export default function DashboardPage() {
               title="总手帐数"
               value={totalCount}
               prefix={<BookOutlined />}
-              styles={{ value: { color: '#3f8600' } }}
+              valueStyle={{ color: '#3f8600' }}
             />
           </Card>
         </Col>
@@ -66,7 +66,7 @@ export default function DashboardPage() {
               title="已完成"
               value={completedCount}
               prefix={<CheckCircleOutlined />}
-              styles={{ value: { color: '#1890ff' } }}
+              valueStyle={{ color: '#1890ff' }}
             />
           </Card>
         </Col>
@@ -76,7 +76,7 @@ export default function DashboardPage() {
               title="进行中"
               value={totalCount - completedCount}
               prefix={<ClockCircleOutlined />}
-              styles={{ value: { color: '#faad14' } }}
+              valueStyle={{ color: '#faad14' }}
             />
           </Card>
         </Col>
@@ -87,7 +87,7 @@ export default function DashboardPage() {
               value={completionRate}
               suffix="%"
               prefix={<TrophyOutlined />}
-              styles={{ value: { color: '#722ed1' } }}
+              valueStyle={{ color: '#722ed1' }}
             />
           </Card>
         </Col>

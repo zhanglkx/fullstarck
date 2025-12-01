@@ -50,7 +50,7 @@ export default function Index() {
               value="19.2"
               prefix={<ThunderboltOutlined />}
               suffix="最新"
-              styles={{ value: { color: '#3f8600' } }}
+              valueStyle={{ color: '#3f8600' }}
             />
           </Card>
         </Col>
@@ -61,7 +61,7 @@ export default function Index() {
               value="16.0"
               prefix={<DesktopOutlined />}
               suffix="Turbopack"
-              styles={{ value: { color: '#1890ff' } }}
+              valueStyle={{ color: '#1890ff' }}
             />
           </Card>
         </Col>
@@ -72,7 +72,7 @@ export default function Index() {
               value="11.1"
               prefix={<ApiOutlined />}
               suffix="最新"
-              styles={{ value: { color: '#cf1322' } }}
+              valueStyle={{ color: '#cf1322' }}
             />
           </Card>
         </Col>
@@ -83,7 +83,7 @@ export default function Index() {
               value="0.82"
               prefix={<MobileOutlined />}
               suffix="New Arch"
-              styles={{ value: { color: '#722ed1' } }}
+              valueStyle={{ color: '#722ed1' }}
             />
           </Card>
         </Col>

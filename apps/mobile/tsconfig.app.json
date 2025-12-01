@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "baseUrl": ".",
     "outDir": "dist",
     "types": [
       "node"
@@ -12,7 +13,15 @@
     "lib": [
       "dom"
     ],
-    "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo"
+    "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
+    "paths": {
+      "@/*": ["src/*"],
+      "@components/*": ["src/components/*"],
+      "@screens/*": ["src/screens/*"],
+      "@utils/*": ["src/utils/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@assets/*": ["src/assets/*"]
+    }
   },
   "files": [
     "../../node_modules/@nx/react-native/typings/svg.d.ts"

@@ -141,7 +141,7 @@ export default function ProfilePage() {
                   title="总手帐数"
                   value={stats.totalNotes}
                   prefix={<BookOutlined />}
-                  styles={{ value: { color: '#3f8600' } }}
+                  valueStyle={{ color: '#3f8600' }}
                 />
               </Card>
             </Col>
@@ -151,7 +151,7 @@ export default function ProfilePage() {
                   title="已完成"
                   value={stats.completedNotes}
                   prefix={<TrophyOutlined />}
-                  styles={{ value: { color: '#1890ff' } }}
+                  valueStyle={{ color: '#1890ff' }}
                 />
               </Card>
             </Col>
@@ -161,7 +161,7 @@ export default function ProfilePage() {
                   title="活跃天数"
                   value={stats.activeDays}
                   prefix={<ClockCircleOutlined />}
-                  styles={{ value: { color: '#faad14' } }}
+                  valueStyle={{ color: '#faad14' }}
                 />
               </Card>
             </Col>

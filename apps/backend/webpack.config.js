@@ -13,6 +13,8 @@ module.exports = {
     alias: {
       '@fullstarck/api-contracts': join(__dirname, '../../libs/api-contracts/src/index.ts'),
       '@fullstarck/shared-utils': join(__dirname, '../../libs/shared-utils/src/index.ts'),
+      '@backend': join(__dirname, 'src'),
+      '@': join(__dirname, 'src'),
     },
     extensions: ['.ts', '.js', '.json'],
   },
