@@ -121,8 +121,8 @@ export default function DashboardPage() {
                   你已经完成了 <strong>{completedCount}</strong> 个手帐，
                   还有 <strong>{totalCount - completedCount}</strong> 个待完成。
                 </Paragraph>
-                <Link href="/notes">
-                  <a style={{ color: '#1890ff' }}>查看所有手帐 →</a>
+                <Link href="/notes" style={{ color: '#1890ff' }}>
+                  查看所有手帐 →
                 </Link>
               </div>
             </div>
@@ -180,28 +180,22 @@ export default function DashboardPage() {
       >
         <Row gutter={[16, 16]}>
           <Col xs={24} sm={8}>
-            <Link href="/notes">
-              <Card hoverable style={{ textAlign: 'center', cursor: 'pointer' }}>
-                <BookOutlined style={{ fontSize: 32, color: '#1890ff', marginBottom: 8 }} />
-                <div>管理手帐</div>
-              </Card>
-            </Link>
+            <Card hoverable style={{ textAlign: 'center', cursor: 'pointer' }} onClick={() => window.location.href = '/notes'}>
+              <BookOutlined style={{ fontSize: 32, color: '#1890ff', marginBottom: 8 }} />
+              <div>管理手帐</div>
+            </Card>
           </Col>
           <Col xs={24} sm={8}>
-            <Link href="/profile">
-              <Card hoverable style={{ textAlign: 'center', cursor: 'pointer' }}>
-                <CheckCircleOutlined style={{ fontSize: 32, color: '#52c41a', marginBottom: 8 }} />
-                <div>个人中心</div>
-              </Card>
-            </Link>
+            <Card hoverable style={{ textAlign: 'center', cursor: 'pointer' }} onClick={() => window.location.href = '/profile'}>
+              <CheckCircleOutlined style={{ fontSize: 32, color: '#52c41a', marginBottom: 8 }} />
+              <div>个人中心</div>
+            </Card>
           </Col>
           <Col xs={24} sm={8}>
-            <Link href="/about">
-              <Card hoverable style={{ textAlign: 'center', cursor: 'pointer' }}>
-                <TrophyOutlined style={{ fontSize: 32, color: '#faad14', marginBottom: 8 }} />
-                <div>关于项目</div>
-              </Card>
-            </Link>
+            <Card hoverable style={{ textAlign: 'center', cursor: 'pointer' }} onClick={() => window.location.href = '/about'}>
+              <TrophyOutlined style={{ fontSize: 32, color: '#faad14', marginBottom: 8 }} />
+              <div>关于项目</div>
+            </Card>
           </Col>
         </Row>
       </Card>

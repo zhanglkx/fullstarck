@@ -126,7 +126,7 @@ export default function AboutPage() {
           items={[
             {
               color: 'green',
-              children: (
+              content: (
                 <>
                   <p><strong>✅ Phase 1 - 基础架构</strong></p>
                   <p>搭建 Monorepo 架构，配置 Nx + pnpm</p>
@@ -135,7 +135,7 @@ export default function AboutPage() {
             },
             {
               color: 'green',
-              children: (
+              content: (
                 <>
                   <p><strong>✅ Phase 2 - 后端开发</strong></p>
                   <p>NestJS API，数据验证，CORS 配置</p>
@@ -144,7 +144,7 @@ export default function AboutPage() {
             },
             {
               color: 'green',
-              children: (
+              content: (
                 <>
                   <p><strong>✅ Phase 3 - Web 前端</strong></p>
                   <p>Next.js + Ant Design，页面和组件开发</p>
@@ -153,7 +153,7 @@ export default function AboutPage() {
             },
             {
               color: 'green',
-              children: (
+              content: (
                 <>
                   <p><strong>✅ Phase 4 - 移动端</strong></p>
                   <p>React Native + Gluestack UI，iOS/Android 支持</p>
@@ -162,7 +162,7 @@ export default function AboutPage() {
             },
             {
               color: 'blue',
-              children: (
+              content: (
                 <>
                   <p><strong>🔄 Phase 5 - 功能增强</strong></p>
                   <p>用户认证，数据持久化，更多功能模块</p>
@@ -171,7 +171,7 @@ export default function AboutPage() {
             },
             {
               color: 'gray',
-              children: (
+              content: (
                 <>
                   <p><strong>⏳ Phase 6 - 部署上线</strong></p>
                   <p>Docker 容器化，CI/CD 配置，生产环境部署</p>
