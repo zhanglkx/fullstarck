@@ -4,9 +4,17 @@
   "private": true,
   "scripts": {
     "dev": "pnpm --filter './apps/*' dev",
+    "dev:api": "pnpm --filter api dev",
+    "dev:web": "pnpm --filter web dev",
+    "dev:mobile": "pnpm --filter mobile start",
     "build": "pnpm --filter './apps/*' build",
+    "build:api": "pnpm --filter api build",
+    "build:web": "pnpm --filter web build",
+    "build:mobile": "pnpm --filter mobile build",
     "lint": "pnpm --filter './apps/*' lint",
-    "test": "pnpm --filter './apps/*' test"
+    "test": "pnpm --filter './apps/*' test",
+    "clean": "pnpm --filter './apps/*' clean && rm -rf node_modules",
+    "clean:cache": "rm -rf node_modules/.cache && pnpm store prune"
   },
   "engines": {
     "node": ">=20.0.0"
