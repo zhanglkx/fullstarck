@@ -20,13 +20,32 @@
 - **前端**: Next.js 16 (App Router) + React 19 + Tailwind CSS 4
 - **后端**: NestJS 11 + TypeScript 5.7
 - **客户端**: Expo 54 + React Native 0.81 + React 19
-- **包管理器**: pnpm 9.x
+- **包管理器**: pnpm 10.x (使用 corepack)
 
 ## 开发环境要求
 
 - Node.js >= 20.0.0
-- pnpm >= 9.0.0
+- pnpm >= 10.0.0
 - 对于移动端开发：Expo CLI（可选）
+
+### 安装 pnpm
+
+推荐使用 npm 全局安装 pnpm：
+
+```bash
+npm install -g pnpm@latest
+```
+
+如果你使用 Volta 管理 Node.js，pnpm 会自动被 Volta 管理。
+
+### 验证安装
+
+```bash
+# 检查 pnpm 版本
+pnpm --version
+
+# 应该显示 10.33.0 或更高版本
+```
 
 ## 快速开始
 

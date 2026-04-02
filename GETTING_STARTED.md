@@ -1,5 +1,15 @@
 # 快速入门指南
 
+## 0. 安装 pnpm（如果尚未安装）
+
+```bash
+# 使用 npm 全局安装
+npm install -g pnpm@latest
+
+# 验证安装
+pnpm --version
+```
+
 ## 1. 安装依赖
 
 ```bash
