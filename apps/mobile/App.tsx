@@ -42,8 +42,9 @@ export default function App() {
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
-          <Text style={styles.title}>Fullstack Monorepo</Text>
+          <Text style={styles.title}>Fullstack Monorepo111</Text>
           <Text style={styles.subtitle}>Mobile App</Text>
+               <Text style={styles.subtitle}>我成功了哈哈哈哈</Text>
         </View>
 
         <View style={styles.card}>
