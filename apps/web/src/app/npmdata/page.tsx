@@ -25,8 +25,6 @@ interface QueryParams {
   package: string;
 }
 
-const ITEMS_PER_PAGE = 100; // 表格分页数
-
 export default function NpmDataPage() {
   const [queryParams, setQueryParams] = useState<QueryParams>({
     start: "2024-01-01",
@@ -38,8 +36,6 @@ export default function NpmDataPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searched, setSearched] = useState(false);
-  const [tablePageIndex, setTablePageIndex] = useState(0);
-  const [totalDownloads, setTotalDownloads] = useState(0);
 
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstance = useRef<echarts.ECharts | null>(null);
@@ -77,11 +73,6 @@ export default function NpmDataPage() {
         result.data.downloads[0],
         result.data.downloads[result.data.downloads.length - 1],
       );
-
-      // 提前计算总下载数（避免表格中重复计算）
-      const total = result.data.downloads.reduce((a, b) => a + b.downloads, 0);
-      setTotalDownloads(total);
-      setTablePageIndex(0); // 重置表格分页
 
       setData(result);
       setSearched(true);
@@ -239,19 +230,6 @@ export default function NpmDataPage() {
 
     await fetchNpmData(queryParams);
   };
-  const getStats = () => {
-    if (!data) return null;
-
-    const downloads = data.data.downloads.map((d) => d.downloads);
-    const total = downloads.reduce((a, b) => a + b, 0);
-    const avg = Math.round(total / downloads.length);
-    const max = Math.max(...downloads);
-    const maxDay = data.data.downloads.find((d) => d.downloads === max)?.day;
-
-    return { total, avg, max, maxDay };
-  };
-
-  const stats = getStats();
 
   return (
     <div className={styles.container}>
@@ -325,107 +303,12 @@ export default function NpmDataPage() {
         {/* 数据展示 */}
         {searched && !loading && data && (
           <>
-            {/* 统计卡片 */}
-            {stats && (
-              <div className={styles.statsGrid}>
-                <div className={styles.statCard}>
-                  <div className={styles.statLabel}>总下载数</div>
-                  <div className={styles.statValue}>{(stats.total / 1000000).toFixed(2)}M</div>
-                </div>
-                <div className={styles.statCard}>
-                  <div className={styles.statLabel}>平均日下载</div>
-                  <div className={styles.statValue}>{(stats.avg / 1000).toFixed(1)}K</div>
-                </div>
-                <div className={styles.statCard}>
-                  <div className={styles.statLabel}>最高下载日</div>
-                  <div className={styles.statValue}>{stats.maxDay}</div>
-                </div>
-                <div className={styles.statCard}>
-                  <div className={styles.statLabel}>最高下载数</div>
-                  <div className={styles.statValue}>{(stats.max / 1000000).toFixed(2)}M</div>
-                </div>
-              </div>
-            )}
-
             {/* 图表 */}
             <div className={styles.chartCard}>
               <h2>📈 下载趋势图</h2>
               <div className={styles.chartContainer} ref={chartRef}></div>
             </div>
-
-            {/* 数据表格 - 分页显示 */}
-            <div className={styles.tableCard}>
-              <h2>📋 详细数据</h2>
-              <div className={styles.tableStats}>
-                共 {data.data.downloads.length} 条记录 | 显示第{" "}
-                {Math.min(tablePageIndex * ITEMS_PER_PAGE + 1, data.data.downloads.length)} -{" "}
-                {Math.min((tablePageIndex + 1) * ITEMS_PER_PAGE, data.data.downloads.length)} 条
-              </div>
-              <div style={{ overflowX: "auto" }}>
-                <table className={styles.table}>
-                  <thead>
-                    <tr>
-                      <th>日期</th>
-                      <th>下载数</th>
-                      <th>百分比</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.data.downloads
-                      .slice(tablePageIndex * ITEMS_PER_PAGE, (tablePageIndex + 1) * ITEMS_PER_PAGE)
-                      .map((item) => {
-                        const percentage = ((item.downloads / totalDownloads) * 100).toFixed(2);
-                        return (
-                          <tr key={item.day}>
-                            <td>{item.day}</td>
-                            <td>{item.downloads.toLocaleString()}</td>
-                            <td>{percentage}%</td>
-                          </tr>
-                        );
-                      })}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* 分页按钮 */}
-              {data.data.downloads.length > ITEMS_PER_PAGE && (
-                <div className={styles.pagination}>
-                  <button
-                    onClick={() => setTablePageIndex(Math.max(0, tablePageIndex - 1))}
-                    disabled={tablePageIndex === 0}
-                  >
-                    ← 上一页
-                  </button>
-                  <span>
-                    页 {tablePageIndex + 1} /{" "}
-                    {Math.ceil(data.data.downloads.length / ITEMS_PER_PAGE)}
-                  </span>
-                  <button
-                    onClick={() =>
-                      setTablePageIndex(
-                        Math.min(
-                          Math.ceil(data.data.downloads.length / ITEMS_PER_PAGE) - 1,
-                          tablePageIndex + 1,
-                        ),
-                      )
-                    }
-                    disabled={(tablePageIndex + 1) * ITEMS_PER_PAGE >= data.data.downloads.length}
-                  >
-                    下一页 →
-                  </button>
-                </div>
-              )}
-            </div>
           </>
-        )}
-
-        {/* 空状态 */}
-        {!data && !loading && !error && (
-          <div className={styles.chartCard}>
-            <div className={styles.emptyState}>
-              <p>输入包名并点击查询按钮开始</p>
-            </div>
-          </div>
         )}
       </div>
     </div>
