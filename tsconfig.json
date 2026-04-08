@@ -1,6 +1,6 @@
 {
   "extends": "./tsconfig.base.json",
-  "references": [{ "path": "./apps/api" }, { "path": "./apps/web" }, { "path": "./apps/mobile" }],
+  "files": [],
   "compilerOptions": {
     "noEmit": true
   }
