@@ -14,12 +14,18 @@ export default function ProfileScreen() {
 
   // 自定义导航栏
   useLayoutEffect(() => {
+    // 根据主题和透明度决定图标颜色
+    const iconColor = isDark ? '#fff' : '#fff'; // 透明导航栏下，通常用白色图标配深色阴影
+
     navigation.setOptions({
       headerTitle: '我的',
+      headerTransparent: true, // 透明导航栏
+      headerBlurEffect: isDark ? 'dark' : 'light', // 根据主题切换毛玻璃效果
       headerStyle: {
-        backgroundColor: isDark ? '#1C1C1E' : '#007AFF',
+        backgroundColor: 'transparent', // 强制透明背景
       },
-      headerTintColor: '#fff',
+      headerBackground: () => null, // 移除默认背景组件
+      headerTintColor: iconColor, // 文字和图标颜色
       headerTitleStyle: {
         fontWeight: 'bold',
         fontSize: 18,
@@ -30,7 +36,7 @@ export default function ProfileScreen() {
           onPress={handleSettingsPress}
           style={styles.headerButton}
         >
-          <Ionicons name="settings-outline" size={24} color="#fff" />
+          <Ionicons name="settings-outline" size={24} color={iconColor} />
         </TouchableOpacity>
       ),
       // 左侧通知按钮（可选）
@@ -39,7 +45,7 @@ export default function ProfileScreen() {
           onPress={handleNotificationPress}
           style={styles.headerButton}
         >
-          <Ionicons name="notifications-outline" size={24} color="#fff" />
+          <Ionicons name="notifications-outline" size={24} color={iconColor} />
         </TouchableOpacity>
       ),
     });
@@ -154,7 +160,10 @@ export default function ProfileScreen() {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.scrollContent}
+    >
       {/* 用户信息区域 */}
       <View style={styles.profileHeader}>
         <View style={styles.avatarContainer}>
@@ -267,6 +276,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
+  },
+  scrollContent: {
+    paddingTop: 100, // 为透明导航栏留出空间（约 44 状态栏 + 44 导航栏 + 额外间距）
   },
   profileHeader: {
     backgroundColor: '#fff',

@@ -8,6 +8,8 @@ export default function TabLayout() {
       screenOptions={{
         headerShown: true,
         headerTitleAlign: 'center',
+        // 移除全局 headerStyle，让各页面自己控制
+        // headerStyle: { backgroundColor: '#fff' },
         tabBarActiveTintColor: '#007AFF',
         tabBarInactiveTintColor: '#8E8E93',
         tabBarStyle: {
@@ -46,6 +48,8 @@ export default function TabLayout() {
         name="profile"
         options={{
           title: '我的',
+          headerShown: true, // 确保显示导航栏
+          headerTransparent: true, // 在这里也设置透明
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person-outline" size={size} color={color} />
           ),
