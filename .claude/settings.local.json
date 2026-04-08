@@ -14,7 +14,9 @@
       "Bash(lsof -ti:3000)",
       "Bash(kill -9 892 75229)",
       "Bash(lsof -ti:8081,8082,19000,19001,19002)",
-      "Bash(kill -9 31396)"
+      "Bash(kill -9 31396)",
+      "Bash(pnpm --filter api build)",
+      "Bash(timeout 10 pnpm --filter api dev)"
     ]
   }
 }
