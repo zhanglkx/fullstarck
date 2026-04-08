@@ -16,7 +16,8 @@
       "Bash(lsof -ti:8081,8082,19000,19001,19002)",
       "Bash(kill -9 31396)",
       "Bash(pnpm --filter api build)",
-      "Bash(timeout 10 pnpm --filter api dev)"
+      "Bash(timeout 10 pnpm --filter api dev)",
+      "Bash(chmod +x /Users/temptrip/Documents/GitHub/fullstarck/apps/api/scripts/generate-module.js)"
     ]
   }
 }
