@@ -40,6 +40,7 @@ export default function NpmDataPage() {
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstance = useRef<echarts.ECharts | null>(null);
   const isInitialMount = useRef(true);
+  const prevChartRefDOM = useRef<HTMLDivElement | null>(null);
 
   // 通用查询函数
   const fetchNpmData = useCallback(async (params: QueryParams) => {
@@ -94,13 +95,36 @@ export default function NpmDataPage() {
     fetchNpmData(queryParams);
   }, [fetchNpmData, queryParams]);
 
-  // 更新图表
+  // 🔧 新增：组件卸载时清理 ECharts 实例
+  useEffect(() => {
+    return () => {
+      if (chartInstance.current) {
+        chartInstance.current.dispose();
+        chartInstance.current = null;
+      }
+    };
+  }, []);
+
+  // 更新图表 - 关键：监听 DOM 节点和数据的变化
   useEffect(() => {
     if (!chartRef.current || !data) return;
 
+    // 🔧 关键检测：DOM 节点是否被替换了
+    if (prevChartRefDOM.current !== chartRef.current) {
+      console.log("🔄 检测到 DOM 节点被替换，销毁旧实例");
+      if (chartInstance.current) {
+        chartInstance.current.dispose();
+        chartInstance.current = null;
+      }
+      prevChartRefDOM.current = chartRef.current;
+    }
+
+    // 初始化或重新初始化 ECharts
     if (!chartInstance.current) {
+      console.log("✨ 创建新的 ECharts 实例");
       chartInstance.current = echarts.init(chartRef.current, null, {
         renderer: "canvas",
+        useDirtyRect: true,
       });
     }
 
@@ -209,6 +233,7 @@ export default function NpmDataPage() {
     };
 
     chartInstance.current.setOption(chartOption);
+    chartInstance.current.resize();
 
     const handleResize = () => {
       chartInstance.current?.resize();
