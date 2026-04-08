@@ -1,0 +1,32 @@
+# ESLint ignore patterns
+
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+.expo/
+.expo-shared/
+
+# Cache
+.cache/
+.turbo/
+.eslintcache
+
+# Generated files
+*.d.ts
+
+# Configuration files (already have inline ignores)
+*.config.js
+*.config.mjs
+*.config.ts
+
+# Test coverage
+coverage/
+
+# Misc
+.DS_Store

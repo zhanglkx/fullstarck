@@ -17,13 +17,13 @@ export default function App() {
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await fetch('http://localhost:3000/health');
-      
+
       if (!response.ok) {
         throw new Error('Failed to connect to API');
       }
-      
+
       const data = await response.json();
       setHealthData(data);
     } catch (err) {
@@ -35,8 +35,8 @@ export default function App() {
   };
 
   useEffect(() => {
-    checkAPIHealth();
-  }, []);
+    void checkAPIHealth();
+  }, []); // Only run on mount
 
   return (
     <View style={styles.container}>
@@ -44,23 +44,21 @@ export default function App() {
         <View style={styles.header}>
           <Text style={styles.title}>Fullstack Monorepo111</Text>
           <Text style={styles.subtitle}>Mobile App</Text>
-               <Text style={styles.subtitle}>我成功了哈哈哈哈</Text>
+          <Text style={styles.subtitle}>我成功了哈哈哈哈</Text>
         </View>
 
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Backend API Status</Text>
-          
+
           {loading && <Text style={styles.loading}>Loading...</Text>}
-          
+
           {error && (
             <View style={styles.errorBox}>
               <Text style={styles.errorText}>❌ {error}</Text>
-              <Text style={styles.errorHint}>
-                Make sure the API is running: pnpm dev:api
-              </Text>
+              <Text style={styles.errorHint}>Make sure the API is running: pnpm dev:api</Text>
             </View>
           )}
-          
+
           {healthData && (
             <View style={styles.successBox}>
               <Text style={styles.successText}>✅ Connected</Text>
@@ -88,7 +86,7 @@ export default function App() {
           <Text style={styles.info}>• Base URL: http://localhost:3000</Text>
         </View>
       </ScrollView>
-      
+
       <StatusBar style="auto" />
     </View>
   );

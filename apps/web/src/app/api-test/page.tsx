@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 interface HealthResponse {
   status: string;
@@ -28,15 +28,15 @@ export default function ApiTestPage() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
-        
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+
         const [healthRes, apiInfoRes] = await Promise.all([
           fetch(`${apiUrl}/health`),
           fetch(`${apiUrl}/api-info`),
         ]);
 
         if (!healthRes.ok || !apiInfoRes.ok) {
-          throw new Error('Failed to fetch API data');
+          throw new Error("Failed to fetch API data");
         }
 
         const health = await healthRes.json();
@@ -46,7 +46,7 @@ export default function ApiTestPage() {
         setApiInfo(info);
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
+        setError(err instanceof Error ? err.message : "An error occurred");
       } finally {
         setLoading(false);
       }
@@ -75,15 +75,21 @@ export default function ApiTestPage() {
     <div className="min-h-screen bg-gray-50 py-12 px-4">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold mb-8 text-center">API Connection Test</h1>
-        
+
         <div className="grid gap-6 md:grid-cols-2">
           <div className="bg-white rounded-lg shadow-md p-6">
             <h2 className="text-2xl font-semibold mb-4 text-green-600">Health Check</h2>
             {healthData && (
               <div className="space-y-2">
-                <p><span className="font-medium">Status:</span> {healthData.status}</p>
-                <p><span className="font-medium">Timestamp:</span> {healthData.timestamp}</p>
-                <p><span className="font-medium">Uptime:</span> {healthData.uptime.toFixed(2)}s</p>
+                <p>
+                  <span className="font-medium">Status:</span> {healthData.status}
+                </p>
+                <p>
+                  <span className="font-medium">Timestamp:</span> {healthData.timestamp}
+                </p>
+                <p>
+                  <span className="font-medium">Uptime:</span> {healthData.uptime.toFixed(2)}s
+                </p>
               </div>
             )}
           </div>
@@ -92,9 +98,15 @@ export default function ApiTestPage() {
             <h2 className="text-2xl font-semibold mb-4 text-blue-600">API Info</h2>
             {apiInfo && (
               <div className="space-y-2">
-                <p><span className="font-medium">Name:</span> {apiInfo.name}</p>
-                <p><span className="font-medium">Version:</span> {apiInfo.version}</p>
-                <p><span className="font-medium">Description:</span> {apiInfo.description}</p>
+                <p>
+                  <span className="font-medium">Name:</span> {apiInfo.name}
+                </p>
+                <p>
+                  <span className="font-medium">Version:</span> {apiInfo.version}
+                </p>
+                <p>
+                  <span className="font-medium">Description:</span> {apiInfo.description}
+                </p>
               </div>
             )}
           </div>

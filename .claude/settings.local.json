@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm install:*)",
+      "Bash(pnpm format:check)",
+      "Bash(pnpm format:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(pnpm --filter api lint)",
+      "Bash(pnpm --filter web lint)",
+      "Bash(pnpm --filter mobile lint)",
+      "Bash(pnpm --filter @fullstack/shared lint)",
+      "Bash(npx eslint:*)",
+      "Bash(npm list:*)"
+    ]
+  }
+}

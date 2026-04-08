@@ -1,0 +1,19 @@
+{
+  "singleQuote": true,
+  "trailingComma": "all",
+  "semi": true,
+  "tabWidth": 2,
+  "useTabs": false,
+  "printWidth": 100,
+  "endOfLine": "auto",
+  "arrowParens": "always",
+  "bracketSpacing": true,
+  "overrides": [
+    {
+      "files": ["apps/web/**/*.{ts,tsx,js,jsx}"],
+      "options": {
+        "singleQuote": false
+      }
+    }
+  ]
+}

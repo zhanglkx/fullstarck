@@ -11,10 +11,20 @@
     "build:api": "pnpm --filter api build",
     "build:web": "pnpm --filter web build",
     "build:mobile": "pnpm --filter mobile build",
-    "lint": "pnpm --filter './apps/*' lint",
+    "lint": "pnpm --parallel --filter './apps/*' --filter './packages/*' lint",
+    "lint:root": "eslint .",
     "test": "pnpm --filter './apps/*' test",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,less,scss,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,less,scss,md}\"",
     "clean": "pnpm --filter './apps/*' clean && rm -rf node_modules",
     "clean:cache": "rm -rf node_modules/.cache && pnpm store prune"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.18.0",
+    "eslint": "^9.18.0",
+    "globals": "^17.4.0",
+    "prettier": "^3.4.2",
+    "typescript-eslint": "^8.20.0"
   },
   "engines": {
     "node": ">=20.0.0"

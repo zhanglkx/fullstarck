@@ -20,10 +20,10 @@
 
 子包是 Monorepo 中独立发布的共享代码单元。在本项目中：
 
-| 目录 | 用途 | 示例 |
-|------|------|------|
-| `apps/` | 可部署的应用 | `api`、`web`、`mobile` |
-| `packages/` | 共享的子包 | `@fullstack/shared`、`@fullstack/hooks` |
+| 目录        | 用途         | 示例                                    |
+| ----------- | ------------ | --------------------------------------- |
+| `apps/`     | 可部署的应用 | `api`、`web`、`mobile`                  |
+| `packages/` | 共享的子包   | `@fullstack/shared`、`@fullstack/hooks` |
 
 ### 子包命名规范
 
@@ -32,6 +32,7 @@
 ```
 
 例如：
+
 - `@fullstack/shared` - 共享工具和类型
 - `@fullstack/hooks` - React 自定义 Hooks
 - `@fullstack/ui` - UI 组件库
@@ -115,8 +116,8 @@ import { useState, useCallback } from 'react';
 export function useCounter(initialValue = 0) {
   const [count, setCount] = useState(initialValue);
 
-  const increment = useCallback(() => setCount(c => c + 1), []);
-  const decrement = useCallback(() => setCount(c => c - 1), []);
+  const increment = useCallback(() => setCount((c) => c + 1), []);
+  const decrement = useCallback(() => setCount((c) => c - 1), []);
   const reset = useCallback(() => setCount(initialValue), [initialValue]);
 
   return { count, increment, decrement, reset };
@@ -137,15 +138,15 @@ pnpm install
 
 ### 核心字段说明
 
-| 字段 | 必需 | 说明 |
-|------|------|------|
-| `name` | 是 | 包名，必须包含作用域 `@组织名/包名` |
-| `version` | 是 | 语义化版本号 |
-| `private` | 是 | 设为 `true` 防止意外发布到 npm |
-| `main` | 是 | CommonJS 入口 |
-| `module` | 是 | ESM 入口 |
-| `types` | 是 | TypeScript 类型定义 |
-| `exports` | 是 | 条件导出，支持多种模块系统 |
+| 字段      | 必需 | 说明                                |
+| --------- | ---- | ----------------------------------- |
+| `name`    | 是   | 包名，必须包含作用域 `@组织名/包名` |
+| `version` | 是   | 语义化版本号                        |
+| `private` | 是   | 设为 `true` 防止意外发布到 npm      |
+| `main`    | 是   | CommonJS 入口                       |
+| `module`  | 是   | ESM 入口                            |
+| `types`   | 是   | TypeScript 类型定义                 |
+| `exports` | 是   | 条件导出，支持多种模块系统          |
 
 ### exports 字段详解
 
@@ -166,12 +167,12 @@ pnpm install
 
 **条件说明：**
 
-| 条件 | 用途 |
-|------|------|
-| `types` | TypeScript 类型定义 |
-| `import` | ES Module (import) |
-| `require` | CommonJS (require) |
-| `default` | 默认 fallback |
+| 条件      | 用途                |
+| --------- | ------------------- |
+| `types`   | TypeScript 类型定义 |
+| `import`  | ES Module (import)  |
+| `require` | CommonJS (require)  |
+| `default` | 默认 fallback       |
 
 ---
 
@@ -213,12 +214,12 @@ pnpm install
 
 **关键配置说明：**
 
-| 配置 | 说明 |
-|------|------|
-| `extends` | 继承基础配置 |
-| `outDir` | 输出目录 |
-| `rootDir` | 源码根目录 |
-| `jsx` | React JSX 配置（UI 库需要）|
+| 配置      | 说明                        |
+| --------- | --------------------------- |
+| `extends` | 继承基础配置                |
+| `outDir`  | 输出目录                    |
+| `rootDir` | 源码根目录                  |
+| `jsx`     | React JSX 配置（UI 库需要） |
 
 ---
 
@@ -355,14 +356,15 @@ export { useLocalStorage } from './useLocalStorage';
 #### 6. 编写 Hooks
 
 **src/useCounter.ts**
+
 ```typescript
 import { useState, useCallback } from 'react';
 
 export function useCounter(initialValue = 0) {
   const [count, setCount] = useState(initialValue);
 
-  const increment = useCallback(() => setCount(c => c + 1), []);
-  const decrement = useCallback(() => setCount(c => c - 1), []);
+  const increment = useCallback(() => setCount((c) => c + 1), []);
+  const decrement = useCallback(() => setCount((c) => c - 1), []);
   const reset = useCallback(() => setCount(initialValue), [initialValue]);
 
   return { count, increment, decrement, reset };
@@ -370,13 +372,14 @@ export function useCounter(initialValue = 0) {
 ```
 
 **src/useToggle.ts**
+
 ```typescript
 import { useState, useCallback } from 'react';
 
 export function useToggle(initialValue = false) {
   const [value, setValue] = useState(initialValue);
 
-  const toggle = useCallback(() => setValue(v => !v), []);
+  const toggle = useCallback(() => setValue((v) => !v), []);
   const setTrue = useCallback(() => setValue(true), []);
   const setFalse = useCallback(() => setValue(false), []);
 
@@ -385,6 +388,7 @@ export function useToggle(initialValue = false) {
 ```
 
 **src/useLocalStorage.ts**
+
 ```typescript
 import { useState, useEffect } from 'react';
 

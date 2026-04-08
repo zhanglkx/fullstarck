@@ -25,6 +25,7 @@ pnpm dev
 ```
 
 这将在不同端口启动三个项目：
+
 - API: http://localhost:3000
 - Web: http://localhost:3001（或其他可用端口）
 - Mobile: Expo 开发服务器
@@ -46,7 +47,7 @@ pnpm dev:mobile
 
 - **API 文档**: 启动后端后，可以访问 http://localhost:3000
 - **Web 应用**: 启动前端后，在浏览器中打开 http://localhost:3001
-- **Mobile 应用**: 
+- **Mobile 应用**:
   - 安装 Expo Go 应用（iOS/Android）
   - 扫描终端中显示的二维码
   - 或者在模拟器中运行

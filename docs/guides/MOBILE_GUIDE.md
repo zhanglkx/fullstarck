@@ -20,6 +20,7 @@ pnpm ios
 ```
 
 这将自动：
+
 1. 启动 Expo 开发服务器
 2. 打开 iOS 模拟器（如果未打开）
 3. 在模拟器中安装并运行应用
@@ -32,6 +33,7 @@ pnpm start
 ```
 
 然后按键盘快捷键：
+
 - 按 `i` - 在 iOS 模拟器中打开
 - 按 `a` - 在 Android 模拟器中打开（需安装 Android Studio）
 - 按 `w` - 在 Web 浏览器中打开
@@ -45,6 +47,7 @@ pnpm start
 ## 可用的 iOS 模拟器
 
 当前系统可用的模拟器：
+
 - iPhone 17 Pro ✅
 - iPhone 17 Pro Max
 - iPhone Air
@@ -89,6 +92,7 @@ pnpm dev:mobile
 ### 4. 常用快捷键
 
 在终端运行 Expo 时：
+
 - `i` - 打开 iOS 模拟器
 - `a` - 打开 Android 模拟器
 - `w` - 打开 Web 浏览器
@@ -98,6 +102,7 @@ pnpm dev:mobile
 - `?` - 显示所有命令
 
 在 iOS 模拟器中：
+
 - `Cmd + D` - 打开开发者菜单
 - `Cmd + R` - 重新加载应用
 
@@ -120,6 +125,7 @@ apps/mobile/
 ### Q: 模拟器启动失败？
 
 **解决方案**：
+
 ```bash
 # 打开 Xcode 并接受许可协议
 sudo xcodebuild -license accept
@@ -135,6 +141,7 @@ open -a Simulator
 ### Q: Expo 无法连接到模拟器？
 
 **解决方案**：
+
 ```bash
 # 清除 Expo 缓存
 cd apps/mobile
@@ -147,6 +154,7 @@ rm -rf .expo
 ### Q: 如何使用真机测试？
 
 **解决方案**：
+
 1. iPhone 和 Mac 在同一 WiFi 网络
 2. 在 iPhone 上安装 Expo Go 应用
 3. 运行 `pnpm start`
@@ -155,6 +163,7 @@ rm -rf .expo
 ### Q: 如何查看日志？
 
 **解决方案**：
+
 ```bash
 # 在另一个终端窗口
 pnpm start
@@ -168,10 +177,10 @@ pnpm start
 
 ```typescript
 // 使用本地网络 IP 地址
-const API_URL = 'http://localhost:3000';  // 模拟器中可用
+const API_URL = 'http://localhost:3000'; // 模拟器中可用
 
 // 或使用局域网 IP（真机测试）
-const API_URL = 'http://192.168.1.24:3000';  // 真机需要用这个
+const API_URL = 'http://192.168.1.24:3000'; // 真机需要用这个
 ```
 
 ## 下一步

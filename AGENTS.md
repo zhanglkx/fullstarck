@@ -5,6 +5,7 @@ This document provides essential information for AI coding agents working in thi
 ## Project Overview
 
 This is a pnpm workspace-based monorepo containing:
+
 - **apps/api**: NestJS 11 backend (TypeScript, runs on port 3000)
 - **apps/web**: Next.js 16 frontend (App Router, React 19, Tailwind CSS 4, runs on port 3001)
 - **apps/mobile**: Expo 54 mobile app (React Native, React 19)
@@ -16,6 +17,7 @@ This is a pnpm workspace-based monorepo containing:
 ## Build/Lint/Test Commands
 
 ### Root Level Commands (run from project root)
+
 ```bash
 pnpm install              # Install all dependencies
 pnpm dev                  # Start all apps in dev mode
@@ -31,6 +33,7 @@ pnpm clean                # Clean all build artifacts
 ```
 
 ### API (NestJS) Commands
+
 ```bash
 pnpm --filter api dev              # Start in dev mode with watch
 pnpm --filter api build            # Build for production
@@ -43,16 +46,19 @@ pnpm --filter api test:e2e         # Run e2e tests
 ```
 
 **Run a single test file:**
+
 ```bash
 pnpm --filter api test -- src/app.controller.spec.ts
 ```
 
 **Run a single test by name pattern:**
+
 ```bash
 pnpm --filter api test -- --testNamePattern="should return Hello World"
 ```
 
 ### Web (Next.js) Commands
+
 ```bash
 pnpm --filter web dev              # Start Next.js dev server
 pnpm --filter web build            # Build for production
@@ -61,6 +67,7 @@ pnpm --filter web lint             # Run ESLint
 ```
 
 ### Mobile (Expo) Commands
+
 ```bash
 pnpm --filter mobile start         # Start Expo dev server
 pnpm --filter mobile ios           # Run on iOS simulator
@@ -68,6 +75,7 @@ pnpm --filter mobile android       # Run on Android emulator
 ```
 
 ### Shared Package Commands
+
 ```bash
 pnpm --filter @fullstack/shared build    # Build shared package
 pnpm --filter @fullstack/shared dev      # Build in watch mode
@@ -78,6 +86,7 @@ pnpm --filter @fullstack/shared dev      # Build in watch mode
 ### Import Organization
 
 **API (NestJS):**
+
 - Use single quotes for imports
 - Group imports: external packages first, then internal modules
 - Example:
@@ -87,15 +96,17 @@ pnpm --filter @fullstack/shared dev      # Build in watch mode
   ```
 
 **Web (Next.js):**
+
 - Use double quotes for imports (Next.js convention)
 - Use path aliases with `@/` for local imports
 - Example:
   ```typescript
-  import Image from "next/image";
-  import { Button } from "@/components/Button";
+  import Image from 'next/image';
+  import { Button } from '@/components/Button';
   ```
 
 **Mobile (Expo):**
+
 - Use single quotes for imports
 - Group React/React Native imports first, then external packages, then local modules
 - Example:
@@ -108,20 +119,22 @@ pnpm --filter @fullstack/shared dev      # Build in watch mode
 ### Formatting
 
 **Prettier Configuration (API):**
+
 - Single quotes: `true`
 - Trailing commas: `'all'`
 - End of line: `'auto'`
 
 **ESLint:**
+
 - API: TypeScript ESLint + Prettier integration
   - `@typescript-eslint/no-explicit-any`: OFF
   - `@typescript-eslint/no-floating-promises`: WARN
   - `@typescript-eslint/no-unsafe-argument`: WARN
-  
 - Web: Next.js ESLint config with TypeScript support
   - Uses `eslint-config-next/core-web-vitals` and `eslint-config-next/typescript`
 
 **Always run linting after changes:**
+
 ```bash
 pnpm --filter api lint      # Auto-fixes issues
 pnpm --filter web lint      # Runs ESLint
@@ -130,45 +143,54 @@ pnpm --filter web lint      # Runs ESLint
 ### TypeScript Configuration
 
 **Strict mode enabled** across all projects with:
+
 - `strict: true`
 - `noUnusedLocals: true`
 - `noUnusedParameters: true`
 - `strictNullChecks: true`
 
 **API-specific:**
+
 - Target: ES2023
 - Module: NodeNext
 - Decorators: `experimentalDecorators: true`, `emitDecoratorMetadata: true`
 
 **Web-specific:**
+
 - Target: ES2017
 - JSX: `react-jsx`
 - Path aliases: `@/*` maps to `./src/*`
 
 **Mobile-specific:**
+
 - Target: ESNext
 - JSX: `react-jsx`
 
 ### Naming Conventions
 
 **Files:**
+
 - Components (Web/Mobile): PascalCase (e.g., `Button.tsx`, `UserProfile.tsx`)
 - Utilities/Services: camelCase (e.g., `formatDate.ts`, `api.service.ts`)
 - Test files: `*.spec.ts` for unit tests, `*.e2e-spec.ts` for e2e tests
 
 **Classes/Components:**
+
 - PascalCase: `AppController`, `UserProfile`, `HealthResponse`
 - Use descriptive names that reflect purpose
 
 **Variables/Functions:**
+
 - camelCase: `getHello()`, `checkAPIHealth`, `healthData`
 - Boolean variables: use `is`, `has`, `should` prefixes (e.g., `isLoading`, `hasError`)
 
 **Constants:**
+
 - SCREAMING_SNAKE_CASE: `API_BASE_URL`
 - Define in `packages/shared` for shared constants
 
 **Interfaces/Types:**
+
 - PascalCase with descriptive names
 - Use `interface` for object shapes, `type` for unions/intersections
 - Example:
@@ -183,6 +205,7 @@ pnpm --filter web lint      # Runs ESLint
 ### Error Handling
 
 **API (NestJS):**
+
 - Use NestJS exception filters for consistent error responses
 - Return meaningful HTTP status codes
 - Example pattern from existing code:
@@ -195,6 +218,7 @@ pnpm --filter web lint      # Runs ESLint
   ```
 
 **Web/Mobile (React):**
+
 - Use try-catch in async operations
 - Store error state with `useState<string | null>(null)`
 - Display user-friendly error messages
@@ -214,6 +238,7 @@ pnpm --filter web lint      # Runs ESLint
 ### File Organization
 
 **API Structure:**
+
 ```
 apps/api/
 ├── src/
@@ -227,6 +252,7 @@ apps/api/
 ```
 
 **Web Structure:**
+
 ```
 apps/web/
 ├── src/
@@ -238,6 +264,7 @@ apps/web/
 ```
 
 **Mobile Structure:**
+
 ```
 apps/mobile/
 ├── index.ts                 # Entry point
@@ -248,6 +275,7 @@ apps/mobile/
 ### Testing Patterns
 
 **Unit Tests (API):**
+
 ```typescript
 describe('AppController', () => {
   let appController: AppController;
@@ -270,6 +298,7 @@ describe('AppController', () => {
 ```
 
 **E2E Tests (API):**
+
 ```typescript
 describe('AppController (e2e)', () => {
   let app: INestApplication<App>;
@@ -284,10 +313,7 @@ describe('AppController (e2e)', () => {
   });
 
   it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+    return request(app.getHttpServer()).get('/').expect(200).expect('Hello World!');
   });
 });
 ```
@@ -295,6 +321,7 @@ describe('AppController (e2e)', () => {
 ## Next.js Important Notes
 
 **This codebase uses Next.js 16 with breaking changes.** Before writing Next.js code:
+
 1. Read relevant guides in `node_modules/next/dist/docs/`
 2. Heed deprecation notices
 3. Use App Router (not Pages Router)
@@ -304,6 +331,7 @@ describe('AppController (e2e)', () => {
 ## Shared Package Usage
 
 Import shared utilities and types across all apps:
+
 ```typescript
 import { API_BASE_URL, formatDate, ApiResponse } from '@fullstack/shared';
 ```
@@ -312,7 +340,7 @@ import { API_BASE_URL, formatDate, ApiResponse } from '@fullstack/shared';
 
 1. **Before starting**: Run `pnpm install` to ensure all dependencies are installed
 2. **During development**: Use `pnpm dev` to start all apps or specific app commands
-3. **After making changes**: 
+3. **After making changes**:
    - Run `pnpm lint` to check for linting issues
    - Run `pnpm test` to ensure tests pass
    - Run `pnpm build` to verify build succeeds

@@ -42,14 +42,14 @@ fullstarck/
 
 ## 使用场景总览
 
-| 场景 | 使用位置 | 场景描述 | 推荐协议 |
-|------|----------|----------|----------|
-| 1 | shared | 开发中引用 hooks，使用 workspace 协议 | `workspace:*` |
-| 2 | shared | 发布后引用 hooks，使用具体版本 | `^1.0.0` |
-| 3 | shared | 本地开发调试，使用 pnpm link | 本地路径 |
-| 4 | apps | 开发中引用 hooks，使用 workspace 协议 | `workspace:*` |
-| 5 | apps | 发布后引用 hooks，使用具体版本 | `^1.0.0` |
-| 6 | apps | 本地开发调试，使用 pnpm link | 本地路径 |
+| 场景 | 使用位置 | 场景描述                              | 推荐协议      |
+| ---- | -------- | ------------------------------------- | ------------- |
+| 1    | shared   | 开发中引用 hooks，使用 workspace 协议 | `workspace:*` |
+| 2    | shared   | 发布后引用 hooks，使用具体版本        | `^1.0.0`      |
+| 3    | shared   | 本地开发调试，使用 pnpm link          | 本地路径      |
+| 4    | apps     | 开发中引用 hooks，使用 workspace 协议 | `workspace:*` |
+| 5    | apps     | 发布后引用 hooks，使用具体版本        | `^1.0.0`      |
+| 6    | apps     | 本地开发调试，使用 pnpm link          | 本地路径      |
 
 ---
 
@@ -112,6 +112,7 @@ export function CounterComponent() {
 ### 注意事项
 
 1. 需要先构建 `@fullstack/hooks`：
+
    ```bash
    pnpm --filter @fullstack/hooks build
    ```
@@ -172,12 +173,12 @@ pnpm add @fullstack/hooks@^2.0.0
 
 ### 版本号规则
 
-| 版本策略 | 示例 | 说明 |
-|----------|------|------|
-| 精确版本 | `1.0.0` | 锁定到特定版本 |
-|  caret ^ | `^1.0.0` | 兼容次版本和补丁版本变化 |
-| tilde ~ | `~1.0.0` | 兼容补丁版本变化 |
-| latest | `latest` | 始终使用最新版本 |
+| 版本策略 | 示例     | 说明                     |
+| -------- | -------- | ------------------------ |
+| 精确版本 | `1.0.0`  | 锁定到特定版本           |
+| caret ^  | `^1.0.0` | 兼容次版本和补丁版本变化 |
+| tilde ~  | `~1.0.0` | 兼容补丁版本变化         |
+| latest   | `latest` | 始终使用最新版本         |
 
 **建议**：在生产环境使用 `^x.y.z` 以获得安全补丁，同时保持 API 兼容性。
 
@@ -257,11 +258,11 @@ pnpm 会自动解析到 workspace 中的包。
 
 ### 三种方式对比
 
-| 方式 | 优点 | 缺点 | 适用场景 |
-|------|------|------|----------|
-| `workspace:*` | 自动解析，无需额外操作 | 需要在同一 workspace | 同一 monorepo |
-| `pnpm link` | 可跨 monorepo 链接 | 需要手动操作 | 多仓库同时开发 |
-| `link:` 协议 | 明确的本地路径 | 路径硬编码 | 临时调试 |
+| 方式          | 优点                   | 缺点                 | 适用场景       |
+| ------------- | ---------------------- | -------------------- | -------------- |
+| `workspace:*` | 自动解析，无需额外操作 | 需要在同一 workspace | 同一 monorepo  |
+| `pnpm link`   | 可跨 monorepo 链接     | 需要手动操作         | 多仓库同时开发 |
+| `link:` 协议  | 明确的本地路径         | 路径硬编码           | 临时调试       |
 
 ---
 
@@ -300,7 +301,7 @@ import { useCounter } from '@fullstack/hooks';
 
 export default function HomePage() {
   const { count, increment, decrement } = useCounter(0);
-  
+
   return (
     <main>
       <h1>Counter: {count}</h1>
@@ -360,7 +361,7 @@ import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
 
 export default function App() {
   const { value: isOn, toggle } = useToggle(false);
-  
+
   return (
     <View style={styles.container}>
       <Text>状态: {isOn ? '开' : '关'}</Text>
@@ -423,11 +424,11 @@ pnpm add @fullstack/shared@1.0.0
 
 ### 版本锁定策略
 
-| 策略 | 配置 | 说明 |
-|------|------|------|
-| 严格锁定 | `1.0.0` | 不更新任何版本 |
-| 灵活版本 | `^1.0.0` | 接受兼容更新 |
-| 范围版本 | `>=1.0.0 <2.0.0` | 指定版本范围 |
+| 策略     | 配置             | 说明           |
+| -------- | ---------------- | -------------- |
+| 严格锁定 | `1.0.0`          | 不更新任何版本 |
+| 灵活版本 | `^1.0.0`         | 接受兼容更新   |
+| 范围版本 | `>=1.0.0 <2.0.0` | 指定版本范围   |
 
 **推荐**：使用 `^x.y.z` 平衡灵活性和稳定性。
 
@@ -490,12 +491,12 @@ pnpm 会复制文件而非链接。
 
 ### 开发流程对比
 
-| 阶段 | 推荐协议 | 原因 |
-|------|----------|------|
-| 本地开发 | `workspace:*` | 实时同步，无需手动更新 |
-| Code Review | `workspace:*` | CI 会自动构建 |
-| 测试环境 | `^x.y.z` | 允许小版本更新 |
-| 生产环境 | `^x.y.z` 或锁定 | 平衡稳定性和安全性 |
+| 阶段        | 推荐协议        | 原因                   |
+| ----------- | --------------- | ---------------------- |
+| 本地开发    | `workspace:*`   | 实时同步，无需手动更新 |
+| Code Review | `workspace:*`   | CI 会自动构建          |
+| 测试环境    | `^x.y.z`        | 允许小版本更新         |
+| 生产环境    | `^x.y.z` 或锁定 | 平衡稳定性和安全性     |
 
 ---
 

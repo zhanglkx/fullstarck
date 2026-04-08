@@ -1,0 +1,49 @@
+# Dependencies
+node_modules
+.pnpm-store
+
+# Build outputs
+dist
+build
+.next
+.expo
+.expo-shared
+out
+
+# Cache
+.cache
+.turbo
+.eslintcache
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment
+.env
+.env.local
+.env.production
+.env.development
+
+# Lock files
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Misc
+.DS_Store
+*.pem
+.idea
+.vscode
+coverage
+
+# Generated files
+*.d.ts
+apps/api/dist
+apps/web/.next
+apps/mobile/.expo
+packages/*/dist

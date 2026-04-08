@@ -1,10 +1,6 @@
 {
   "extends": "./tsconfig.base.json",
-  "references": [
-    { "path": "./apps/api" },
-    { "path": "./apps/web" },
-    { "path": "./apps/mobile" }
-  ],
+  "references": [{ "path": "./apps/api" }, { "path": "./apps/web" }, { "path": "./apps/mobile" }],
   "compilerOptions": {
     "noEmit": true
   }

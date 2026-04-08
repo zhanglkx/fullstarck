@@ -1,0 +1,29 @@
+// @ts-check
+import eslint from '@eslint/js';
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
+
+export default tseslint.config(
+  {
+    ignores: ['eslint.config.mjs', 'dist/**', 'node_modules/**'],
+  },
+  eslint.configs.recommended,
+  ...tseslint.configs.recommended,
+  {
+    files: ['src/**/*.ts'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        ...globals.es2021,
+      },
+    },
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      ],
+      'no-console': 'off', // Allowed in utility packages
+    },
+  },
+);

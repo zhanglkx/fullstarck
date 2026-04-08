@@ -6,17 +6,17 @@
 
 ### Monorepo 指南
 
-| 文档 | 说明 |
-|------|------|
-| [Monorepo 架构指南](./monorepo/index.md) | 项目架构概览、目录结构、技术选型 |
-| [子包创建指南](./monorepo/subpackage-create.md) | 如何在 packages/ 下创建新的子包 |
-| [子包使用指南](./monorepo/subpackage-use.md) | 在 shared 和 apps 中使用子包的各种场景 |
-| [依赖版本管理](./monorepo/dependency-management.md) | workspace 协议、版本策略、发布流程 |
+| 文档                                                | 说明                                   |
+| --------------------------------------------------- | -------------------------------------- |
+| [Monorepo 架构指南](./monorepo/index.md)            | 项目架构概览、目录结构、技术选型       |
+| [子包创建指南](./monorepo/subpackage-create.md)     | 如何在 packages/ 下创建新的子包        |
+| [子包使用指南](./monorepo/subpackage-use.md)        | 在 shared 和 apps 中使用子包的各种场景 |
+| [依赖版本管理](./monorepo/dependency-management.md) | workspace 协议、版本策略、发布流程     |
 
 ### 参考文档
 
-| 文档 | 说明 |
-|------|------|
+| 文档                                | 说明             |
+| ----------------------------------- | ---------------- |
 | [命令参考](./reference/commands.md) | 常用开发命令汇总 |
 
 ---
