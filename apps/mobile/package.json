@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
+    "dev": "expo start",
     "start": "expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
@@ -13,10 +14,10 @@
     "lint": "eslint \"**/*.{ts,tsx}\" --fix"
   },
   "dependencies": {
-    "expo": "~55.0.9",
-    "expo-status-bar": "~55.0.4",
-    "react": "19.2.4",
-    "react-native": "0.84.1"
+    "expo": "~55.0.12",
+    "expo-status-bar": "~55.0.5",
+    "react": "19.2.0",
+    "react-native": "0.83.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.18.0",
