@@ -20,7 +20,8 @@
       "Bash(chmod +x /Users/temptrip/Documents/GitHub/fullstarck/apps/api/scripts/generate-module.js)",
       "Bash(git config:*)",
       "Bash(pnpm --filter web build)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(pnpm --filter api add @nestjs/axios axios)"
     ]
   }
 }

@@ -1,26 +1,57 @@
-import { Injectable } from '@nestjs/common';
-import { CreateNpmdatumDto } from '@/npmdata/dto/create-npmdatum.dto';
-import { UpdateNpmdatumDto } from '@/npmdata/dto/update-npmdatum.dto';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
+import { firstValueFrom } from 'rxjs';
+import { QueryDownloadsDto } from '@/npmdata/dto/query-downloads.dto';
 
 @Injectable()
 export class NpmdataService {
-  create(_createNpmdatumDto: CreateNpmdatumDto) {
-    return 'This action adds a new npmdatum';
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly configService: ConfigService,
+  ) {}
+
+  query(_queryDownloadsDto: QueryDownloadsDto) {
+    return `This action queries npmdata`;
   }
 
-  findAll() {
-    return `This action returns all npmdata`;
-  }
+  async fetchExternalData(queryDto: QueryDownloadsDto) {
+    const apiUrl =
+      this.configService.get<string>('THIRD_PARTY_API_URL') ||
+      'https://api.npmjs.org/downloads';
+    const apiKey = this.configService.get<string>('THIRD_PARTY_API_KEY');
 
-  findOne(id: number) {
-    return `This action returns a #${id} npmdatum`;
-  }
+    const requestUrl = `${apiUrl}/range/${queryDto.start}:${queryDto.end}/${encodeURIComponent(
+      queryDto.package,
+    )}`;
+    const requestConfig = apiKey
+      ? {
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      : undefined;
 
-  update(id: number, _updateNpmdatumDto: UpdateNpmdatumDto) {
-    return `This action updates a #${id} npmdatum`;
-  }
+    try {
+      const response = await firstValueFrom(
+        this.httpService.get(requestUrl, requestConfig),
+      );
 
-  remove(id: number) {
-    return `This action removes a #${id} npmdatum`;
+      return {
+        success: true,
+        data: response.data,
+      };
+    } catch (error) {
+      throw new HttpException(
+        {
+          success: false,
+          message: '调用第三方接口失败',
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          error: (error && error?.response?.data) || (error && error.message),
+        },
+        HttpStatus.BAD_GATEWAY,
+      );
+    }
   }
 }
