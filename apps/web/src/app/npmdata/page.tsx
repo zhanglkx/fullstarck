@@ -101,26 +101,7 @@ export default function NpmDataPage() {
 
     console.log("🚀 页面初始化，执行首次查询");
     fetchNpmData(queryParams);
-  }, []);
-
-  // 自动查询（参数改变时）
-  useEffect(() => {
-    if (isInitialMount.current) return; // 首次加载时跳过
-
-    let debounceTimer: NodeJS.Timeout;
-    console.log("⏳ 检测到参数变化，准备防抖查询...", queryParams);
-
-    const autoFetch = async () => {
-      if (!queryParams.package.trim() || !queryParams.start || !queryParams.end) {
-        console.warn("⚠️ 参数不完整，跳过查询");
-        return;
-      }
-      await fetchNpmData(queryParams);
-    };
-
-    debounceTimer = setTimeout(autoFetch, 800);
-    return () => clearTimeout(debounceTimer);
-  }, [queryParams, fetchNpmData]);
+  }, [fetchNpmData, queryParams]);
 
   // 更新图表
   useEffect(() => {
@@ -135,12 +116,6 @@ export default function NpmDataPage() {
     const downloads = data.data.downloads;
     const days = downloads.map((d) => d.day);
     const downloadCounts = downloads.map((d) => d.downloads);
-
-    // 计算统计数据
-    const totalDownloads = downloadCounts.reduce((a, b) => a + b, 0);
-    const avgDownloads = Math.round(totalDownloads / downloadCounts.length);
-    const maxDownloads = Math.max(...downloadCounts);
-    const minDownloads = Math.min(...downloadCounts);
 
     const chartOption: echarts.EChartsOption = {
       title: {
@@ -206,6 +181,7 @@ export default function NpmDataPage() {
           data: downloadCounts,
           type: "line",
           smooth: true,
+          sampling: "lttb",
           lineStyle: {
             color: "#667eea",
             width: 3,
@@ -260,7 +236,7 @@ export default function NpmDataPage() {
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("🔘 用户手动点击查询按钮");
+
     await fetchNpmData(queryParams);
   };
   const getStats = () => {
