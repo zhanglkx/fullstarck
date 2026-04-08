@@ -1,12 +1,109 @@
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuthStore, useThemeStore, useCounterStore } from '@/stores';
+import { useNavigation } from 'expo-router';
+import { useLayoutEffect } from 'react';
 
 export default function ProfileScreen() {
+  const navigation = useNavigation();
+
   // 使用 Zustand Store
   const { user, isAuthenticated, login, logout } = useAuthStore();
   const { colorScheme, isDark, toggleTheme } = useThemeStore();
   const { count, increment, decrement, reset } = useCounterStore();
+
+  // 自定义导航栏
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: '我的',
+      headerStyle: {
+        backgroundColor: isDark ? '#1C1C1E' : '#007AFF',
+      },
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+        fontSize: 18,
+      },
+      // 右侧设置按钮
+      headerRight: () => (
+        <TouchableOpacity
+          onPress={handleSettingsPress}
+          style={styles.headerButton}
+        >
+          <Ionicons name="settings-outline" size={24} color="#fff" />
+        </TouchableOpacity>
+      ),
+      // 左侧通知按钮（可选）
+      headerLeft: () => (
+        <TouchableOpacity
+          onPress={handleNotificationPress}
+          style={styles.headerButton}
+        >
+          <Ionicons name="notifications-outline" size={24} color="#fff" />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation, isDark, user, count]);
+
+  // 处理设置按钮点击
+  const handleSettingsPress = () => {
+    // 打印日志
+    console.log('=== 设置按钮点击 ===');
+    console.log('当前用户:', user);
+    console.log('登录状态:', isAuthenticated);
+    console.log('主题模式:', isDark ? '暗黑' : '明亮');
+    console.log('计数器值:', count);
+    console.log('==================');
+
+    // 弹出对话框
+    Alert.alert(
+      '⚙️ 设置',
+      `用户: ${user?.name || '游客'}\n登录状态: ${isAuthenticated ? '已登录' : '未登录'}\n主题: ${isDark ? '暗黑模式' : '明亮模式'}\n计数器: ${count}`,
+      [
+        {
+          text: '查看日志',
+          onPress: () => {
+            console.log('用户选择查看日志');
+            Alert.alert('提示', '请在控制台查看完整日志');
+          },
+        },
+        {
+          text: '切换主题',
+          onPress: () => {
+            console.log('从导航栏切换主题');
+            toggleTheme();
+          },
+        },
+        {
+          text: '取消',
+          style: 'cancel',
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  // 处理通知按钮点击
+  const handleNotificationPress = () => {
+    console.log('通知按钮点击');
+    Alert.alert(
+      '📬 通知',
+      `你有 ${count} 条未读消息`,
+      [
+        {
+          text: '全部已读',
+          onPress: () => {
+            console.log('标记全部已读');
+            reset();
+          },
+        },
+        {
+          text: '关闭',
+          style: 'cancel',
+        },
+      ]
+    );
+  };
 
   const menuItems = [
     {
@@ -163,6 +260,10 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
+  headerButton: {
+    marginHorizontal: 16,
+    padding: 4,
+  },
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
