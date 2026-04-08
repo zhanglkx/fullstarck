@@ -1,9 +1,11 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { Card, Row, Col, Spin, Alert, Table, Input, Button, Space, Tag, Statistic } from "antd";
-import { CheckCircleOutlined, ClockCircleOutlined, ApiOutlined } from "@ant-design/icons";
-import apiClient from "@/lib/axios";
+import { Card, Row, Col, Alert, Space, Tag, Statistic } from "antd";
+import {
+  CheckCircleOutlined,
+  ClockCircleOutlined,
+  ApiOutlined,
+  ReloadOutlined,
+} from "@ant-design/icons";
+import { revalidatePath } from "next/cache";
 
 interface HealthResponse {
   status: string;
@@ -28,51 +30,42 @@ interface NpmDownloadsResponse {
   downloads: Array<{ day: string; downloads: number }>;
 }
 
-export default function ApiTestPage() {
-  const [healthData, setHealthData] = useState<HealthResponse | null>(null);
-  const [apiInfo, setApiInfo] = useState<ApiInfoResponse | null>(null);
-  const [npmDownloads, setNpmDownloads] = useState<NpmDownloadsResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+async function fetchApiData() {
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
+  console.log("🚀日志=====");
 
-        const [health, info, downloads] = await Promise.all([
-          apiClient.get("/health"),
-          apiClient.get("/api-info"),
-          apiClient.get("/npmdata/downloads?start=2024-01-01&end=2024-01-10&package=react"),
-        ]);
+  try {
+    const [healthRes, infoRes, downloadsRes] = await Promise.all([
+      fetch(`${API_BASE_URL}/health`, { next: { revalidate: 0 } }),
+      fetch(`${API_BASE_URL}/api-info`, { next: { revalidate: 0 } }),
+      fetch(`${API_BASE_URL}/npmdata/downloads?start=2024-01-01&end=2024-01-10&package=react`, {
+        next: { revalidate: 0 },
+      }),
+    ]);
 
-        setHealthData(health as unknown as HealthResponse);
-        setApiInfo(info as unknown as ApiInfoResponse);
-        setNpmDownloads(downloads as unknown as NpmDownloadsResponse);
-        setError(null);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred");
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (!healthRes.ok || !infoRes.ok || !downloadsRes.ok) {
+      throw new Error("Failed to fetch from API");
+    }
 
-    fetchData();
-  }, []);
+    const health = (await healthRes.json()) as HealthResponse;
+    const info = (await infoRes.json()) as ApiInfoResponse;
+    const downloads = (await downloadsRes.json()) as NpmDownloadsResponse;
 
-  const columns = [
-    {
-      title: "Date",
-      dataIndex: "day",
-      key: "day",
-    },
-    {
-      title: "Downloads",
-      dataIndex: "downloads",
-      key: "downloads",
-      sorter: (a: any, b: any) => a.downloads - b.downloads,
-    },
-  ];
+    return { health, info, downloads, error: null };
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : "An error occurred";
+    return { health: null, info: null, downloads: null, error: errorMessage };
+  }
+}
+
+async function handleRefresh() {
+  "use server";
+  revalidatePath("/api-test");
+}
+
+export default async function ApiTestPage() {
+  const { health: healthData, info: apiInfo, error } = await fetchApiData();
 
   return (
     <div style={{ padding: "24px", background: "#f5f5f5", minHeight: "100vh" }}>
@@ -85,27 +78,14 @@ export default function ApiTestPage() {
             textAlign: "center",
           }}
         >
-          📊 API Connection Test (Using Axios & Ant Design)
+          📊 API Connection Test (Using Server-Side Rendering)
         </h1>
 
-        {loading && (
-          <div style={{ textAlign: "center", padding: "50px" }}>
-            <Spin size="large" tip="Loading data..." />
-          </div>
-        )}
-
         {error && (
-          <Alert
-            message="Error"
-            description={error}
-            type="error"
-            showIcon
-            closable
-            style={{ marginBottom: "24px" }}
-          />
+          <Alert description={error} type="error" showIcon style={{ marginBottom: "24px" }} />
         )}
 
-        {!loading && !error && (
+        {!error && (
           <>
             <Row gutter={[16, 16]} style={{ marginBottom: "24px" }}>
               <Col xs={24} sm={12} lg={8}>
@@ -116,15 +96,10 @@ export default function ApiTestPage() {
                       Health Check
                     </span>
                   }
-                  bordered={false}
                 >
                   {healthData && (
-                    <Space direction="vertical" style={{ width: "100%" }}>
-                      <Statistic
-                        title="Status"
-                        value={healthData.status}
-                        valueStyle={{ color: "#52c41a" }}
-                      />
+                    <Space style={{ width: "100%" }}>
+                      <Statistic title="Status" value={healthData.status} />
                       <div>
                         <div style={{ fontSize: "12px", color: "#8c8c8c" }}>Timestamp</div>
                         <div style={{ fontSize: "14px" }}>{healthData.timestamp}</div>
@@ -148,10 +123,9 @@ export default function ApiTestPage() {
                       API Info
                     </span>
                   }
-                  bordered={false}
                 >
                   {apiInfo && (
-                    <Space direction="vertical" style={{ width: "100%" }}>
+                    <Space style={{ width: "100%" }}>
                       <div>
                         <div style={{ fontSize: "12px", color: "#8c8c8c" }}>Name</div>
                         <div style={{ fontSize: "14px", fontWeight: "bold" }}>{apiInfo.name}</div>
@@ -177,56 +151,40 @@ export default function ApiTestPage() {
                       Connection Status
                     </span>
                   }
-                  bordered={false}
                 >
-                  <Space direction="vertical" style={{ width: "100%" }}>
+                  <Space style={{ width: "100%" }}>
                     <Tag color="success">✓ Connected to Backend API</Tag>
                     <div style={{ fontSize: "12px", color: "#8c8c8c" }}>
                       Frontend (Next.js) ↔ Backend (NestJS)
                     </div>
-                    <Button type="primary" onClick={() => window.location.reload()}>
-                      Refresh
-                    </Button>
+                    <form action={handleRefresh}>
+                      <button
+                        type="submit"
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "8px",
+                          padding: "4px 15px",
+                          backgroundColor: "#1890ff",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "2px",
+                          cursor: "pointer",
+                          fontSize: "14px",
+                          fontWeight: 500,
+                        }}
+                      >
+                        <ReloadOutlined /> Refresh
+                      </button>
+                    </form>
                   </Space>
                 </Card>
               </Col>
             </Row>
 
             <Card
-              title="📦 NPM Download Statistics"
-              style={{ marginBottom: "24px" }}
-              bordered={false}
-            >
-              {npmDownloads ? (
-                <Space direction="vertical" style={{ width: "100%" }}>
-                  <div>
-                    <span style={{ marginRight: "16px" }}>
-                      <strong>Package:</strong> <Tag color="cyan">{npmDownloads.package}</Tag>
-                    </span>
-                    <span>
-                      <strong>Range:</strong> {npmDownloads.start} ~ {npmDownloads.end}
-                    </span>
-                  </div>
-                  <Table
-                    dataSource={npmDownloads.downloads.slice(0, 8).map((item, idx) => ({
-                      key: idx,
-                      day: item.day,
-                      downloads: item.downloads,
-                    }))}
-                    columns={columns}
-                    pagination={false}
-                    size="small"
-                  />
-                </Space>
-              ) : (
-                <Alert message="No data available" type="warning" />
-              )}
-            </Card>
-
-            <Card
-              title="💡 How to Use Axios"
+              title="💡 How to Fetch Data Server-Side"
               type="inner"
-              bordered={false}
               style={{ backgroundColor: "#fafafa" }}
             >
               <pre
@@ -238,18 +196,19 @@ export default function ApiTestPage() {
                   overflow: "auto",
                 }}
               >
-                {`// Import from API client
-import { apiGet, apiPost } from "@/lib/api-client";
+                {`// Server Component (async)
+export default async function Page() {
+  const data = await fetch('http://api.example.com/data')
+    .then(r => r.json());
 
-// GET request
-const data = await apiGet("/path");
+  return <div>{/* render data */}</div>;
+}
 
-// POST request
-const result = await apiPost("/path", { key: "value" });
-
-// Using axios directly
-import apiClient from "@/lib/axios";
-const response = await apiClient.get("/path");`}
+// Benefits:
+// ✓ Faster initial page load
+// ✓ SEO friendly
+// ✓ Less JavaScript sent to browser
+// ✓ Direct backend access (no CORS issues)`}
               </pre>
             </Card>
           </>
