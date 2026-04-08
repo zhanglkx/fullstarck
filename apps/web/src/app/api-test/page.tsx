@@ -1,6 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Card, Row, Col, Spin, Alert, Table, Input, Button, Space, Tag, Statistic } from "antd";
+import { CheckCircleOutlined, ClockCircleOutlined, ApiOutlined } from "@ant-design/icons";
+import apiClient from "@/lib/axios";
 
 interface HealthResponse {
   status: string;
@@ -36,25 +39,16 @@ export default function ApiTestPage() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
-        const [healthRes, apiInfoRes, npmRes] = await Promise.all([
-          fetch(`${apiUrl}/health`),
-          fetch(`${apiUrl}/api-info`),
-          fetch(`${apiUrl}/npmdata/downloads?start=2024-01-01&end=2024-01-10&package=react`),
+        const [health, info, downloads] = await Promise.all([
+          apiClient.get("/health"),
+          apiClient.get("/api-info"),
+          apiClient.get("/npmdata/downloads?start=2024-01-01&end=2024-01-10&package=react"),
         ]);
 
-        if (!healthRes.ok || !apiInfoRes.ok || !npmRes.ok) {
-          throw new Error("Failed to fetch API data");
-        }
-
-        const health = await healthRes.json();
-        const info = await apiInfoRes.json();
-        const downloads = await npmRes.json();
-
-        setHealthData(health);
-        setApiInfo(info);
-        setNpmDownloads(downloads);
+        setHealthData(health as unknown as HealthResponse);
+        setApiInfo(info as unknown as ApiInfoResponse);
+        setNpmDownloads(downloads as unknown as NpmDownloadsResponse);
         setError(null);
       } catch (err) {
         setError(err instanceof Error ? err.message : "An error occurred");
@@ -66,99 +60,200 @@ export default function ApiTestPage() {
     fetchData();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-xl">Loading...</div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-xl text-red-500">Error: {error}</div>
-      </div>
-    );
-  }
+  const columns = [
+    {
+      title: "Date",
+      dataIndex: "day",
+      key: "day",
+    },
+    {
+      title: "Downloads",
+      dataIndex: "downloads",
+      key: "downloads",
+      sorter: (a: any, b: any) => a.downloads - b.downloads,
+    },
+  ];
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4">
-      <div className="max-w-5xl mx-auto space-y-8">
-        <h1 className="text-4xl font-bold text-center">API Connection Test</h1>
+    <div style={{ padding: "24px", background: "#f5f5f5", minHeight: "100vh" }}>
+      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+        <h1
+          style={{
+            fontSize: "32px",
+            fontWeight: "bold",
+            marginBottom: "24px",
+            textAlign: "center",
+          }}
+        >
+          📊 API Connection Test (Using Axios & Ant Design)
+        </h1>
 
-        <div className="grid gap-6 md:grid-cols-3">
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-semibold mb-4 text-green-600">Health Check</h2>
-            {healthData && (
-              <div className="space-y-2">
-                <p>
-                  <span className="font-medium">Status:</span> {healthData.status}
-                </p>
-                <p>
-                  <span className="font-medium">Timestamp:</span> {healthData.timestamp}
-                </p>
-                <p>
-                  <span className="font-medium">Uptime:</span> {healthData.uptime.toFixed(2)}s
-                </p>
-              </div>
-            )}
+        {loading && (
+          <div style={{ textAlign: "center", padding: "50px" }}>
+            <Spin size="large" tip="Loading data..." />
           </div>
+        )}
 
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-semibold mb-4 text-blue-600">API Info</h2>
-            {apiInfo && (
-              <div className="space-y-2">
-                <p>
-                  <span className="font-medium">Name:</span> {apiInfo.name}
-                </p>
-                <p>
-                  <span className="font-medium">Version:</span> {apiInfo.version}
-                </p>
-                <p>
-                  <span className="font-medium">Description:</span> {apiInfo.description}
-                </p>
-              </div>
-            )}
-          </div>
+        {error && (
+          <Alert
+            message="Error"
+            description={error}
+            type="error"
+            showIcon
+            closable
+            style={{ marginBottom: "24px" }}
+          />
+        )}
 
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-semibold mb-4 text-purple-600">npm Download Query</h2>
-            {npmDownloads ? (
-              <div className="space-y-2">
-                <p>
-                  <span className="font-medium">Package:</span> {npmDownloads.package}
-                </p>
-                <p>
-                  <span className="font-medium">Range:</span> {npmDownloads.start} ～{" "}
-                  {npmDownloads.end}
-                </p>
-                <p className="font-medium mt-3">Sample downloads:</p>
-                <div className="max-h-40 overflow-y-auto rounded border border-gray-200 bg-gray-50 p-3 text-sm">
-                  {npmDownloads.downloads.slice(0, 8).map((item) => (
-                    <div key={item.day} className="flex justify-between py-1">
-                      <span>{item.day}</span>
-                      <span className="font-semibold">{item.downloads}</span>
+        {!loading && !error && (
+          <>
+            <Row gutter={[16, 16]} style={{ marginBottom: "24px" }}>
+              <Col xs={24} sm={12} lg={8}>
+                <Card
+                  title={
+                    <span>
+                      <CheckCircleOutlined style={{ color: "#52c41a", marginRight: "8px" }} />
+                      Health Check
+                    </span>
+                  }
+                  bordered={false}
+                >
+                  {healthData && (
+                    <Space direction="vertical" style={{ width: "100%" }}>
+                      <Statistic
+                        title="Status"
+                        value={healthData.status}
+                        valueStyle={{ color: "#52c41a" }}
+                      />
+                      <div>
+                        <div style={{ fontSize: "12px", color: "#8c8c8c" }}>Timestamp</div>
+                        <div style={{ fontSize: "14px" }}>{healthData.timestamp}</div>
+                      </div>
+                      <Statistic
+                        title="Uptime"
+                        value={healthData.uptime}
+                        precision={2}
+                        suffix="s"
+                      />
+                    </Space>
+                  )}
+                </Card>
+              </Col>
+
+              <Col xs={24} sm={12} lg={8}>
+                <Card
+                  title={
+                    <span>
+                      <ApiOutlined style={{ color: "#1890ff", marginRight: "8px" }} />
+                      API Info
+                    </span>
+                  }
+                  bordered={false}
+                >
+                  {apiInfo && (
+                    <Space direction="vertical" style={{ width: "100%" }}>
+                      <div>
+                        <div style={{ fontSize: "12px", color: "#8c8c8c" }}>Name</div>
+                        <div style={{ fontSize: "14px", fontWeight: "bold" }}>{apiInfo.name}</div>
+                      </div>
+                      <div>
+                        <div style={{ fontSize: "12px", color: "#8c8c8c" }}>Version</div>
+                        <Tag color="blue">{apiInfo.version}</Tag>
+                      </div>
+                      <div>
+                        <div style={{ fontSize: "12px", color: "#8c8c8c" }}>Description</div>
+                        <div style={{ fontSize: "12px" }}>{apiInfo.description}</div>
+                      </div>
+                    </Space>
+                  )}
+                </Card>
+              </Col>
+
+              <Col xs={24} sm={12} lg={8}>
+                <Card
+                  title={
+                    <span>
+                      <ClockCircleOutlined style={{ color: "#722ed1", marginRight: "8px" }} />
+                      Connection Status
+                    </span>
+                  }
+                  bordered={false}
+                >
+                  <Space direction="vertical" style={{ width: "100%" }}>
+                    <Tag color="success">✓ Connected to Backend API</Tag>
+                    <div style={{ fontSize: "12px", color: "#8c8c8c" }}>
+                      Frontend (Next.js) ↔ Backend (NestJS)
                     </div>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <p className="text-gray-600">No npm download data available.</p>
-            )}
-          </div>
-        </div>
+                    <Button type="primary" onClick={() => window.location.reload()}>
+                      Refresh
+                    </Button>
+                  </Space>
+                </Card>
+              </Col>
+            </Row>
 
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-semibold mb-4 text-slate-700">Connection Status</h2>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-            <span className="text-green-600 font-medium">Connected to Backend API</span>
-          </div>
-          <p className="mt-2 text-gray-600">
-            Frontend (Next.js) successfully communicating with Backend (NestJS)
-          </p>
-        </div>
+            <Card
+              title="📦 NPM Download Statistics"
+              style={{ marginBottom: "24px" }}
+              bordered={false}
+            >
+              {npmDownloads ? (
+                <Space direction="vertical" style={{ width: "100%" }}>
+                  <div>
+                    <span style={{ marginRight: "16px" }}>
+                      <strong>Package:</strong> <Tag color="cyan">{npmDownloads.package}</Tag>
+                    </span>
+                    <span>
+                      <strong>Range:</strong> {npmDownloads.start} ~ {npmDownloads.end}
+                    </span>
+                  </div>
+                  <Table
+                    dataSource={npmDownloads.downloads.slice(0, 8).map((item, idx) => ({
+                      key: idx,
+                      day: item.day,
+                      downloads: item.downloads,
+                    }))}
+                    columns={columns}
+                    pagination={false}
+                    size="small"
+                  />
+                </Space>
+              ) : (
+                <Alert message="No data available" type="warning" />
+              )}
+            </Card>
+
+            <Card
+              title="💡 How to Use Axios"
+              type="inner"
+              bordered={false}
+              style={{ backgroundColor: "#fafafa" }}
+            >
+              <pre
+                style={{
+                  background: "#f5f5f5",
+                  padding: "12px",
+                  borderRadius: "4px",
+                  fontSize: "12px",
+                  overflow: "auto",
+                }}
+              >
+                {`// Import from API client
+import { apiGet, apiPost } from "@/lib/api-client";
+
+// GET request
+const data = await apiGet("/path");
+
+// POST request
+const result = await apiPost("/path", { key: "value" });
+
+// Using axios directly
+import apiClient from "@/lib/axios";
+const response = await apiClient.get("/path");`}
+              </pre>
+            </Card>
+          </>
+        )}
       </div>
     </div>
   );

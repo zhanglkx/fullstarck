@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback } from "react";
 import * as echarts from "echarts";
+import { apiGet } from "@/lib/api-client";
 import styles from "./page.module.scss";
 
 interface DownloadData {
@@ -49,21 +50,14 @@ export default function NpmDataPage() {
       setLoading(true);
       setError(null);
 
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-      const url = new URL(`${apiUrl}/npmdata/downloads`);
-
-      url.searchParams.append("start", params.start);
-      url.searchParams.append("end", params.end);
-      url.searchParams.append("package", params.package.trim());
-
-      console.log("🔗 API URL:", url.toString());
-      const response = await fetch(url.toString());
-
-      if (!response.ok) {
-        throw new Error(`HTTP Error: ${response.status}`);
-      }
-
-      const result: NpmDataResponse = await response.json();
+      console.log("🔗 使用 Axios 发送请求...");
+      const result = await apiGet<NpmDataResponse>("/npmdata/downloads", {
+        params: {
+          start: params.start,
+          end: params.end,
+          package: params.package.trim(),
+        },
+      });
 
       if (!result.success) {
         throw new Error("API 返回失败");
