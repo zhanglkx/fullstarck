@@ -4,6 +4,13 @@ import { ConfigService } from '@nestjs/config';
 import { firstValueFrom } from 'rxjs';
 import { QueryDownloadsDto } from '@/npmdata/dto/query-downloads.dto';
 
+interface NpmDownloadData {
+  downloads: Array<{ day: string; downloads: number }>;
+  start: string;
+  end: string;
+  package: string;
+}
+
 @Injectable()
 export class NpmdataService {
   constructor(
@@ -17,8 +24,7 @@ export class NpmdataService {
 
   async fetchExternalData(queryDto: QueryDownloadsDto) {
     const apiUrl =
-      this.configService.get<string>('THIRD_PARTY_API_URL') ||
-      'https://api.npmjs.org/downloads';
+      this.configService.get<string>('THIRD_PARTY_API_URL') || 'https://api.npmjs.org/downloads';
     const apiKey = this.configService.get<string>('THIRD_PARTY_API_KEY');
 
     const requestUrl = `${apiUrl}/range/${queryDto.start}:${queryDto.end}/${encodeURIComponent(
@@ -35,20 +41,28 @@ export class NpmdataService {
 
     try {
       const response = await firstValueFrom(
-        this.httpService.get(requestUrl, requestConfig),
+        this.httpService.get<NpmDownloadData>(requestUrl, requestConfig),
       );
 
       return {
         success: true,
         data: response.data,
       };
-    } catch (error) {
+    } catch (error: unknown) {
+      const errorMessage =
+        error && typeof error === 'object' && 'message' in error
+          ? String(error.message)
+          : '调用第三方接口失败';
+      const errorData =
+        error && typeof error === 'object' && 'response' in error
+          ? (error.response as { data?: unknown })?.data
+          : undefined;
+
       throw new HttpException(
         {
           success: false,
-          message: '调用第三方接口失败',
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-          error: (error && error?.response?.data) || (error && error.message),
+          message: errorMessage,
+          error: errorData,
         },
         HttpStatus.BAD_GATEWAY,
       );

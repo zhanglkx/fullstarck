@@ -37,6 +37,9 @@ export const useAuthStore = create<AuthState>((set) => ({
       // });
       // const data = await response.json();
 
+      // 模拟异步登录延迟
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
       // 模拟登录
       const mockUser: User = {
         id: '1',

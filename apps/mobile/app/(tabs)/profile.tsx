@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert } from 'rea
 import { Ionicons } from '@expo/vector-icons';
 import { useAuthStore, useThemeStore, useCounterStore } from '@/stores';
 import { useNavigation } from 'expo-router';
-import { useLayoutEffect } from 'react';
+import { useLayoutEffect, useCallback } from 'react';
 
 export default function ProfileScreen() {
   const navigation = useNavigation();
@@ -11,6 +11,66 @@ export default function ProfileScreen() {
   const { user, isAuthenticated, login, logout } = useAuthStore();
   const { colorScheme, isDark, toggleTheme } = useThemeStore();
   const { count, increment, decrement, reset } = useCounterStore();
+
+  // 处理设置按钮点击
+  const handleSettingsPress = useCallback(() => {
+    // 打印日志
+    console.log('=== 设置按钮点击 ===');
+    console.log('当前用户:', user);
+    console.log('登录状态:', isAuthenticated);
+    console.log('主题模式:', isDark ? '暗黑' : '明亮');
+    console.log('计数器值:', count);
+    console.log('==================');
+
+    // 弹出对话框
+    Alert.alert(
+      '⚙️ 设置',
+      `用户: ${user?.name || '游客'}\n登录状态: ${isAuthenticated ? '已登录' : '未登录'}\n主题: ${isDark ? '暗黑模式' : '明亮模式'}\n计数器: ${count}`,
+      [
+        {
+          text: '查看日志',
+          onPress: () => {
+            console.log('用户选择查看日志');
+            Alert.alert('提示', '请在控制台查看完整日志');
+          },
+        },
+        {
+          text: '切换主题',
+          onPress: () => {
+            console.log('从导航栏切换主题');
+            toggleTheme();
+          },
+        },
+        {
+          text: '取消',
+          style: 'cancel',
+        },
+      ],
+      { cancelable: true }
+    );
+  }, [user, isAuthenticated, isDark, count, toggleTheme]);
+
+  // 处理通知按钮点击
+  const handleNotificationPress = useCallback(() => {
+    console.log('通知按钮点击');
+    Alert.alert(
+      '📬 通知',
+      `你有 ${count} 条未读消息`,
+      [
+        {
+          text: '全部已读',
+          onPress: () => {
+            console.log('标记全部已读');
+            reset();
+          },
+        },
+        {
+          text: '关闭',
+          style: 'cancel',
+        },
+      ]
+    );
+  }, [count, reset]);
 
   // 自定义导航栏
   useLayoutEffect(() => {
@@ -49,67 +109,7 @@ export default function ProfileScreen() {
         </TouchableOpacity>
       ),
     });
-  }, [navigation, isDark, user, count]);
-
-  // 处理设置按钮点击
-  const handleSettingsPress = () => {
-    // 打印日志
-    console.log('=== 设置按钮点击 ===');
-    console.log('当前用户:', user);
-    console.log('登录状态:', isAuthenticated);
-    console.log('主题模式:', isDark ? '暗黑' : '明亮');
-    console.log('计数器值:', count);
-    console.log('==================');
-
-    // 弹出对话框
-    Alert.alert(
-      '⚙️ 设置',
-      `用户: ${user?.name || '游客'}\n登录状态: ${isAuthenticated ? '已登录' : '未登录'}\n主题: ${isDark ? '暗黑模式' : '明亮模式'}\n计数器: ${count}`,
-      [
-        {
-          text: '查看日志',
-          onPress: () => {
-            console.log('用户选择查看日志');
-            Alert.alert('提示', '请在控制台查看完整日志');
-          },
-        },
-        {
-          text: '切换主题',
-          onPress: () => {
-            console.log('从导航栏切换主题');
-            toggleTheme();
-          },
-        },
-        {
-          text: '取消',
-          style: 'cancel',
-        },
-      ],
-      { cancelable: true }
-    );
-  };
-
-  // 处理通知按钮点击
-  const handleNotificationPress = () => {
-    console.log('通知按钮点击');
-    Alert.alert(
-      '📬 通知',
-      `你有 ${count} 条未读消息`,
-      [
-        {
-          text: '全部已读',
-          onPress: () => {
-            console.log('标记全部已读');
-            reset();
-          },
-        },
-        {
-          text: '关闭',
-          style: 'cancel',
-        },
-      ]
-    );
-  };
+  }, [navigation, isDark, handleSettingsPress, handleNotificationPress]);
 
   const menuItems = [
     {
@@ -259,7 +259,7 @@ export default function ProfileScreen() {
           <Text style={styles.logoutText}>退出登录</Text>
         </TouchableOpacity>
       ) : (
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+        <TouchableOpacity style={styles.loginButton} onPress={() => void handleLogin()}>
           <Ionicons name="log-in-outline" size={20} color="#007AFF" />
           <Text style={styles.loginText}>模拟登录</Text>
         </TouchableOpacity>

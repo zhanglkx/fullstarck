@@ -100,6 +100,10 @@ The shared package exports:
 
 **CORS Configuration**: API has CORS enabled for `localhost:3001` and `localhost:3000` (see `apps/api/src/main.ts`).
 
+**Path Aliases**: `@/*` maps to `src/*` for cleaner imports.
+
+**Validation**: Global validation pipe configured with `whitelist`, `forbidNonWhitelisted`, and `transform` enabled.
+
 **Module Structure**: Standard NestJS pattern with controllers, services, and modules. Each feature should follow:
 
 ```
@@ -108,8 +112,22 @@ src/
 │   ├── feature.controller.ts
 │   ├── feature.service.ts
 │   ├── feature.module.ts
-│   └── feature.controller.spec.ts
+│   ├── feature.controller.spec.ts
+│   ├── dto/
+│   │   ├── create-feature.dto.ts
+│   │   └── update-feature.dto.ts
+│   └── entities/
+│       └── feature.entity.ts
 ```
+
+**Module Generator**: Use the custom generator to scaffold new CRUD modules:
+
+```bash
+pnpm generate:api <module-name>   # or pnpm g:api <module-name>
+# Example: pnpm g:api user
+```
+
+This automatically creates REST API controller, service, module, DTOs, and entity files.
 
 **Testing**: Jest with `@nestjs/testing`. Use `Test.createTestingModule()` for unit tests. E2E tests go in `test/` directory with `*.e2e-spec.ts` naming.
 
@@ -121,13 +139,18 @@ src/
 - **Server Components** are default
 - Client components need `'use client'` directive
 - Path aliases: `@/*` maps to `./src/*`
-- Runs on port 3001 by default
+- Runs on port 3001 by default with `--inspect` flag (Node.js debugging enabled)
+
+**UI Library**: Uses **Ant Design 6** with custom theme configuration via `AntdProvider` in `src/components/AntdProvider.tsx`. The provider wraps the app in `layout.tsx`.
+
+**Styling**: Supports both **SCSS/Sass** (`.scss` files) and Ant Design's component styling. Import global styles in `layout.tsx`.
 
 **Import convention**: Use double quotes (Next.js convention):
 
 ```typescript
 import Image from 'next/image';
 import { Button } from '@/components/Button';
+import { Button as AntButton } from 'antd';  // Ant Design components
 ```
 
 ### Mobile (Expo) Patterns
@@ -138,6 +161,43 @@ import { Button } from '@/components/Button';
 - Test on both iOS and Android when possible
 
 ## Code Style
+
+### Unified Configuration Strategy
+
+All projects share common base configurations:
+
+**TypeScript**: API and Web inherit from `tsconfig.base.json` for consistency. Mobile uses Expo's base config, Shared extends root config.
+
+**ESLint**: All projects use:
+- `projectService: true` + `tsconfigRootDir: import.meta.dirname` for proper Monorepo type checking
+- API uses `recommendedTypeChecked` for strictest checking
+- Mobile uses `recommendedTypeChecked` with relaxed rules for React Native compatibility
+- Shared uses `recommended` config
+- Consistent `no-unused-vars` rules: `warn` level with `^_` ignore pattern
+
+**Prettier**: Single root `.prettierrc` with Web-specific override (double quotes). No duplicate configs in subprojects.
+
+### Configuration File Locations
+
+```
+├── .prettierrc                      # Root Prettier config (all projects)
+├── tsconfig.base.json               # Shared TypeScript base config
+├── eslint.config.mjs                # Root ESLint (for root-level files only)
+├── apps/
+│   ├── api/
+│   │   ├── eslint.config.mjs        # API ESLint + Prettier integration
+│   │   └── tsconfig.json            # Extends tsconfig.base.json
+│   ├── web/
+│   │   ├── eslint.config.mjs        # Next.js ESLint
+│   │   └── tsconfig.json            # Extends tsconfig.base.json
+│   └── mobile/
+│       ├── eslint.config.mjs        # React + React Hooks ESLint
+│       └── tsconfig.json            # Extends expo/tsconfig.base
+└── packages/
+    └── shared/
+        ├── eslint.config.mjs        # Shared package ESLint
+        └── tsconfig.json            # Extends tsconfig.base.json
+```
 
 ### Import Conventions by App
 
@@ -263,15 +323,31 @@ For active development, run in watch mode:
 pnpm --filter @fullstack/shared dev
 ```
 
+## Environment Variables
+
+Environment variables are configured in `.env` files:
+
+- **Root `.env`**: API and global configuration (API_PORT, API_BASE_URL)
+- **`apps/web/.env`**: Next.js specific variables (must be prefixed with `NEXT_PUBLIC_` for client access)
+
+Key variables:
+
+- `API_PORT`: Backend port (default: 3000)
+- `NEXT_PUBLIC_API_URL`: API URL for frontend/mobile (default: http://localhost:3000)
+- `EXPO_PUBLIC_API_URL`: API URL for mobile app (Expo convention)
+
+Copy `.env.example` files to `.env` and customize as needed.
+
 ## Development Workflow
 
 1. **Install dependencies**: `pnpm install`
-2. **Start development**: `pnpm dev` (all apps) or `pnpm dev:<app>` (specific app)
-3. **After changes**:
+2. **Setup environment**: Copy `.env.example` to `.env` at root and in `apps/web/` if needed
+3. **Start development**: `pnpm dev` (all apps) or `pnpm dev:<app>` (specific app)
+4. **After changes**:
    - Run `pnpm format` to format code with Prettier
    - Run `pnpm lint` to check and auto-fix ESLint issues
    - Run `pnpm test` as needed
-4. **Before commits**: Ensure formatting and linting pass, and tests succeed
+5. **Before commits**: Ensure formatting and linting pass, and tests succeed
 
 ## Documentation
 

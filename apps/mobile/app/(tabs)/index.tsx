@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 interface HealthResponse {
   status: string;
@@ -12,7 +12,7 @@ export default function HomeScreen() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const checkAPIHealth = async () => {
+  const checkAPIHealth = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -23,7 +23,7 @@ export default function HomeScreen() {
         throw new Error('Failed to connect to API');
       }
 
-      const data = await response.json();
+      const data = (await response.json()) as HealthResponse;
       setHealthData(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Connection failed');
@@ -31,11 +31,11 @@ export default function HomeScreen() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     void checkAPIHealth();
-  }, []);
+  }, [checkAPIHealth]);
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
@@ -64,7 +64,7 @@ export default function HomeScreen() {
           </View>
         )}
 
-        <TouchableOpacity style={styles.button} onPress={checkAPIHealth}>
+        <TouchableOpacity style={styles.button} onPress={() => void checkAPIHealth()}>
           <Text style={styles.buttonText}>刷新状态</Text>
         </TouchableOpacity>
       </View>
