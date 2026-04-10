@@ -1,7 +1,5 @@
 # Expo React Native 现代技术栈完整指南 (2026)
-
 ## 技术栈总览
-
 ```plain
 核心框架:    Expo SDK 53+ (New Architecture Default)
 路由导航:    Expo Router v4 (File-based Routing)
@@ -18,9 +16,7 @@ UI组件库:    React Native Reusables (shadcn/ui风格)
 ---
 
 ## 一、项目初始化
-
 ### 1.1 创建项目
-
 ```bash
 # 使用最新 Expo 模板创建项目
 npx create-expo-app@latest MyApp --template tabs
@@ -33,7 +29,6 @@ npm install
 ```
 
 ### 1.2 完整依赖安装
-
 ```bash
 # 核心路由 (Expo Router v4 已内置)
 npx expo install expo-router expo-constants expo-linking
@@ -84,7 +79,6 @@ npx expo install expo-image@^2.0.0
 ---
 
 ## 二、项目结构设计
-
 ```plain
 MyApp/
 ├── app/                          # Expo Router 路由目录 (核心)
@@ -143,42 +137,40 @@ MyApp/
 ---
 
 ## 三、路由配置 (Expo Router v4)
-
 ### 3.1 根布局配置
-
 ```tsx
 // app/_layout.tsx
-import { useEffect } from 'react';
-import { Stack } from 'expo-router';
-import { useFonts } from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { QueryClientProvider } from '@tanstack/react-query';
-import { queryClient } from '@/lib/queryClient';
-import { useColorScheme } from '@/hooks/useColorScheme';
-import '../global.css'; // NativeWind
+import { useEffect } from 'react'
+import { Stack } from 'expo-router'
+import { useFonts } from 'expo-font'
+import * as SplashScreen from 'expo-splash-screen'
+import { StatusBar } from 'expo-status-bar'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { QueryClientProvider } from '@tanstack/react-query'
+import { queryClient } from '@/lib/queryClient'
+import { useColorScheme } from '@/hooks/useColorScheme'
+import '../global.css' // NativeWind
 
 // 防止闪屏自动隐藏
-SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync()
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const colorScheme = useColorScheme()
 
   const [fontsLoaded, fontError] = useFonts({
     'Inter-Regular': require('../assets/fonts/Inter-Regular.ttf'),
     'Inter-Medium': require('../assets/fonts/Inter-Medium.ttf'),
     'Inter-SemiBold': require('../assets/fonts/Inter-SemiBold.ttf'),
     'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
-  });
+  })
 
   useEffect(() => {
     if (fontsLoaded || fontError) {
-      SplashScreen.hideAsync();
+      SplashScreen.hideAsync()
     }
-  }, [fontsLoaded, fontError]);
+  }, [fontsLoaded, fontError])
 
-  if (!fontsLoaded && !fontError) return null;
+  if (!fontsLoaded && !fontError) return null
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -206,24 +198,23 @@ export default function RootLayout() {
         <StatusBar style="auto" />
       </QueryClientProvider>
     </GestureHandlerRootView>
-  );
+  )
 }
 ```
 
 ### 3.2 Tab 导航配置
-
 ```tsx
 // app/(tabs)/_layout.tsx
-import { Tabs } from 'expo-router';
-import { Platform } from 'react-native';
-import { BlurView } from 'expo-blur';
-import { Home, Compass, User } from 'lucide-react-native';
-import { useColorScheme } from '@/hooks/useColorScheme';
-import { cn } from '@/lib/utils';
+import { Tabs } from 'expo-router'
+import { Platform } from 'react-native'
+import { BlurView } from 'expo-blur'
+import { Home, Compass, User } from 'lucide-react-native'
+import { useColorScheme } from '@/hooks/useColorScheme'
+import { cn } from '@/lib/utils'
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === 'dark';
+  const colorScheme = useColorScheme()
+  const isDark = colorScheme === 'dark'
 
   return (
     <Tabs
@@ -288,7 +279,7 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
-  );
+  )
 }
 
 // Tab 图标组件 (带动画)
@@ -297,51 +288,50 @@ import Animated, {
   withSpring,
   useSharedValue,
   useEffect,
-} from 'react-native-reanimated';
-import type { LucideIcon } from 'lucide-react-native';
+} from 'react-native-reanimated'
+import type { LucideIcon } from 'lucide-react-native'
 
 interface TabIconProps {
-  Icon: LucideIcon;
-  color: string;
-  size: number;
-  focused: boolean;
+  Icon: LucideIcon
+  color: string
+  size: number
+  focused: boolean
 }
 
 function TabIcon({ Icon, color, size, focused }: TabIconProps) {
-  const scale = useSharedValue(1);
+  const scale = useSharedValue(1)
 
   useEffect(() => {
     scale.value = withSpring(focused ? 1.2 : 1, {
       damping: 15,
       stiffness: 300,
-    });
-  }, [focused]);
+    })
+  }, [focused])
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
-  }));
+  }))
 
   return (
     <Animated.View style={animatedStyle}>
       <Icon color={color} size={size} strokeWidth={focused ? 2.5 : 1.8} />
     </Animated.View>
-  );
+  )
 }
 ```
 
 ### 3.3 认证路由守卫
-
 ```tsx
 // app/(auth)/_layout.tsx
-import { Redirect, Stack } from 'expo-router';
-import { useAuthStore } from '@/stores/authStore';
+import { Redirect, Stack } from 'expo-router'
+import { useAuthStore } from '@/stores/authStore'
 
 export default function AuthLayout() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
 
   // 已登录则重定向到主页
   if (isAuthenticated) {
-    return <Redirect href="/(tabs)" />;
+    return <Redirect href="/(tabs)" />
   }
 
   return (
@@ -349,19 +339,18 @@ export default function AuthLayout() {
       <Stack.Screen name="login" />
       <Stack.Screen name="register" />
     </Stack>
-  );
+  )
 }
 ```
 
 ### 3.4 动态路由使用示例
-
 ```tsx
 // app/(tabs)/explore/[id].tsx
-import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
+import { useLocalSearchParams, useRouter, Stack } from 'expo-router'
 
 export default function DetailScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
-  const router = useRouter();
+  const { id } = useLocalSearchParams<{ id: string }>()
+  const router = useRouter()
 
   return (
     <>
@@ -375,24 +364,22 @@ export default function DetailScreen() {
       />
       {/* 页面内容 */}
     </>
-  );
+  )
 }
 
 // 导航到动态路由
-router.push(`/(tabs)/explore/${itemId}`);
+router.push(`/(tabs)/explore/${itemId}`)
 // 或使用类型安全的方式
-router.push({ pathname: '/(tabs)/explore/[id]', params: { id: '123' } });
+router.push({ pathname: '/(tabs)/explore/[id]', params: { id: '123' } })
 ```
 
 ---
 
 ## 四、NativeWind v4 样式配置
-
 ### 4.1 配置文件
-
 ```javascript
 // tailwind.config.js
-const { hairlineWidth } = require('nativewind/theme');
+const { hairlineWidth } = require('nativewind/theme')
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -449,30 +436,33 @@ module.exports = {
     },
   },
   plugins: [],
-};
+}
 ```
 
 ```javascript
 // babel.config.js
 module.exports = function (api) {
-  api.cache(true);
+  api.cache(true)
   return {
-    presets: [['babel-preset-expo', { jsxImportSource: 'nativewind' }], 'nativewind/babel'],
+    presets: [
+      ['babel-preset-expo', { jsxImportSource: 'nativewind' }],
+      'nativewind/babel',
+    ],
     plugins: [
       'react-native-reanimated/plugin', // 必须放最后
     ],
-  };
-};
+  }
+}
 ```
 
 ```javascript
 // metro.config.js
-const { getDefaultConfig } = require('expo/metro-config');
-const { withNativeWind } = require('nativewind/metro');
+const { getDefaultConfig } = require('expo/metro-config')
+const { withNativeWind } = require('nativewind/metro')
 
-const config = getDefaultConfig(__dirname);
+const config = getDefaultConfig(__dirname)
 
-module.exports = withNativeWind(config, { input: './global.css' });
+module.exports = withNativeWind(config, { input: './global.css' })
 ```
 
 ```css
@@ -527,23 +517,30 @@ module.exports = withNativeWind(config, { input: './global.css' });
 ---
 
 ## 五、核心 UI 组件设计
-
 ### 5.1 Button 组件
-
 ```tsx
 // src/components/ui/Button.tsx
-import { forwardRef } from 'react';
-import { Pressable, Text, ActivityIndicator, type PressableProps } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
-import { cn } from '@/lib/utils';
+import { forwardRef } from 'react'
+import {
+  Pressable,
+  Text,
+  ActivityIndicator,
+  type PressableProps,
+} from 'react-native'
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from 'react-native-reanimated'
+import { cn } from '@/lib/utils'
 
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
 
 interface ButtonProps extends PressableProps {
-  variant?: 'default' | 'destructive' | 'outline' | 'ghost' | 'link';
-  size?: 'sm' | 'md' | 'lg' | 'icon';
-  loading?: boolean;
-  children: React.ReactNode;
+  variant?: 'default' | 'destructive' | 'outline' | 'ghost' | 'link'
+  size?: 'sm' | 'md' | 'lg' | 'icon'
+  loading?: boolean
+  children: React.ReactNode
 }
 
 const Button = forwardRef<React.ElementRef<typeof Pressable>, ButtonProps>(
@@ -558,23 +555,23 @@ const Button = forwardRef<React.ElementRef<typeof Pressable>, ButtonProps>(
       onPress,
       ...props
     },
-    ref,
+    ref
   ) => {
-    const scale = useSharedValue(1);
+    const scale = useSharedValue(1)
 
     const animatedStyle = useAnimatedStyle(() => ({
       transform: [{ scale: scale.value }],
-    }));
+    }))
 
     const handlePressIn = () => {
-      scale.value = withSpring(0.96, { damping: 20, stiffness: 400 });
-    };
+      scale.value = withSpring(0.96, { damping: 20, stiffness: 400 })
+    }
 
     const handlePressOut = () => {
-      scale.value = withSpring(1, { damping: 20, stiffness: 400 });
-    };
+      scale.value = withSpring(1, { damping: 20, stiffness: 400 })
+    }
 
-    const isDisabled = disabled || loading;
+    const isDisabled = disabled || loading
 
     return (
       <AnimatedPressable
@@ -602,19 +599,23 @@ const Button = forwardRef<React.ElementRef<typeof Pressable>, ButtonProps>(
           },
           // 禁用状态
           isDisabled && 'opacity-50',
-          className,
+          className
         )}
         {...props}
       >
         {loading ? (
-          <ActivityIndicator size="small" color={variant === 'default' ? '#fff' : '#6366f1'} />
+          <ActivityIndicator
+            size="small"
+            color={variant === 'default' ? '#fff' : '#6366f1'}
+          />
         ) : (
           <Text
             className={cn(
               'font-semibold',
               {
                 'text-primary-foreground text-base': variant === 'default',
-                'text-destructive-foreground text-base': variant === 'destructive',
+                'text-destructive-foreground text-base':
+                  variant === 'destructive',
                 'text-foreground text-base': variant === 'outline',
                 'text-foreground text-base': variant === 'ghost',
                 'text-primary underline text-base': variant === 'link',
@@ -623,67 +624,84 @@ const Button = forwardRef<React.ElementRef<typeof Pressable>, ButtonProps>(
                 'text-sm': size === 'sm',
                 'text-base': size === 'md',
                 'text-lg': size === 'lg',
-              },
+              }
             )}
           >
             {children}
           </Text>
         )}
       </AnimatedPressable>
-    );
-  },
-);
+    )
+  }
+)
 
-Button.displayName = 'Button';
-export { Button };
+Button.displayName = 'Button'
+export { Button }
 ```
 
 ### 5.2 Input 组件
-
 ```tsx
 // src/components/ui/Input.tsx
-import { forwardRef, useState } from 'react';
-import { TextInput, View, Text, type TextInputProps, type ViewStyle } from 'react-native';
+import { forwardRef, useState } from 'react'
+import {
+  TextInput,
+  View,
+  Text,
+  type TextInputProps,
+  type ViewStyle,
+} from 'react-native'
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
   interpolateColor,
-} from 'react-native-reanimated';
-import { cn } from '@/lib/utils';
+} from 'react-native-reanimated'
+import { cn } from '@/lib/utils'
 
 interface InputProps extends TextInputProps {
-  label?: string;
-  error?: string;
-  leftIcon?: React.ReactNode;
-  rightIcon?: React.ReactNode;
-  containerClassName?: string;
+  label?: string
+  error?: string
+  leftIcon?: React.ReactNode
+  rightIcon?: React.ReactNode
+  containerClassName?: string
 }
 
 const Input = forwardRef<TextInput, InputProps>(
   (
-    { label, error, leftIcon, rightIcon, containerClassName, className, onFocus, onBlur, ...props },
-    ref,
+    {
+      label,
+      error,
+      leftIcon,
+      rightIcon,
+      containerClassName,
+      className,
+      onFocus,
+      onBlur,
+      ...props
+    },
+    ref
   ) => {
-    const focused = useSharedValue(0);
+    const focused = useSharedValue(0)
 
     const borderAnimStyle = useAnimatedStyle(() => ({
       borderColor: interpolateColor(
         focused.value,
         [0, 1],
-        [error ? '#ef4444' : '#e4e4e7', '#6366f1'],
+        [error ? '#ef4444' : '#e4e4e7', '#6366f1']
       ),
-    }));
+    }))
 
     return (
       <View className={cn('gap-1.5', containerClassName)}>
-        {label && <Text className="text-sm font-medium text-foreground">{label}</Text>}
+        {label && (
+          <Text className="text-sm font-medium text-foreground">{label}</Text>
+        )}
         <Animated.View
           style={[borderAnimStyle, { borderWidth: 1.5 }]}
           className={cn(
             'flex-row items-center rounded-xl bg-background px-3',
             error && 'border-destructive',
-            className,
+            className
           )}
         >
           {leftIcon && <View className="mr-2">{leftIcon}</View>}
@@ -692,47 +710,51 @@ const Input = forwardRef<TextInput, InputProps>(
             className="flex-1 py-3.5 text-base text-foreground font-sans"
             placeholderTextColor="#a1a1aa"
             onFocus={(e) => {
-              focused.value = withTiming(1, { duration: 200 });
-              onFocus?.(e);
+              focused.value = withTiming(1, { duration: 200 })
+              onFocus?.(e)
             }}
             onBlur={(e) => {
-              focused.value = withTiming(0, { duration: 200 });
-              onBlur?.(e);
+              focused.value = withTiming(0, { duration: 200 })
+              onBlur?.(e)
             }}
             {...props}
           />
           {rightIcon && <View className="ml-2">{rightIcon}</View>}
         </Animated.View>
-        {error && <Text className="text-sm text-destructive">{error}</Text>}
+        {error && (
+          <Text className="text-sm text-destructive">{error}</Text>
+        )}
       </View>
-    );
-  },
-);
+    )
+  }
+)
 
-Input.displayName = 'Input';
-export { Input };
+Input.displayName = 'Input'
+export { Input }
 ```
 
 ### 5.3 Card 组件
-
 ```tsx
 // src/components/ui/Card.tsx
-import { View, type ViewProps } from 'react-native';
-import { cn } from '@/lib/utils';
+import { View, type ViewProps } from 'react-native'
+import { cn } from '@/lib/utils'
 
 interface CardProps extends ViewProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 function Card({ className, children, ...props }: CardProps) {
   return (
     <View
-      className={cn('rounded-2xl border border-border bg-card p-4 shadow-sm', className)}
+      className={cn(
+        'rounded-2xl border border-border bg-card p-4 shadow-sm',
+        className
+      )}
       {...props}
     >
       {children}
     </View>
-  );
+  )
 }
 
 function CardHeader({ className, children, ...props }: CardProps) {
@@ -740,7 +762,7 @@ function CardHeader({ className, children, ...props }: CardProps) {
     <View className={cn('mb-3', className)} {...props}>
       {children}
     </View>
-  );
+  )
 }
 
 function CardContent({ className, children, ...props }: CardProps) {
@@ -748,7 +770,7 @@ function CardContent({ className, children, ...props }: CardProps) {
     <View className={cn('', className)} {...props}>
       {children}
     </View>
-  );
+  )
 }
 
 function CardFooter({ className, children, ...props }: CardProps) {
@@ -756,31 +778,30 @@ function CardFooter({ className, children, ...props }: CardProps) {
     <View className={cn('mt-3 flex-row items-center', className)} {...props}>
       {children}
     </View>
-  );
+  )
 }
 
-export { Card, CardHeader, CardContent, CardFooter };
+export { Card, CardHeader, CardContent, CardFooter }
 ```
 
 ### 5.4 自定义 Header 组件
-
 ```tsx
 // src/components/shared/Header.tsx
-import { View, Text, Pressable, Platform } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import { ArrowLeft } from 'lucide-react-native';
-import { BlurView } from 'expo-blur';
-import { cn } from '@/lib/utils';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { View, Text, Pressable, Platform } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useRouter } from 'expo-router'
+import { ArrowLeft } from 'lucide-react-native'
+import { BlurView } from 'expo-blur'
+import { cn } from '@/lib/utils'
+import { useColorScheme } from '@/hooks/useColorScheme'
 
 interface HeaderProps {
-  title?: string;
-  subtitle?: string;
-  showBack?: boolean;
-  rightAction?: React.ReactNode;
-  transparent?: boolean;
-  className?: string;
+  title?: string
+  subtitle?: string
+  showBack?: boolean
+  rightAction?: React.ReactNode
+  transparent?: boolean
+  className?: string
 }
 
 export function Header({
@@ -791,13 +812,16 @@ export function Header({
   transparent = false,
   className,
 }: HeaderProps) {
-  const router = useRouter();
-  const insets = useSafeAreaInsets();
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === 'dark';
+  const router = useRouter()
+  const insets = useSafeAreaInsets()
+  const colorScheme = useColorScheme()
+  const isDark = colorScheme === 'dark'
 
   const content = (
-    <View style={{ paddingTop: insets.top }} className={cn('px-4 pb-3', className)}>
+    <View
+      style={{ paddingTop: insets.top }}
+      className={cn('px-4 pb-3', className)}
+    >
       <View className="flex-row items-center justify-between">
         {/* 左侧区域 */}
         <View className="w-10">
@@ -813,14 +837,22 @@ export function Header({
         </View>
         {/* 中间标题 */}
         <View className="flex-1 items-center">
-          {title && <Text className="text-base font-semibold text-foreground">{title}</Text>}
-          {subtitle && <Text className="text-xs text-muted-foreground">{subtitle}</Text>}
+          {title && (
+            <Text className="text-base font-semibold text-foreground">
+              {title}
+            </Text>
+          )}
+          {subtitle && (
+            <Text className="text-xs text-muted-foreground">{subtitle}</Text>
+          )}
         </View>
         {/* 右侧操作区 */}
-        <View className="w-10 items-end">{rightAction}</View>
+        <View className="w-10 items-end">
+          {rightAction}
+        </View>
       </View>
     </View>
-  );
+  )
 
   if (transparent) {
     return (
@@ -831,60 +863,60 @@ export function Header({
       >
         {content}
       </BlurView>
-    );
+    )
   }
 
-  return <View className="bg-background border-b border-border">{content}</View>;
+  return (
+    <View className="bg-background border-b border-border">{content}</View>
+  )
 }
 ```
 
 ---
 
 ## 六、状态管理
-
 ### 6.1 Zustand Store 设计
-
 ```typescript
 // src/stores/authStore.ts
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import { immer } from 'zustand/middleware/immer';
-import { storage } from '@/lib/storage';
+import { create } from 'zustand'
+import { persist, createJSONStorage } from 'zustand/middleware'
+import { immer } from 'zustand/middleware/immer'
+import { storage } from '@/lib/storage'
 
 interface User {
-  id: string;
-  name: string;
-  email: string;
-  avatar?: string;
+  id: string
+  name: string
+  email: string
+  avatar?: string
 }
 
 interface AuthState {
-  user: User | null;
-  token: string | null;
-  isAuthenticated: boolean;
+  user: User | null
+  token: string | null
+  isAuthenticated: boolean
 }
 
 interface AuthActions {
-  setUser: (user: User) => void;
-  setToken: (token: string) => void;
-  login: (user: User, token: string) => void;
-  logout: () => void;
-  updateUser: (updates: Partial<User>) => void;
+  setUser: (user: User) => void
+  setToken: (token: string) => void
+  login: (user: User, token: string) => void
+  logout: () => void
+  updateUser: (updates: Partial<User>) => void
 }
 
 // MMKV 适配器 for Zustand persist
 const mmkvStorage = {
   getItem: (name: string) => {
-    const value = storage.getString(name);
-    return value ?? null;
+    const value = storage.getString(name)
+    return value ?? null
   },
   setItem: (name: string, value: string) => {
-    storage.set(name, value);
+    storage.set(name, value)
   },
   removeItem: (name: string) => {
-    storage.delete(name);
+    storage.delete(name)
   },
-};
+}
 
 export const useAuthStore = create<AuthState & AuthActions>()(
   persist(
@@ -897,32 +929,32 @@ export const useAuthStore = create<AuthState & AuthActions>()(
       // Actions
       setUser: (user) =>
         set((state) => {
-          state.user = user;
+          state.user = user
         }),
 
       setToken: (token) =>
         set((state) => {
-          state.token = token;
+          state.token = token
         }),
 
       login: (user, token) =>
         set((state) => {
-          state.user = user;
-          state.token = token;
-          state.isAuthenticated = true;
+          state.user = user
+          state.token = token
+          state.isAuthenticated = true
         }),
 
       logout: () =>
         set((state) => {
-          state.user = null;
-          state.token = null;
-          state.isAuthenticated = false;
+          state.user = null
+          state.token = null
+          state.isAuthenticated = false
         }),
 
       updateUser: (updates) =>
         set((state) => {
           if (state.user) {
-            Object.assign(state.user, updates);
+            Object.assign(state.user, updates)
           }
         }),
     })),
@@ -935,42 +967,41 @@ export const useAuthStore = create<AuthState & AuthActions>()(
         token: state.token,
         isAuthenticated: state.isAuthenticated,
       }),
-    },
-  ),
-);
+    }
+  )
+)
 ```
 
 ### 6.2 Settings Store
-
 ```typescript
 // src/stores/settingsStore.ts
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import { immer } from 'zustand/middleware/immer';
-import { storage } from '@/lib/storage';
+import { create } from 'zustand'
+import { persist, createJSONStorage } from 'zustand/middleware'
+import { immer } from 'zustand/middleware/immer'
+import { storage } from '@/lib/storage'
 
-type ColorScheme = 'light' | 'dark' | 'system';
-type Language = 'en' | 'zh' | 'ja';
+type ColorScheme = 'light' | 'dark' | 'system'
+type Language = 'en' | 'zh' | 'ja'
 
 interface SettingsState {
-  colorScheme: ColorScheme;
-  language: Language;
-  notifications: boolean;
-  haptics: boolean;
+  colorScheme: ColorScheme
+  language: Language
+  notifications: boolean
+  haptics: boolean
 }
 
 interface SettingsActions {
-  setColorScheme: (scheme: ColorScheme) => void;
-  setLanguage: (lang: Language) => void;
-  toggleNotifications: () => void;
-  toggleHaptics: () => void;
+  setColorScheme: (scheme: ColorScheme) => void
+  setLanguage: (lang: Language) => void
+  toggleNotifications: () => void
+  toggleHaptics: () => void
 }
 
 const mmkvStorage = {
   getItem: (name: string) => storage.getString(name) ?? null,
   setItem: (name: string, value: string) => storage.set(name, value),
   removeItem: (name: string) => storage.delete(name),
-};
+}
 
 export const useSettingsStore = create<SettingsState & SettingsActions>()(
   persist(
@@ -982,41 +1013,39 @@ export const useSettingsStore = create<SettingsState & SettingsActions>()(
 
       setColorScheme: (scheme) =>
         set((state) => {
-          state.colorScheme = scheme;
+          state.colorScheme = scheme
         }),
 
       setLanguage: (lang) =>
         set((state) => {
-          state.language = lang;
+          state.language = lang
         }),
 
       toggleNotifications: () =>
         set((state) => {
-          state.notifications = !state.notifications;
+          state.notifications = !state.notifications
         }),
 
       toggleHaptics: () =>
         set((state) => {
-          state.haptics = !state.haptics;
+          state.haptics = !state.haptics
         }),
     })),
     {
       name: 'settings-store',
       storage: createJSONStorage(() => mmkvStorage),
-    },
-  ),
-);
+    }
+  )
+)
 ```
 
 ---
 
 ## 七、数据请求层
-
 ### 7.1 TanStack Query 配置
-
 ```typescript
 // src/lib/queryClient.ts
-import { QueryClient } from '@tanstack/react-query';
+import { QueryClient } from '@tanstack/react-query'
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -1034,17 +1063,16 @@ export const queryClient = new QueryClient({
       retry: 0,
     },
   },
-});
+})
 ```
 
 ### 7.2 API 基础配置
-
 ```typescript
 // src/services/api.ts
-import ky from 'ky';
-import { useAuthStore } from '@/stores/authStore';
+import ky from 'ky'
+import { useAuthStore } from '@/stores/authStore'
 
-const BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? 'https://api.example.com';
+const BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? 'https://api.example.com'
 
 export const apiClient = ky.create({
   prefixUrl: BASE_URL,
@@ -1056,9 +1084,9 @@ export const apiClient = ky.create({
   hooks: {
     beforeRequest: [
       (request) => {
-        const token = useAuthStore.getState().token;
+        const token = useAuthStore.getState().token
         if (token) {
-          request.headers.set('Authorization', `Bearer ${token}`);
+          request.headers.set('Authorization', `Bearer ${token}`)
         }
       },
     ],
@@ -1066,55 +1094,54 @@ export const apiClient = ky.create({
       async (_request, _options, response) => {
         // 401 自动登出
         if (response.status === 401) {
-          useAuthStore.getState().logout();
+          useAuthStore.getState().logout()
         }
-        return response;
+        return response
       },
     ],
     beforeError: [
       (error) => {
-        console.error('[API Error]', error.response?.status, error.message);
-        return error;
+        console.error('[API Error]', error.response?.status, error.message)
+        return error
       },
     ],
   },
-});
+})
 
 // 类型安全的响应包装
 export interface ApiResponse<T> {
-  data: T;
-  message: string;
-  success: boolean;
+  data: T
+  message: string
+  success: boolean
 }
 
 export async function fetchApi<T>(
   url: string,
-  options?: Parameters<typeof apiClient.get>[1],
+  options?: Parameters<typeof apiClient.get>[1]
 ): Promise<T> {
-  const response = await apiClient.get(url, options).json<ApiResponse<T>>();
-  return response.data;
+  const response = await apiClient.get(url, options).json<ApiResponse<T>>()
+  return response.data
 }
 ```
 
 ### 7.3 Service 和 Query Hooks
-
 ```typescript
 // src/services/userService.ts
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { apiClient, fetchApi } from './api';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { apiClient, fetchApi } from './api'
 
 // 类型定义
 interface User {
-  id: string;
-  name: string;
-  email: string;
-  avatar?: string;
-  createdAt: string;
+  id: string
+  name: string
+  email: string
+  avatar?: string
+  createdAt: string
 }
 
 interface UpdateUserPayload {
-  name?: string;
-  avatar?: string;
+  name?: string
+  avatar?: string
 }
 
 // Query Keys 集中管理
@@ -1123,7 +1150,7 @@ export const userKeys = {
   lists: () => [...userKeys.all, 'list'] as const,
   detail: (id: string) => [...userKeys.all, 'detail', id] as const,
   profile: () => [...userKeys.all, 'profile'] as const,
-};
+}
 
 // Hooks
 export function useUserProfile() {
@@ -1131,7 +1158,7 @@ export function useUserProfile() {
     queryKey: userKeys.profile(),
     queryFn: () => fetchApi<User>('user/profile'),
     staleTime: 1000 * 60 * 10,
-  });
+  })
 }
 
 export function useUser(id: string) {
@@ -1139,56 +1166,61 @@ export function useUser(id: string) {
     queryKey: userKeys.detail(id),
     queryFn: () => fetchApi<User>(`users/${id}`),
     enabled: !!id,
-  });
+  })
 }
 
 export function useUpdateUser() {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: (payload: UpdateUserPayload) =>
       apiClient.patch('user/profile', { json: payload }).json<User>(),
     onSuccess: (updatedUser) => {
       // 乐观更新缓存
-      queryClient.setQueryData(userKeys.profile(), updatedUser);
+      queryClient.setQueryData(userKeys.profile(), updatedUser)
     },
     onError: (error) => {
-      console.error('Update user failed:', error);
+      console.error('Update user failed:', error)
     },
-  });
+  })
 }
 ```
 
 ---
 
 ## 八、表单处理
-
 ```tsx
 // 登录表单示例
 // app/(auth)/login.tsx
-import { View, Text, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
-import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { useRouter } from 'expo-router';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Eye, EyeOff, Mail, Lock } from 'lucide-react-native';
-import { useState } from 'react';
+import { View, Text, ScrollView, KeyboardAvoidingView, Platform } from 'react-native'
+import { useForm, Controller } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { useRouter } from 'expo-router'
+import { Button } from '@/components/ui/Button'
+import { Input } from '@/components/ui/Input'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { Eye, EyeOff, Mail, Lock } from 'lucide-react-native'
+import { useState } from 'react'
 
 // Zod Schema 定义
 const loginSchema = z.object({
-  email: z.string().min(1, '请输入邮箱').email('请输入有效的邮箱地址'),
-  password: z.string().min(8, '密码至少8位').max(100, '密码过长'),
-});
+  email: z
+    .string()
+    .min(1, '请输入邮箱')
+    .email('请输入有效的邮箱地址'),
+  password: z
+    .string()
+    .min(8, '密码至少8位')
+    .max(100, '密码过长'),
+})
 
-type LoginFormData = z.infer<typeof loginSchema>;
+type LoginFormData = z.infer<typeof loginSchema>
 
 export default function LoginScreen() {
-  const router = useRouter();
-  const insets = useSafeAreaInsets();
-  const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter()
+  const insets = useSafeAreaInsets()
+  const [showPassword, setShowPassword] = useState(false)
 
   const {
     control,
@@ -1200,17 +1232,17 @@ export default function LoginScreen() {
       email: '',
       password: '',
     },
-  });
+  })
 
   const onSubmit = async (data: LoginFormData) => {
     try {
       // 调用登录 API
-      console.log('Login:', data);
-      router.replace('/(tabs)');
+      console.log('Login:', data)
+      router.replace('/(tabs)')
     } catch (error) {
-      console.error('Login failed:', error);
+      console.error('Login failed:', error)
     }
-  };
+  }
 
   return (
     <KeyboardAvoidingView
@@ -1222,11 +1254,18 @@ export default function LoginScreen() {
         keyboardShouldPersistTaps="handled"
         className="flex-1"
       >
-        <View style={{ paddingTop: insets.top + 48 }} className="flex-1 px-6">
+        <View
+          style={{ paddingTop: insets.top + 48 }}
+          className="flex-1 px-6"
+        >
           {/* 标题 */}
           <View className="mb-8">
-            <Text className="text-3xl font-bold text-foreground">欢迎回来</Text>
-            <Text className="mt-2 text-base text-muted-foreground">登录你的账户以继续</Text>
+            <Text className="text-3xl font-bold text-foreground">
+              欢迎回来
+            </Text>
+            <Text className="mt-2 text-base text-muted-foreground">
+              登录你的账户以继续
+            </Text>
           </View>
           {/* 表单 */}
           <View className="gap-4">
@@ -1293,31 +1332,33 @@ export default function LoginScreen() {
           {/* 注册跳转 */}
           <View className="mt-8 flex-row items-center justify-center gap-1">
             <Text className="text-muted-foreground">还没有账户？</Text>
-            <Button variant="link" onPress={() => router.push('/(auth)/register')}>
+            <Button
+              variant="link"
+              onPress={() => router.push('/(auth)/register')}
+            >
               立即注册
             </Button>
           </View>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
-  );
+  )
 }
 ```
 
 ---
 
 ## 九、本地存储配置
-
 ```typescript
 // src/lib/storage.ts
-import { MMKV } from 'react-native-mmkv';
+import { MMKV } from 'react-native-mmkv'
 
 // 基础存储实例
 export const storage = new MMKV({
   id: 'app-storage',
   // 加密存储 (生产环境建议从安全存储获取 key)
   // encryptionKey: 'your-encryption-key',
-});
+})
 
 // 类型安全的存储封装
 export const Storage = {
@@ -1335,16 +1376,16 @@ export const Storage = {
 
   // JSON Object
   getObject: <T>(key: string): T | null => {
-    const value = storage.getString(key);
-    if (!value) return null;
+    const value = storage.getString(key)
+    if (!value) return null
     try {
-      return JSON.parse(value) as T;
+      return JSON.parse(value) as T
     } catch {
-      return null;
+      return null
     }
   },
   setObject: <T>(key: string, value: T) => {
-    storage.set(key, JSON.stringify(value));
+    storage.set(key, JSON.stringify(value))
   },
 
   // 删除
@@ -1353,7 +1394,7 @@ export const Storage = {
 
   // 检查
   contains: (key: string) => storage.contains(key),
-};
+}
 
 // 存储 Key 枚举 (避免魔法字符串)
 export const StorageKeys = {
@@ -1361,15 +1402,13 @@ export const StorageKeys = {
   USER_DATA: 'user_data',
   ONBOARDED: 'onboarded',
   THEME: 'theme',
-} as const;
+} as const
 ```
 
 ---
 
 ## 十、动画系统
-
 ### 10.1 通用动画组件
-
 ```tsx
 // src/components/ui/AnimatedView.tsx
 import Animated, {
@@ -1381,27 +1420,27 @@ import Animated, {
   ZoomOut,
   LinearTransition,
   type AnimatedProps,
-} from 'react-native-reanimated';
-import { type ViewProps } from 'react-native';
+} from 'react-native-reanimated'
+import { type ViewProps } from 'react-native'
 
 interface AnimatedViewProps extends ViewProps {
-  entering?: 'fade' | 'slide' | 'zoom';
-  exiting?: 'fade' | 'slide' | 'zoom';
-  delay?: number;
-  children: React.ReactNode;
+  entering?: 'fade' | 'slide' | 'zoom'
+  exiting?: 'fade' | 'slide' | 'zoom'
+  delay?: number
+  children: React.ReactNode
 }
 
 const enteringMap = {
   fade: FadeIn,
   slide: SlideInRight,
   zoom: ZoomIn,
-};
+}
 
 const exitingMap = {
   fade: FadeOut,
   slide: SlideOutLeft,
   zoom: ZoomOut,
-};
+}
 
 export function AnimatedView({
   entering = 'fade',
@@ -1419,16 +1458,15 @@ export function AnimatedView({
     >
       {children}
     </Animated.View>
-  );
+  )
 }
 ```
 
 ### 10.2 Skeleton Loading
-
 ```tsx
 // src/components/ui/Skeleton.tsx
-import { useEffect } from 'react';
-import { View, type ViewProps } from 'react-native';
+import { useEffect } from 'react'
+import { View, type ViewProps } from 'react-native'
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -1436,27 +1474,30 @@ import Animated, {
   withTiming,
   withSequence,
   interpolate,
-} from 'react-native-reanimated';
-import { cn } from '@/lib/utils';
+} from 'react-native-reanimated'
+import { cn } from '@/lib/utils'
 
 interface SkeletonProps extends ViewProps {
-  className?: string;
+  className?: string
 }
 
 export function Skeleton({ className, ...props }: SkeletonProps) {
-  const opacity = useSharedValue(1);
+  const opacity = useSharedValue(1)
 
   useEffect(() => {
     opacity.value = withRepeat(
-      withSequence(withTiming(0.4, { duration: 800 }), withTiming(1, { duration: 800 })),
+      withSequence(
+        withTiming(0.4, { duration: 800 }),
+        withTiming(1, { duration: 800 })
+      ),
       -1,
-      true,
-    );
-  }, []);
+      true
+    )
+  }, [])
 
   const animatedStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
-  }));
+  }))
 
   return (
     <Animated.View
@@ -1464,7 +1505,7 @@ export function Skeleton({ className, ...props }: SkeletonProps) {
       className={cn('rounded-lg bg-muted', className)}
       {...props}
     />
-  );
+  )
 }
 
 // 使用示例: 卡片骨架屏
@@ -1484,14 +1525,13 @@ export function CardSkeleton() {
         <Skeleton className="h-3 w-4/6" />
       </View>
     </View>
-  );
+  )
 }
 ```
 
 ---
 
 ## 十一、Dark Mode 支持
-
 ```typescript
 // src/hooks/useColorScheme.ts
 import { useColorScheme as useRNColorScheme } from 'react-native'
@@ -1528,15 +1568,14 @@ export function ThemeToggle() {
 ---
 
 ## 十二、工具函数
-
 ```typescript
 // src/lib/utils.ts
-import { type ClassValue, clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { type ClassValue, clsx } from 'clsx'
+import { twMerge } from 'tailwind-merge'
 
 // NativeWind className 合并工具
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
+  return twMerge(clsx(inputs))
 }
 
 // 格式化工具
@@ -1546,38 +1585,41 @@ export const format = {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
-    }).format(new Date(date));
+    }).format(new Date(date))
   },
 
   currency: (amount: number, currency = 'CNY', locale = 'zh-CN') => {
     return new Intl.NumberFormat(locale, {
       style: 'currency',
       currency,
-    }).format(amount);
+    }).format(amount)
   },
 
   number: (num: number, locale = 'zh-CN') => {
-    return new Intl.NumberFormat(locale).format(num);
+    return new Intl.NumberFormat(locale).format(num)
   },
-};
+}
 
 // 延迟函数
-export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+export const sleep = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms))
 
 // 防抖
-export function debounce<T extends (...args: unknown[]) => unknown>(func: T, wait: number) {
-  let timeout: ReturnType<typeof setTimeout>;
+export function debounce<T extends (...args: unknown[]) => unknown>(
+  func: T,
+  wait: number
+) {
+  let timeout: ReturnType<typeof setTimeout>
   return (...args: Parameters<T>) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait);
-  };
+    clearTimeout(timeout)
+    timeout = setTimeout(() => func(...args), wait)
+  }
 }
 ```
 
 ---
 
 ## 十三、app.json 配置
-
 ```json
 {
   "expo": {
@@ -1638,43 +1680,44 @@ export function debounce<T extends (...args: unknown[]) => unknown>(func: T, wai
 ---
 
 ## 十四、完整页面示例 (Home Screen)
-
 ```tsx
 // app/(tabs)/index.tsx
-import { View, Text, ScrollView, RefreshControl, Pressable } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Image } from 'expo-image';
-import { useRouter } from 'expo-router';
-import { Bell, Search } from 'lucide-react-native';
-import { useCallback, useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
-import { useUserProfile, userKeys } from '@/services/userService';
-import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { CardSkeleton } from '@/components/ui/Skeleton';
-import { AnimatedView } from '@/components/ui/AnimatedView';
-import { cn } from '@/lib/utils';
+import { View, Text, ScrollView, RefreshControl, Pressable } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { Image } from 'expo-image'
+import { useRouter } from 'expo-router'
+import { Bell, Search } from 'lucide-react-native'
+import { useCallback, useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
+import { useUserProfile, userKeys } from '@/services/userService'
+import { Card } from '@/components/ui/Card'
+import { Button } from '@/components/ui/Button'
+import { CardSkeleton } from '@/components/ui/Skeleton'
+import { AnimatedView } from '@/components/ui/AnimatedView'
+import { cn } from '@/lib/utils'
 
 export default function HomeScreen() {
-  const insets = useSafeAreaInsets();
-  const router = useRouter();
-  const queryClient = useQueryClient();
-  const [refreshing, setRefreshing] = useState(false);
+  const insets = useSafeAreaInsets()
+  const router = useRouter()
+  const queryClient = useQueryClient()
+  const [refreshing, setRefreshing] = useState(false)
 
-  const { data: user, isLoading } = useUserProfile();
+  const { data: user, isLoading } = useUserProfile()
 
   const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    await queryClient.invalidateQueries({ queryKey: userKeys.profile() });
-    setRefreshing(false);
-  }, []);
+    setRefreshing(true)
+    await queryClient.invalidateQueries({ queryKey: userKeys.profile() })
+    setRefreshing(false)
+  }, [])
 
   return (
     <View className="flex-1 bg-background">
       <ScrollView
         contentContainerStyle={{ paddingBottom: insets.bottom + 16 }}
         showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       >
         {/* Header 区域 */}
         <View
@@ -1682,13 +1725,19 @@ export default function HomeScreen() {
           className="flex-row items-center justify-between px-5 pb-4"
         >
           <View>
-            <Text className="text-sm text-muted-foreground font-medium">早上好 👋</Text>
+            <Text className="text-sm text-muted-foreground font-medium">
+              早上好 👋
+            </Text>
             <Text className="text-2xl font-bold text-foreground">
-              {isLoading ? '加载中...' : (user?.name ?? '用户')}
+              {isLoading ? '加载中...' : user?.name ?? '用户'}
             </Text>
           </View>
           <View className="flex-row gap-2">
-            <Button variant="outline" size="icon" onPress={() => router.push('/search')}>
+            <Button
+              variant="outline"
+              size="icon"
+              onPress={() => router.push('/search')}
+            >
               <Search size={20} color="#71717a" />
             </Button>
             <Button
@@ -1714,10 +1763,18 @@ export default function HomeScreen() {
                   contentFit="cover"
                 />
                 <View className="flex-1">
-                  <Text className="text-base font-semibold text-foreground">{user?.name}</Text>
-                  <Text className="text-sm text-muted-foreground">{user?.email}</Text>
+                  <Text className="text-base font-semibold text-foreground">
+                    {user?.name}
+                  </Text>
+                  <Text className="text-sm text-muted-foreground">
+                    {user?.email}
+                  </Text>
                 </View>
-                <Button variant="outline" size="sm" onPress={() => router.push('/(tabs)/profile')}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onPress={() => router.push('/(tabs)/profile')}
+                >
                   查看
                 </Button>
               </Card>
@@ -1726,7 +1783,9 @@ export default function HomeScreen() {
 
           {/* 快捷操作 */}
           <AnimatedView entering="fade" delay={200}>
-            <Text className="mb-3 text-lg font-semibold text-foreground">快捷操作</Text>
+            <Text className="mb-3 text-lg font-semibold text-foreground">
+              快捷操作
+            </Text>
             <View className="flex-row gap-3">
               {quickActions.map((action, index) => (
                 <Pressable
@@ -1737,7 +1796,7 @@ export default function HomeScreen() {
                   <View
                     className={cn(
                       'h-12 w-12 items-center justify-center rounded-full',
-                      action.bgColor,
+                      action.bgColor
                     )}
                   >
                     <action.Icon size={22} color={action.iconColor} />
@@ -1751,11 +1810,15 @@ export default function HomeScreen() {
           </AnimatedView>
           {/* 列表区域 */}
           <AnimatedView entering="fade" delay={300}>
-            <Text className="mb-3 text-lg font-semibold text-foreground">最近动态</Text>
+            <Text className="mb-3 text-lg font-semibold text-foreground">
+              最近动态
+            </Text>
             <View className="gap-3">
               {Array.from({ length: 5 }).map((_, i) => (
                 <Card key={i} className="gap-2">
-                  <Text className="text-sm font-medium text-foreground">动态标题 {i + 1}</Text>
+                  <Text className="text-sm font-medium text-foreground">
+                    动态标题 {i + 1}
+                  </Text>
                   <Text className="text-xs text-muted-foreground">
                     这是动态的描述内容，展示一些简短的信息。
                   </Text>
@@ -1766,11 +1829,11 @@ export default function HomeScreen() {
         </View>
       </ScrollView>
     </View>
-  );
+  )
 }
 
 // 快捷操作数据
-import { Compass, User, Settings, Heart } from 'lucide-react-native';
+import { Compass, User, Settings, Heart } from 'lucide-react-native'
 
 const quickActions = [
   {
@@ -1805,13 +1868,12 @@ const quickActions = [
     bgColor: 'bg-zinc-100 dark:bg-zinc-800',
     iconColor: '#71717a',
   },
-];
+]
 ```
 
 ---
 
 ## 十五、技术选型决策说明
-
 ```plain
 ┌─────────────────────────────────────────────────────────┐
 │                   技术决策对比表                          │
@@ -1834,10 +1896,12 @@ const quickActions = [
 
 ---
 
-> **核心原则**:
+> **核心原则**: 
 >
 > 1. **文件路由优先** - Expo Router 让路由即文件结构，直观且类型安全
 > 2. **New Architecture** - JSI + Fabric + Concurrent Features 全面启用
 > 3. **Tailwind 思维** - NativeWind 实现 Web/Native 样式统一
 > 4. **轻量状态** - Zustand 替代 Redux，服务端状态交给 TanStack Query
 > 5. **性能优先** - MMKV 比 AsyncStorage 快10倍，expo-image 优先缓存
+>
+

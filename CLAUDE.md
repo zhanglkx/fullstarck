@@ -150,7 +150,7 @@ This automatically creates REST API controller, service, module, DTOs, and entit
 ```typescript
 import Image from 'next/image';
 import { Button } from '@/components/Button';
-import { Button as AntButton } from 'antd'; // Ant Design components
+import { Button as AntButton } from 'antd';  // Ant Design components
 ```
 
 ### Mobile (Expo) Patterns
@@ -169,7 +169,6 @@ All projects share common base configurations:
 **TypeScript**: API and Web inherit from `tsconfig.base.json` for consistency. Mobile uses Expo's base config, Shared extends root config.
 
 **ESLint**: All projects use:
-
 - `projectService: true` + `tsconfigRootDir: import.meta.dirname` for proper Monorepo type checking
 - API uses `recommendedTypeChecked` for strictest checking
 - Mobile uses `recommendedTypeChecked` with relaxed rules for React Native compatibility

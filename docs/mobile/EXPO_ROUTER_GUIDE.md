@@ -24,7 +24,6 @@ app/
 ## 2. 特殊文件命名规则
 
 ### 2.1 下划线 `_` 前缀
-
 **用途**: 标记"不是路由"的特殊文件
 
 - **`_layout.tsx`** - 布局文件
@@ -45,7 +44,6 @@ export default function TabLayout() {
 ```
 
 ### 2.2 加号 `+` 前缀
-
 **用途**: 强制作为路由页面（即使名字可能被忽略）
 
 - **`+not-found.tsx`** - 404 页面
@@ -63,7 +61,6 @@ export default function NotFound() {
 ```
 
 ### 2.3 括号 `()` 分组
-
 **用途**: 组织路由但不影响 URL 路径
 
 - **`(tabs)/`** - 分组名称
@@ -82,13 +79,11 @@ app/
 ```
 
 **为什么使用分组？**
-
 - 不同的导航结构（Tabs vs Stack）
 - 不同的权限要求（已登录 vs 未登录）
 - 不同的布局样式
 
 ### 2.4 方括号 `[]` 动态路由
-
 **用途**: 动态路径参数
 
 ```tsx
@@ -124,24 +119,22 @@ app/
 
 ### 路由映射关系
 
-| 文件路径                 | URL 路径        | 说明                   |
-| ------------------------ | --------------- | ---------------------- |
-| `app/(tabs)/index.tsx`   | `/`             | 首页（括号不影响 URL） |
-| `app/(tabs)/explore.tsx` | `/explore`      | 探索页                 |
-| `app/(tabs)/profile.tsx` | `/profile`      | 个人页                 |
-| `app/+not-found.tsx`     | `/any-404-path` | 404 页面               |
+| 文件路径 | URL 路径 | 说明 |
+|---------|---------|------|
+| `app/(tabs)/index.tsx` | `/` | 首页（括号不影响 URL） |
+| `app/(tabs)/explore.tsx` | `/explore` | 探索页 |
+| `app/(tabs)/profile.tsx` | `/profile` | 个人页 |
+| `app/+not-found.tsx` | `/any-404-path` | 404 页面 |
 
 ---
 
-## 4. \_layout.tsx 的作用层级
+## 4. _layout.tsx 的作用层级
 
 ```tsx
 // app/_layout.tsx - 第 1 层：根布局
 export default function RootLayout() {
   return (
-    <Stack>
-      {' '}
-      {/* 管理页面堆栈 */}
+    <Stack>              {/* 管理页面堆栈 */}
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="+not-found" />
     </Stack>
@@ -151,9 +144,7 @@ export default function RootLayout() {
 // app/(tabs)/_layout.tsx - 第 2 层：Tab 布局
 export default function TabLayout() {
   return (
-    <Tabs>
-      {' '}
-      {/* 管理底部导航 */}
+    <Tabs>               {/* 管理底部导航 */}
       <Tabs.Screen name="index" />
       <Tabs.Screen name="explore" />
       <Tabs.Screen name="profile" />
@@ -168,7 +159,6 @@ export default function HomePage() {
 ```
 
 **渲染层级**：
-
 ```
 RootLayout (Stack)
   └─ TabLayout (Tabs)
@@ -191,7 +181,9 @@ RootLayout (Stack)
   name="settings"
   options={{
     title: '设置',
-    tabBarIcon: ({ color, size }) => <Ionicons name="settings-outline" size={size} color={color} />,
+    tabBarIcon: ({ color, size }) => (
+      <Ionicons name="settings-outline" size={size} color={color} />
+    ),
   }}
 />
 ```
@@ -223,13 +215,13 @@ app/
 
 ## 6. 命名规则速查表
 
-| 前缀/符号 | 用途               | 示例             | 说明         |
-| --------- | ------------------ | ---------------- | ------------ |
-| `_`       | 特殊文件（非路由） | `_layout.tsx`    | 布局组件     |
-| `+`       | 强制路由           | `+not-found.tsx` | 404 页面     |
-| `()`      | 分组（不影响 URL） | `(tabs)/`        | 组织代码     |
-| `[]`      | 动态参数           | `[id].tsx`       | 动态路由     |
-| `...`     | 捕获所有           | `[...slug].tsx`  | 匹配多层路径 |
+| 前缀/符号 | 用途 | 示例 | 说明 |
+|---------|------|------|------|
+| `_` | 特殊文件（非路由） | `_layout.tsx` | 布局组件 |
+| `+` | 强制路由 | `+not-found.tsx` | 404 页面 |
+| `()` | 分组（不影响 URL） | `(tabs)/` | 组织代码 |
+| `[]` | 动态参数 | `[id].tsx` | 动态路由 |
+| `...` | 捕获所有 | `[...slug].tsx` | 匹配多层路径 |
 
 ---
 
@@ -238,7 +230,6 @@ app/
 ### 查看路由结构
 
 在开发服务器运行时，访问：
-
 ```
 http://localhost:8081/_sitemap
 ```
@@ -251,9 +242,9 @@ http://localhost:8081/_sitemap
 import { usePathname, useSegments } from 'expo-router';
 
 export default function Page() {
-  const pathname = usePathname(); // 当前路径
-  const segments = useSegments(); // 路径段数组
-
+  const pathname = usePathname();  // 当前路径
+  const segments = useSegments();  // 路径段数组
+  
   console.log('当前路由:', pathname);
   console.log('路径段:', segments);
 }
