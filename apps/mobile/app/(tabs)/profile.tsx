@@ -46,30 +46,26 @@ export default function ProfileScreen() {
           style: 'cancel',
         },
       ],
-      { cancelable: true }
+      { cancelable: true },
     );
   }, [user, isAuthenticated, isDark, count, toggleTheme]);
 
   // 处理通知按钮点击
   const handleNotificationPress = useCallback(() => {
     console.log('通知按钮点击');
-    Alert.alert(
-      '📬 通知',
-      `你有 ${count} 条未读消息`,
-      [
-        {
-          text: '全部已读',
-          onPress: () => {
-            console.log('标记全部已读');
-            reset();
-          },
+    Alert.alert('📬 通知', `你有 ${count} 条未读消息`, [
+      {
+        text: '全部已读',
+        onPress: () => {
+          console.log('标记全部已读');
+          reset();
         },
-        {
-          text: '关闭',
-          style: 'cancel',
-        },
-      ]
-    );
+      },
+      {
+        text: '关闭',
+        style: 'cancel',
+      },
+    ]);
   }, [count, reset]);
 
   // 自定义导航栏
@@ -92,19 +88,13 @@ export default function ProfileScreen() {
       },
       // 右侧设置按钮
       headerRight: () => (
-        <TouchableOpacity
-          onPress={handleSettingsPress}
-          style={styles.headerButton}
-        >
+        <TouchableOpacity onPress={handleSettingsPress} style={styles.headerButton}>
           <Ionicons name="settings-outline" size={24} color={iconColor} />
         </TouchableOpacity>
       ),
       // 左侧通知按钮（可选）
       headerLeft: () => (
-        <TouchableOpacity
-          onPress={handleNotificationPress}
-          style={styles.headerButton}
-        >
+        <TouchableOpacity onPress={handleNotificationPress} style={styles.headerButton}>
           <Ionicons name="notifications-outline" size={24} color={iconColor} />
         </TouchableOpacity>
       ),
@@ -154,25 +144,20 @@ export default function ProfileScreen() {
       {
         text: '退出',
         style: 'destructive',
-        onPress: logout
+        onPress: logout,
       },
     ]);
   };
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.scrollContent}
-    >
+    <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
       {/* 用户信息区域 */}
       <View style={styles.profileHeader}>
         <View style={styles.avatarContainer}>
           <Ionicons name="person" size={48} color="#007AFF" />
         </View>
         <Text style={styles.userName}>{user?.name || '游客'}</Text>
-        <Text style={styles.userEmail}>
-          {user?.email || '未登录'}
-        </Text>
+        <Text style={styles.userEmail}>{user?.email || '未登录'}</Text>
         <View style={styles.statusBadge}>
           <Ionicons
             name={isAuthenticated ? 'checkmark-circle' : 'alert-circle'}
@@ -241,7 +226,11 @@ export default function ProfileScreen() {
         {menuItems.map((item, index) => (
           <TouchableOpacity key={index} style={styles.menuItem}>
             <View style={styles.menuIconContainer}>
-              <Ionicons name={item.icon as keyof typeof Ionicons.glyphMap} size={24} color="#007AFF" />
+              <Ionicons
+                name={item.icon as keyof typeof Ionicons.glyphMap}
+                size={24}
+                color="#007AFF"
+              />
             </View>
             <View style={styles.menuContent}>
               <Text style={styles.menuTitle}>{item.title}</Text>

@@ -1,3 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Preserve CSS Variables */
 :root {
   --background: #ffffff;
   --foreground: #171717;

@@ -71,17 +71,18 @@ src/
 
 脚本会自动生成以下 REST API 端点：
 
-- `POST   /user`       - 创建用户
-- `GET    /user`       - 获取所有用户
-- `GET    /user/:id`   - 获取单个用户
-- `PATCH  /user/:id`   - 更新用户
-- `DELETE /user/:id`   - 删除用户
+- `POST   /user` - 创建用户
+- `GET    /user` - 获取所有用户
+- `GET    /user/:id` - 获取单个用户
+- `PATCH  /user/:id` - 更新用户
+- `DELETE /user/:id` - 删除用户
 
 ## 脚本说明
 
 核心脚本位置：`apps/api/scripts/generate-module.js`
 
 该脚本会：
+
 1. 接收模块名称参数
 2. 调用 `nest g resource` 命令
 3. 自动选择 REST API 作为传输层
@@ -100,6 +101,7 @@ src/
 生成模块后，你需要：
 
 1. **定义 DTO 字段**
+
    ```typescript
    // dto/create-user.dto.ts
    export class CreateUserDto {
@@ -109,6 +111,7 @@ src/
    ```
 
 2. **定义 Entity 字段**
+
    ```typescript
    // entities/user.entity.ts
    export class User {
@@ -119,6 +122,7 @@ src/
    ```
 
 3. **实现 Service 业务逻辑**
+
    ```typescript
    // user.service.ts
    @Injectable()
@@ -131,6 +135,7 @@ src/
    ```
 
 4. **格式化代码**
+
    ```bash
    pnpm format
    ```

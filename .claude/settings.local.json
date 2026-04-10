@@ -28,7 +28,11 @@
       "Bash(cd /Users/temptrip/Documents/GitHub/fullstarck/apps/mobile && npx eslint \"app/\\(tabs\\)/index.tsx\" --no-cache 2>&1)",
       "Bash(cd /Users/temptrip/Documents/GitHub/fullstarck/apps/mobile && npx eslint \"app/\\(tabs\\)/index.tsx\" --rule 'react-hooks/exhaustive-deps: error' 2>&1)",
       "Bash(node -e \"const plugin = require\\('eslint-plugin-react-hooks'\\); console.log\\(JSON.stringify\\(plugin.configs.recommended.rules, null, 2\\)\\)\")",
-      "Bash(find . -maxdepth 3 -name \".prettierrc*\" -o -name \"prettier.config.*\" 2>/dev/null | grep -v node_modules)"
+      "Bash(find . -maxdepth 3 -name \".prettierrc*\" -o -name \"prettier.config.*\" 2>/dev/null | grep -v node_modules)",
+      "Bash(pnpm list:*)",
+      "Bash(pnpm --filter web add -D tailwindcss postcss autoprefixer)",
+      "Bash(pnpm --filter web remove sass)",
+      "Bash(pnpm --filter web add -D @tailwindcss/postcss)"
     ]
   }
 }

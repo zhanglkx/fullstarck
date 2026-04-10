@@ -5,6 +5,7 @@
 Zustand 是一个小巧、快速且可扩展的 React 状态管理库，特别适合 React Native 应用。
 
 **优势**：
+
 - 🪶 **轻量** - 不到 1KB（gzipped）
 - ⚡ **简单** - API 简洁，学习曲线平缓
 - 🎯 **无样板代码** - 不需要 Provider、Context
@@ -33,11 +34,13 @@ logout();
 ```
 
 **状态**：
+
 - `isAuthenticated: boolean` - 是否已登录
 - `user: User | null` - 用户信息
 - `token: string | null` - 认证令牌
 
 **操作**：
+
 - `login(email, password)` - 登录
 - `logout()` - 登出
 - `setUser(user)` - 设置用户信息
@@ -62,10 +65,12 @@ setColorScheme('dark');
 ```
 
 **状态**：
+
 - `colorScheme: 'light' | 'dark' | null` - 当前主题
 - `isDark: boolean` - 是否为暗黑模式
 
 **操作**：
+
 - `toggleTheme()` - 切换主题
 - `setColorScheme(scheme)` - 设置主题
 
@@ -82,9 +87,11 @@ const { count, increment, decrement, reset } = useCounterStore();
 ```
 
 **状态**：
+
 - `count: number` - 计数值
 
 **操作**：
+
 - `increment()` - 加 1
 - `decrement()` - 减 1
 - `reset()` - 重置为 0
@@ -160,19 +167,17 @@ export const useCartStore = create<CartState>((set, get) => ({
   addItem: (item) =>
     set((state) => {
       const existingItem = state.items.find((i) => i.id === item.id);
-      
+
       if (existingItem) {
         // 如果已存在，增加数量
         return {
           items: state.items.map((i) =>
-            i.id === item.id
-              ? { ...i, quantity: i.quantity + 1 }
-              : i
+            i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i,
           ),
           total: state.total + item.price,
         };
       }
-      
+
       // 否则添加新商品
       return {
         items: [...state.items, { ...item, quantity: 1 }],
@@ -185,7 +190,7 @@ export const useCartStore = create<CartState>((set, get) => ({
     set((state) => {
       const item = state.items.find((i) => i.id === id);
       if (!item) return state;
-      
+
       return {
         items: state.items.filter((i) => i.id !== id),
         total: state.total - item.price * item.quantity,
@@ -200,13 +205,11 @@ export const useCartStore = create<CartState>((set, get) => ({
     set((state) => {
       const item = state.items.find((i) => i.id === id);
       if (!item) return state;
-      
+
       const priceDiff = item.price * (quantity - item.quantity);
-      
+
       return {
-        items: state.items.map((i) =>
-          i.id === id ? { ...i, quantity } : i
-        ),
+        items: state.items.map((i) => (i.id === id ? { ...i, quantity } : i)),
         total: state.total + priceDiff,
       };
     }),
@@ -235,7 +238,9 @@ export default function CartScreen() {
       <Text>总价: ${total.toFixed(2)}</Text>
       {items.map((item) => (
         <View key={item.id}>
-          <Text>{item.name} x {item.quantity}</Text>
+          <Text>
+            {item.name} x {item.quantity}
+          </Text>
           <Button title="删除" onPress={() => removeItem(item.id)} />
         </View>
       ))}
@@ -268,7 +273,7 @@ export const useStore = create<State>((set, get) => ({
 ```typescript
 export const useCartStore = create<CartState>((set, get) => ({
   items: [],
-  
+
   // 计算总数量（不需要存储在状态中）
   getTotalQuantity: () => {
     return get().items.reduce((sum, item) => sum + item.quantity, 0);
@@ -293,7 +298,7 @@ export default function App() {
       (state) => state.isAuthenticated,
       (isAuthenticated) => {
         console.log('认证状态变化:', isAuthenticated);
-      }
+      },
     );
 
     return unsubscribe; // 清理订阅
@@ -316,11 +321,13 @@ useAuthStore.getState().logout();
 ### 5. 持久化状态（使用 MMKV）
 
 安装依赖：
+
 ```bash
 pnpm add react-native-mmkv zustand/middleware
 ```
 
 创建持久化 Store：
+
 ```typescript
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
@@ -349,8 +356,8 @@ export const usePersistedStore = create(
     {
       name: 'user-storage', // 存储键名
       storage: createJSONStorage(() => mmkvStorage),
-    }
-  )
+    },
+  ),
 );
 ```
 
@@ -361,11 +368,13 @@ export const usePersistedStore = create(
 ### 1. 只选择需要的状态
 
 ❌ **不推荐**（会导致不必要的重渲染）：
+
 ```typescript
 const store = useAuthStore(); // 任何状态变化都会重渲染
 ```
 
 ✅ **推荐**（只在选中的状态变化时重渲染）：
+
 ```typescript
 const user = useAuthStore((state) => state.user);
 const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -380,7 +389,7 @@ import { shallow } from 'zustand/shallow';
 
 const { user, isAuthenticated } = useAuthStore(
   (state) => ({ user: state.user, isAuthenticated: state.isAuthenticated }),
-  shallow
+  shallow,
 );
 ```
 
@@ -418,8 +427,8 @@ export const useStore = create(
       count: 0,
       increment: () => set((state) => ({ count: state.count + 1 })),
     }),
-    { name: 'CounterStore' } // 在 Redux DevTools 中的名称
-  )
+    { name: 'CounterStore' }, // 在 Redux DevTools 中的名称
+  ),
 );
 ```
 
@@ -494,7 +503,7 @@ export const useTodoStore = create<TodoState>((set, get) => ({
   toggleTodo: (id) => {
     set((state) => ({
       todos: state.todos.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo,
       ),
     }));
   },
@@ -514,6 +523,7 @@ export const useTodoStore = create<TodoState>((set, get) => ({
 ## 项目中的使用示例
 
 查看 `app/(tabs)/profile.tsx` 查看完整示例，包括：
+
 - ✅ 认证状态管理
 - ✅ 主题切换
 - ✅ 计数器演示
@@ -535,6 +545,6 @@ Zustand 提供了一种简单、灵活的状态管理方案：
 ✅ **简单** - 无需样板代码  
 ✅ **快速** - 性能优秀  
 ✅ **灵活** - 支持中间件  
-✅ **类型安全** - 完整 TypeScript 支持  
+✅ **类型安全** - 完整 TypeScript 支持
 
 开始使用 Zustand，让状态管理变得简单！🎉

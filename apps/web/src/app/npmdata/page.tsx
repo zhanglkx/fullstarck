@@ -3,7 +3,6 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import * as echarts from "echarts";
 import { apiGet } from "@/lib/api-client";
-import styles from "./page.module.scss";
 
 interface DownloadData {
   day: string;
@@ -251,40 +250,60 @@ export default function NpmDataPage() {
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.content}>
-        <div className={styles.header}>
-          <h1>📊 NPM 包下载统计</h1>
-          <p>查询任意npm包的下载数据并实时可视化</p>
+    <div className="min-h-screen bg-gradient-purple p-8 sm:p-4">
+      <div className="max-w-[1200px] mx-auto">
+        <div className="text-center text-white mb-8">
+          <h1 className="text-[2.5rem] font-bold m-0 mb-2">📊 NPM 包下载统计</h1>
+          <p className="text-[1.1rem] opacity-90 m-0">查询任意npm包的下载数据并实时可视化</p>
         </div>
 
         {/* 搜索表单 */}
-        <div className={styles.searchCard}>
-          <form onSubmit={handleSearch} className={styles.searchForm}>
-            <div className={styles.formGroup}>
-              <label htmlFor="start">开始日期</label>
+        <div className="bg-white rounded-xl p-8 mb-8 shadow-[0_10px_40px_rgba(0,0,0,0.1)]">
+          <form
+            onSubmit={handleSearch}
+            className="grid grid-cols-4 gap-4 items-end lg:grid-cols-2 sm:grid-cols-1"
+          >
+            <div className="flex flex-col">
+              <label
+                htmlFor="start"
+                className="text-[0.875rem] font-semibold text-[#485563] mb-2 uppercase tracking-[0.5px]"
+              >
+                开始日期
+              </label>
               <input
                 id="start"
                 type="date"
                 value={queryParams.start}
                 onChange={(e) => handleInputChange(e, "start")}
                 disabled={loading}
+                className="px-4 py-3 border-2 border-[#e2e8f0] rounded-lg text-base transition-all duration-300 focus:outline-none focus:border-[#667eea] focus:shadow-[0_0_0_3px_rgba(102,126,234,0.1)]"
               />
             </div>
 
-            <div className={styles.formGroup}>
-              <label htmlFor="end">结束日期</label>
+            <div className="flex flex-col">
+              <label
+                htmlFor="end"
+                className="text-[0.875rem] font-semibold text-[#485563] mb-2 uppercase tracking-[0.5px]"
+              >
+                结束日期
+              </label>
               <input
                 id="end"
                 type="date"
                 value={queryParams.end}
                 onChange={(e) => handleInputChange(e, "end")}
                 disabled={loading}
+                className="px-4 py-3 border-2 border-[#e2e8f0] rounded-lg text-base transition-all duration-300 focus:outline-none focus:border-[#667eea] focus:shadow-[0_0_0_3px_rgba(102,126,234,0.1)]"
               />
             </div>
 
-            <div className={styles.formGroup}>
-              <label htmlFor="package">包名</label>
+            <div className="flex flex-col">
+              <label
+                htmlFor="package"
+                className="text-[0.875rem] font-semibold text-[#485563] mb-2 uppercase tracking-[0.5px]"
+              >
+                包名
+              </label>
               <input
                 id="package"
                 type="text"
@@ -292,10 +311,15 @@ export default function NpmDataPage() {
                 value={queryParams.package}
                 onChange={(e) => handleInputChange(e, "package")}
                 disabled={loading}
+                className="px-4 py-3 border-2 border-[#e2e8f0] rounded-lg text-base transition-all duration-300 focus:outline-none focus:border-[#667eea] focus:shadow-[0_0_0_3px_rgba(102,126,234,0.1)]"
               />
             </div>
 
-            <button type="submit" className={styles.searchButton} disabled={loading}>
+            <button
+              type="submit"
+              disabled={loading}
+              className="px-8 py-3 bg-gradient-purple text-white border-none rounded-lg text-base font-semibold cursor-pointer transition-all duration-300 uppercase tracking-[0.5px] hover:-translate-y-0.5 hover:shadow-[0_10px_20px_rgba(102,126,234,0.3)] active:translate-y-0 disabled:opacity-60 disabled:cursor-not-allowed"
+            >
               {loading ? "查询中..." : "🔍 查询"}
             </button>
           </form>
@@ -303,17 +327,17 @@ export default function NpmDataPage() {
 
         {/* 错误提示 */}
         {error && (
-          <div className={styles.errorContainer}>
-            <h3>⚠️ 错误</h3>
-            <p>{error}</p>
+          <div className="bg-[#fed7d7] border-2 border-[#fc8181] rounded-lg p-8 mb-8 text-[#c53030]">
+            <h3 className="m-0 mb-2 text-xl">⚠️ 错误</h3>
+            <p className="m-0">{error}</p>
           </div>
         )}
 
         {/* 加载中 */}
         {loading && (
-          <div className={styles.chartCard}>
-            <div className={styles.loadingContainer}>
-              <div className={styles.spinner}></div>
+          <div className="bg-white rounded-xl p-8 mb-8 shadow-[0_10px_40px_rgba(0,0,0,0.1)]">
+            <div className="flex justify-center items-center min-h-[400px] flex-col gap-4">
+              <div className="w-[50px] h-[50px] border-4 border-[#667eea]/30 border-t-[#667eea] rounded-full animate-spin-slow"></div>
               <p>正在加载数据...</p>
             </div>
           </div>
@@ -323,9 +347,9 @@ export default function NpmDataPage() {
         {searched && !loading && data && (
           <>
             {/* 图表 */}
-            <div className={styles.chartCard}>
-              <h2>📈 下载趋势图</h2>
-              <div className={styles.chartContainer} ref={chartRef}></div>
+            <div className="bg-white rounded-xl p-8 mb-8 shadow-[0_10px_40px_rgba(0,0,0,0.1)]">
+              <h2 className="text-2xl text-[#1a202c] m-0 mb-6">📈 下载趋势图</h2>
+              <div className="w-full h-[400px] rounded-lg bg-[#f7fafc]" ref={chartRef}></div>
             </div>
           </>
         )}
