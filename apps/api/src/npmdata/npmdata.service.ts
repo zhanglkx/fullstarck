@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { firstValueFrom } from 'rxjs';
 import { QueryDownloadsDto } from '@/npmdata/dto/query-downloads.dto';
 
-interface NpmDownloadData {
+export interface NpmDownloadData {
   downloads: Array<{ day: string; downloads: number }>;
   start: string;
   end: string;

@@ -4,8 +4,9 @@
 
 ## 功能特性
 
-- ✅ 自动生成完整的 CRUD 模块
-- ✅ 自动选择 REST API 和 CRUD 选项
+- ✅ 快速生成完整的 CRUD 模块
+- ✅ 交互式选择传输层类型（REST API / GraphQL / 微服务 / WebSockets）
+- ✅ 可选择是否生成 CRUD 入口点
 - ✅ 生成 Controller、Service、Module、DTO 和 Entity
 - ✅ 自动更新 app.module.ts
 - ✅ 支持从项目根目录或 API 目录调用
@@ -48,6 +49,29 @@ pnpm g:api product
 pnpm g:api order
 ```
 
+### 交互式选择
+
+运行命令后，会出现两个交互式问题：
+
+**1. 选择传输层类型：**
+```
+? What transport layer do you use?
+❯ REST API
+  GraphQL (code first)
+  GraphQL (schema first)
+  Microservice (non-HTTP)
+  WebSockets
+```
+使用 **上下方向键** 选择，**回车** 确认（通常选择 REST API）
+
+**2. 是否生成 CRUD 入口点：**
+```
+? Would you like to generate CRUD entry points?
+❯ Yes
+  No
+```
+使用 **上下方向键** 选择，**回车** 确认（通常选择 Yes）
+
 ## 生成的文件结构
 
 运行 `pnpm g:api user` 后会生成：
@@ -84,9 +108,9 @@ src/
 该脚本会：
 1. 接收模块名称参数
 2. 调用 `nest g resource` 命令
-3. 自动选择 REST API 作为传输层
-4. 自动选择生成 CRUD 入口点
-5. 安装依赖（如需要）
+3. 提供交互式界面选择传输层类型
+4. 提供交互式界面选择是否生成 CRUD 入口点
+5. 生成相应的文件并更新模块导入
 
 ## 注意事项
 
@@ -141,6 +165,18 @@ src/
    ```
 
 ## 故障排除
+
+### 无法使用上下键选择
+
+如果出现交互式界面但无法使用上下键选择，可能是终端兼容性问题。解决方法：
+
+1. **使用标准终端**：在 macOS Terminal 或 iTerm2 中运行
+2. **检查 TTY**：确保在真实的终端环境中运行，而不是在某些 IDE 的输出面板
+3. **手动调用 NestJS CLI**：
+   ```bash
+   cd apps/api
+   npx nest g resource <模块名>
+   ```
 
 ### 权限错误
 

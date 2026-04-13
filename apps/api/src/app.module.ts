@@ -4,6 +4,7 @@ import { AppService } from '@/app.service';
 import { ConfigModule } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
 import { NpmdataModule } from '@/npmdata/npmdata.module';
+import { QrcodeModule } from './qrcode/qrcode.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { NpmdataModule } from '@/npmdata/npmdata.module';
       isGlobal: true,
     }),
     HttpModule,
+    QrcodeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
