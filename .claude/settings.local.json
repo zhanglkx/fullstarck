@@ -33,7 +33,8 @@
       "Bash(pnpm --filter api dev)",
       "Bash(curl -s http://localhost:3000/api-info)",
       "Bash(curl -s http://localhost:3000/not-exist)",
-      "Bash(curl -s \"http://localhost:3000/npmdata/downloads?package=\")"
+      "Bash(curl -s \"http://localhost:3000/npmdata/downloads?package=\")",
+      "Bash(pnpm:*)"
     ],
     "additionalDirectories": [
       "/Users/temptrip/Documents/GitHub/fullstarck/apps/api/src/common"

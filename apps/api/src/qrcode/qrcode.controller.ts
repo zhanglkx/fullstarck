@@ -9,4 +9,9 @@ export class QrcodeController {
   generate() {
     return this.qrcodeService.generate();
   }
+
+  @Get('check')
+  check() {
+    return this.qrcodeService.check();
+  }
 }
