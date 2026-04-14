@@ -1,6 +1,7 @@
 import styles from "./page.module.scss";
 import { apiGet } from "@/lib/api-client";
 import Image from "next/image";
+import QRCodeCheckComponent from "@/components/qrcode";
 import { ApiResponse, QRCodeGenerate, QRCodeCheck } from "@fullstack/shared";
 
 /**
@@ -51,6 +52,7 @@ export default async function QrcodePage() {
 
       <button>Check QR Code Status</button>
       <div>{checkResult?.data?.state || ""}</div>
+      <QRCodeCheckComponent />
     </div>
   );
 }

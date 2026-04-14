@@ -19,18 +19,8 @@ function Index() {
     };
 
     void fetchInitialStatus();
-
     // 轮询检查状态
-    const intervalId = setInterval(() => {
-      apiGet<ApiResponse<QRCodeCheck>>("/qrcode/check")
-        .then((res) => {
-          console.log("🚀日志=====", res);
-          setCheckRes(res.data);
-        })
-        .catch((err) => {
-          console.error("❌轮询失败:", err);
-        });
-    }, 3000); // 每 3 秒轮询一次
+    const intervalId = setInterval(fetchInitialStatus, 3000); // 每 3 秒轮询一次
 
     // 清理定时器
     return () => clearInterval(intervalId);

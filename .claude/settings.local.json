@@ -34,7 +34,8 @@
       "Bash(curl -s http://localhost:3000/api-info)",
       "Bash(curl -s http://localhost:3000/not-exist)",
       "Bash(curl -s \"http://localhost:3000/npmdata/downloads?package=\")",
-      "Bash(pnpm:*)"
+      "Bash(pnpm:*)",
+      "Bash(node -e \"const pkg = require\\('./packages/shared/package.json'\\); const types = require\\('fs'\\).readFileSync\\('./packages/shared/dist/index.d.ts', 'utf8'\\); console.log\\('📦 Package Name:', pkg.name\\); console.log\\('📄 Types Entry:', pkg.types\\); console.log\\('\\\\n✅ Exported Types:'\\); types.match\\(/export \\\\{[^}]+\\\\}/s\\)[0].split\\(','\\).forEach\\(t => console.log\\('  -', t.trim\\(\\).replace\\(/^export \\\\{|\\\\}$/g, ''\\)\\)\\);\")"
     ],
     "additionalDirectories": [
       "/Users/temptrip/Documents/GitHub/fullstarck/apps/api/src/common"
