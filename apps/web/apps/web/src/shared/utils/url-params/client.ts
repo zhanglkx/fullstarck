@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Client-side URL parameter utilities
  * 用于 Client Components
@@ -31,9 +32,7 @@ type ClientParamsOptions = {
  * }
  * ```
  */
-export function useUrlParams<T = Record<string, any>>(
-  options: ClientParamsOptions = {}
-): T {
+export function useUrlParams<T = Record<string, any>>(options: ClientParamsOptions = {}): T {
   const { arrayFormat = "bracket", parseNumbers = true, parseBooleans = true } = options;
   const searchParams = useSearchParams();
 

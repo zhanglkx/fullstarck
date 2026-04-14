@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Server-side URL parameter utilities
  * 用于 Server Components
@@ -31,7 +32,7 @@ export async function getServerUrlParams<T = Record<string, any>>(
   searchParams:
     | Promise<Record<string, string | string[] | undefined>>
     | Record<string, string | string[] | undefined>,
-  options: ServerParamsOptions = {}
+  options: ServerParamsOptions = {},
 ): Promise<T> {
   const { parseNumbers = true, parseBooleans = true } = options;
 

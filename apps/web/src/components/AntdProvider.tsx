@@ -11,9 +11,7 @@ const themeConfig: ThemeConfig = {
     fontSize: 14,
   },
   components: {
-    Button: {
-      primaryColor: "#1890ff",
-    },
+    // Button 组件无需额外配置，使用 token.colorPrimary 即可
     Input: {
       colorPrimaryBorder: "#d9d9d9",
     },
