@@ -30,7 +30,7 @@ export class QrcodeService {
    */
   check(uuid: string): QRCodeCheck {
     const state = this.qrCodeStore.get(uuid);
-    console.log('🚀日志=====', uuid, state);
+
     if (state) {
       return {
         state,

@@ -39,6 +39,16 @@ export interface QRCodeScanParams {
 }
 
 /**
+ * 扫描二维码的返回结果
+ */
+export interface QRCodeScanResult {
+  /** 二维码唯一标识 */
+  uuid: string;
+  /** 扫描结果 */
+  success: boolean;
+}
+
+/**
  * 确认二维码的请求参数（预留，目前未使用）
  */
 export interface QRCodeConfirmParams {

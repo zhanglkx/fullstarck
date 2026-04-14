@@ -3,6 +3,7 @@ import { apiGet } from "@/lib/api-client";
 import Image from "next/image";
 import QRCodeCheckComponent from "@/components/qrcode";
 import { ApiResponse, QRCodeGenerate } from "@fullstack/shared";
+ 
 
 /**
  * 获取二维码数据

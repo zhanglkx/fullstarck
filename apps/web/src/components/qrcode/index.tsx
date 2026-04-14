@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import styles from "./index.module.scss";
 import { apiGet } from "@/lib/api-client";
-import { Button } from "antd";
+import { Button, Divider } from "antd";
 import { ApiResponse, QRCodeCheck, QRCodeScanParams } from "@fullstack/shared";
 
 function Index(props: QRCodeScanParams) {
@@ -29,10 +29,20 @@ function Index(props: QRCodeScanParams) {
     return () => clearInterval(intervalId);
   }, [uuid]);
 
+  const gotoComfirm = () => {
+    window.location.href = `/qrcode/confirm?uuid=${uuid}`;
+  };
+
   return (
     <div className={styles.qrcodeWrapper}>
       {checkRes?.state || "加载中..."}
       <Button>刷新</Button>
+
+      <Divider />
+
+      <Button onClick={gotoComfirm} type="primary">
+        Primary Button
+      </Button>
     </div>
   );
 }
