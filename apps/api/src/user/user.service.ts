@@ -22,8 +22,6 @@ export class UserService {
   }
 
   findOne(id: number) {
-    console.log('🚀日志===== findOne', id);
-
     const item = this.users.find((item) => item.id === id);
     if (!item) {
       throw new Error(`User with ID ${id} not found`);

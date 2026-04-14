@@ -33,8 +33,6 @@ interface NpmDownloadsResponse {
 async function fetchApiData() {
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
 
-  console.log("🚀日志=====");
-
   try {
     const [healthRes, infoRes, downloadsRes] = await Promise.all([
       fetch(`${API_BASE_URL}/health`, { next: { revalidate: 0 } }),

@@ -51,4 +51,15 @@ export class QrcodeService {
     }
     return { success: false };
   }
+  /**
+   * 扫描二维码
+   * @returns 扫描结果
+   */
+  confirm(uuid: string): { success: boolean } {
+    if (this.qrCodeStore.has(uuid)) {
+      this.qrCodeStore.set(uuid, 'success');
+      return { success: true };
+    }
+    return { success: false };
+  }
 }

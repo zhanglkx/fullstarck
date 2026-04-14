@@ -3,7 +3,7 @@ import { apiGet } from "@/lib/api-client";
 import Image from "next/image";
 import QRCodeCheckComponent from "@/components/qrcode";
 import { ApiResponse, QRCodeGenerate } from "@fullstack/shared";
- 
+import { Button } from "antd";
 
 /**
  * 获取二维码数据
@@ -12,7 +12,7 @@ import { ApiResponse, QRCodeGenerate } from "@fullstack/shared";
 async function fetchApiData() {
   try {
     const result = await apiGet<ApiResponse<QRCodeGenerate>>("/qrcode/generate");
-    console.log("🚀日志=====", result);
+
     return result;
   } catch (err) {
     console.error("❌请求失败:", err);
@@ -36,7 +36,7 @@ export default async function QrcodePage() {
         unoptimized
       />
 
-      <button>Check QR Code Status</button>
+      <Button type="primary">Check QR Code Status</Button>
 
       <QRCodeCheckComponent uuid={result?.data?.uuid || ""} />
     </div>

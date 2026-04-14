@@ -10,12 +10,17 @@ function Index(props: QRCodeScanParams) {
   const [checkRes, setCheckRes] = useState<QRCodeCheck | null>(null);
 
   useEffect(() => {
+    console.log("🚀日志=====  useEffect");
+
     // 首次获取状态
     const fetchInitialStatus = async () => {
       try {
         const response = await apiGet<ApiResponse<QRCodeCheck>>("/qrcode/check", {
           params: { uuid },
         });
+
+        console.log("🚀日志===== fetchInitialStatus", response);
+
         setCheckRes(response.data);
       } catch (err) {
         console.error("❌获取初始状态失败:", err);

@@ -18,6 +18,10 @@ export class ScanQrcodeDto extends BaseQrcodeDto {
 export class CheckQrcodeDto extends BaseQrcodeDto {
   // 如果以后需要添加更多字段，可以在这里扩展
 }
+// ============ 确认 DTO（复用基础）============
+export class ConfirmQrcodeDto extends BaseQrcodeDto {
+  // 如果以后需要添加更多字段，可以在这里扩展
+}
 
 // ============ 生成二维码 DTO（可选场景）============
 export class GenerateQrcodeDto {

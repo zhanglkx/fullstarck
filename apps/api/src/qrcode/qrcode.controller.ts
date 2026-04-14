@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { QrcodeService } from './qrcode.service';
-import { ScanQrcodeDto, CheckQrcodeDto } from './dto/scan-qrcode.dto';
+import { ScanQrcodeDto, CheckQrcodeDto, ConfirmQrcodeDto } from './dto/scan-qrcode.dto';
 
 @Controller('qrcode')
 export class QrcodeController {
@@ -19,5 +19,9 @@ export class QrcodeController {
   @Post('scan')
   scan(@Body() scanQrcodeDto: ScanQrcodeDto) {
     return this.qrcodeService.scan(scanQrcodeDto.uuid);
+  }
+  @Post('confirm')
+  confirm(@Body() confirmQrcodeDto: ConfirmQrcodeDto) {
+    return this.qrcodeService.confirm(confirmQrcodeDto.uuid);
   }
 }

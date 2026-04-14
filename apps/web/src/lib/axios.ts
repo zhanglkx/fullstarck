@@ -4,11 +4,16 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+/**
+ * API Base URL 配置
+ *
+ * 客户端（浏览器）：使用 /api 前缀（通过 Next.js rewrites 代理）
+ * 服务端（SSR）：直接访问后端地址
+ */
 
 // 创建 axios 实例
 export const apiClient: AxiosInstance = axios.create({
-  baseURL: API_BASE_URL,
+  // 不设置 baseURL，在拦截器中动态设置
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
@@ -18,6 +23,15 @@ export const apiClient: AxiosInstance = axios.create({
 // 请求拦截器
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
+    // 动态设置 baseURL（每次请求时判断环境）
+    if (typeof window !== "undefined") {
+      // 客户端：使用 /api 前缀
+      config.baseURL = process.env.NEXT_PUBLIC_API_URL || "/api";
+    } else {
+      // 服务端：直接访问后端
+      config.baseURL = process.env.API_BASE_URL || "http://localhost:3000";
+    }
+
     // 从 localStorage 获取 token（如果有）
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("auth_token");
