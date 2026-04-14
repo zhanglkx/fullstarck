@@ -30,12 +30,25 @@ export class QrcodeService {
    */
   check(uuid: string): QRCodeCheck {
     const state = this.qrCodeStore.get(uuid);
-
+    console.log('🚀日志=====', uuid, state);
     if (state) {
       return {
         state,
+        allStates: Object.fromEntries(this.qrCodeStore),
       };
     }
     throw new Error('二维码不存在');
+  }
+
+  /**
+   * 扫描二维码
+   * @returns 扫描结果
+   */
+  scan(uuid: string): { success: boolean } {
+    if (this.qrCodeStore.has(uuid)) {
+      this.qrCodeStore.set(uuid, 'scanned');
+      return { success: true };
+    }
+    return { success: false };
   }
 }
