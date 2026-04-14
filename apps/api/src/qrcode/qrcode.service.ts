@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
-import * as qrcode from 'qrcode';
+import { toDataURL } from 'qrcode';
 import { QRCodeGenerate, QRCodeCheck, QRCodeState } from '@fullstack/shared';
 
 @Injectable()
@@ -14,7 +14,7 @@ export class QrcodeService {
   async generate(): Promise<QRCodeGenerate> {
     const uuid = randomUUID();
 
-    const dataUrl = await qrcode.toDataURL(uuid);
+    const dataUrl = await toDataURL(uuid);
 
     this.qrCodeStore.set(uuid, 'pending');
 
