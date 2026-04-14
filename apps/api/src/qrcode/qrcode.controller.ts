@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { QrcodeService } from './qrcode.service';
 
 @Controller('qrcode')
@@ -11,7 +11,7 @@ export class QrcodeController {
   }
 
   @Get('check')
-  check() {
-    return this.qrcodeService.check();
+  check(@Query('uuid') uuid: string) {
+    return this.qrcodeService.check(uuid);
   }
 }
