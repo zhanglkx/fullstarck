@@ -37,7 +37,21 @@
       "Bash(pnpm:*)",
       "Bash(node -e \"const pkg = require\\('./packages/shared/package.json'\\); const types = require\\('fs'\\).readFileSync\\('./packages/shared/dist/index.d.ts', 'utf8'\\); console.log\\('📦 Package Name:', pkg.name\\); console.log\\('📄 Types Entry:', pkg.types\\); console.log\\('\\\\n✅ Exported Types:'\\); types.match\\(/export \\\\{[^}]+\\\\}/s\\)[0].split\\(','\\).forEach\\(t => console.log\\('  -', t.trim\\(\\).replace\\(/^export \\\\{|\\\\}$/g, ''\\)\\)\\);\")",
       "Bash(find . -name \"*.ts\" -type f -exec grep -l \"QRCodeCheck\" {} \\\\;)",
-      "Bash(node apps/api/src/qrcode/map-serialization-demo.js)"
+      "Bash(node apps/api/src/qrcode/map-serialization-demo.js)",
+      "Bash(lsof -ti:3001)",
+      "Bash(curl -s http://localhost:3000/serverstate/status)",
+      "Bash(curl -s http://localhost:3000/serverstate/diskstatus)",
+      "Bash(curl -s http://localhost:3000/serverstate/memoryinfo)",
+      "Bash(curl -s http://localhost:3000/serverstate/sysinfo)",
+      "Bash(curl -s http://localhost:3000/qrcode/confirm\\\\?token\\\\=test)",
+      "mcp__chrome-devtools__new_page",
+      "mcp__chrome-devtools__wait_for",
+      "mcp__chrome-devtools__take_screenshot",
+      "mcp__chrome-devtools__list_console_messages",
+      "mcp__chrome-devtools__navigate_page",
+      "mcp__chrome-devtools__click",
+      "mcp__chrome-devtools__close_page",
+      "Bash(curl -s \"http://localhost:3000/npmdata/downloads?start=2024-01-01&end=2024-01-10&package=react\")"
     ],
     "additionalDirectories": [
       "/Users/temptrip/Documents/GitHub/fullstarck/apps/api/src/common"
