@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import * as echarts from "echarts";
 import { apiGet } from "@/lib/api-client";
+import { NpmDataSkeleton } from "@/components/skeletons";
 import styles from "./page.module.scss";
 
 interface DownloadData {
@@ -10,14 +11,22 @@ interface DownloadData {
   downloads: number;
 }
 
+interface NpmData {
+  start: string;
+  end: string;
+  package: string;
+  downloads: DownloadData[];
+}
+
 interface NpmDataResponse {
   success: boolean;
-  data: {
-    start: string;
-    end: string;
-    package: string;
-    downloads: DownloadData[];
-  };
+  data: NpmData;
+}
+
+interface ApiWrappedResponse {
+  code: number;
+  data: NpmDataResponse;
+  msg: string;
 }
 
 interface QueryParams {
@@ -51,7 +60,7 @@ export default function NpmDataPage() {
       setError(null);
 
       console.log("🔗 使用 Axios 发送请求...");
-      const result = await apiGet<NpmDataResponse>("/npmdata/downloads", {
+      const result = await apiGet<ApiWrappedResponse>("/npmdata/downloads", {
         params: {
           start: params.start,
           end: params.end,
@@ -59,17 +68,17 @@ export default function NpmDataPage() {
         },
       });
 
-      if (!result.success) {
+      if (!result.data.success) {
         throw new Error("API 返回失败");
       }
 
       console.log(
-        `✅ 查询成功: 获取 ${result.data.downloads.length} 条记录`,
-        result.data.downloads[0],
-        result.data.downloads[result.data.downloads.length - 1],
+        `✅ 查询成功: 获取 ${result.data.data.downloads.length} 条记录`,
+        result.data.data.downloads[0],
+        result.data.data.downloads[result.data.data.downloads.length - 1],
       );
 
-      setData(result);
+      setData(result.data);
       setSearched(true);
     } catch (err) {
       console.error("❌ 查询失败:", err);
@@ -310,14 +319,7 @@ export default function NpmDataPage() {
         )}
 
         {/* 加载中 */}
-        {loading && (
-          <div className={styles.chartCard}>
-            <div className={styles.loadingContainer}>
-              <div className={styles.spinner}></div>
-              <p>正在加载数据...</p>
-            </div>
-          </div>
-        )}
+        {loading && <NpmDataSkeleton />}
 
         {/* 数据展示 */}
         {searched && !loading && data && (

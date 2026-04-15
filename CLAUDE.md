@@ -351,10 +351,86 @@ Copy `.env.example` files to `.env` and customize as needed.
 
 ## Documentation
 
-Detailed documentation in Chinese is available in `docs/`:
+### Documentation Structure
 
-- `docs/monorepo/index.md` - Architecture overview
-- `docs/monorepo/subpackage-create.md` - Creating new packages
-- `docs/monorepo/subpackage-use.md` - Using packages
-- `docs/monorepo/dependency-management.md` - Version management
-- `docs/reference/commands.md` - Command reference
+All project documentation is centralized in the `docs/` directory with the following structure:
+
+```
+docs/
+├── README.md                      # Documentation index and navigation
+├── features/                      # Feature-specific documentation
+│   ├── SERVER_STATE_MONITOR.md    # Server monitoring feature
+│   └── SKELETON.md                # Skeleton screen implementation
+├── monorepo/                      # Architecture and package management
+│   ├── index.md                   # Architecture overview
+│   ├── subpackage-create.md       # Creating new packages
+│   ├── subpackage-use.md          # Using packages
+│   └── dependency-management.md   # Version management
+├── api/                           # Backend API documentation
+│   ├── generate-module.md         # NestJS module generator
+│   └── unified-response.md        # API response format
+├── web/                           # Web frontend documentation
+│   ├── README.md                  # Web app overview
+│   ├── QUICK-REFERENCE.md         # Quick reference guide
+│   ├── TESTING.md                 # Testing guide
+│   ├── IP-ACCESS-FIX.md           # IP access configuration
+│   └── SUMMARY.md                 # Feature summary
+├── mobile/                        # Mobile app documentation
+│   ├── README.md                  # Mobile app overview
+│   ├── EXPO_ROUTER_GUIDE.md       # Expo Router guide
+│   └── ZUSTAND_GUIDE.md           # State management guide
+├── guides/                        # Development guides
+│   ├── GETTING_STARTED.md         # Quick start guide
+│   └── MOBILE_GUIDE.md            # Mobile development guide
+└── reference/                     # Reference documentation
+    └── commands.md                # Command reference
+```
+
+### Documentation Management Rules
+
+**CRITICAL**: When creating or updating documentation, follow these rules:
+
+1. **Location Rules**:
+   - All explanatory documentation goes in `docs/` directory
+   - `README.md` files stay in their respective directories (root, apps/api, apps/web, apps/mobile)
+   - `CLAUDE.md` and `AGENTS.md` stay at the root or in app directories (project instructions)
+   - Never create documentation files in app directories (apps/*) - move them to `docs/`
+
+2. **Categorization Rules**:
+   - `docs/features/` - Feature implementations, UI components, functional modules
+   - `docs/monorepo/` - Architecture, workspace management, build configuration
+   - `docs/api/` - Backend API patterns, NestJS specifics, database schemas
+   - `docs/web/` - Frontend patterns, Next.js specifics, styling guides
+   - `docs/mobile/` - Mobile app patterns, Expo specifics, native features
+   - `docs/guides/` - Step-by-step tutorials, getting started guides
+   - `docs/reference/` - Quick reference sheets, command lists, cheatsheets
+
+3. **Creation Rules**:
+   - **ALWAYS check for existing documentation first** before creating new files
+   - If related documentation exists, update it rather than creating a new file
+   - If creating a new document, add it to `docs/README.md` index immediately
+   - Use descriptive filenames in English (kebab-case or SCREAMING_SNAKE_CASE)
+   - Write content in Chinese for consistency with existing docs
+
+4. **Content Rules**:
+   - Include clear section headers and table of contents for long documents
+   - Provide code examples with syntax highlighting
+   - Reference file paths using project-relative paths
+   - Cross-reference related documentation with markdown links
+   - Include "最后更新" (last updated) date when appropriate
+
+5. **Maintenance Rules**:
+   - When modifying features, update related documentation in the same PR/commit
+   - Remove or archive documentation for deprecated features
+   - Keep `docs/README.md` index in sync with actual documentation files
+
+### Quick Documentation Links
+
+- **Architecture**: `docs/monorepo/index.md` - Full project structure overview
+- **Getting Started**: `docs/guides/GETTING_STARTED.md` - Environment setup
+- **API Patterns**: `docs/api/unified-response.md` - Response format standards
+- **Web Patterns**: `docs/web/README.md` - Next.js 16 guidelines
+- **Mobile Patterns**: `docs/mobile/README.md` - Expo 54 guidelines
+- **Commands**: `docs/reference/commands.md` - All development commands
+
+For a complete documentation index, see `docs/README.md`.

@@ -1,0 +1,187 @@
+.container {
+  padding: 24px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+  max-width: 1400px;
+  margin: 0 auto;
+
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+}
+
+.headerCard {
+  margin-bottom: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+  h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    svg {
+      font-size: 32px;
+    }
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+
+    h1 {
+      font-size: 20px;
+    }
+  }
+}
+
+.card {
+  margin-bottom: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+  }
+
+  :global(.ant-card-head) {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-bottom: none;
+
+    :global(.ant-card-head-title) {
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+    }
+  }
+
+  :global(.ant-card-body) {
+    padding: 24px;
+
+    @media (max-width: 768px) {
+      padding: 16px;
+    }
+  }
+}
+
+.statusContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 24px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
+.progressContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.cpuDetails,
+.memoryDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  min-width: 150px;
+}
+
+.statRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  font-size: 14px;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  span {
+    color: rgba(0, 0, 0, 0.65);
+    font-weight: 500;
+  }
+
+  strong {
+    font-weight: 700;
+    color: rgba(0, 0, 0, 0.85);
+    font-size: 15px;
+  }
+}
+
+:global(.ant-table) {
+  border-radius: 8px;
+  overflow: hidden;
+
+  :global(.ant-table-thead > tr > th) {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-weight: 700;
+
+    &:before {
+      display: none;
+    }
+  }
+
+  :global(.ant-table-tbody > tr) {
+    &:hover > td {
+      background: rgba(102, 126, 234, 0.05);
+    }
+  }
+}
+
+:global(.ant-empty) {
+  padding: 48px 0;
+}
+
+:global(.ant-statistic-title) {
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+:global(.ant-statistic-title svg) {
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+:global(.ant-statistic-content) {
+  font-size: 20px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+:global(.ant-tag) {
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+:global(.ant-progress-circle-text) {
+  font-weight: 700;
+}

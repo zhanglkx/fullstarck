@@ -6,6 +6,7 @@ import { HttpModule } from '@nestjs/axios';
 import { NpmdataModule } from '@/npmdata/npmdata.module';
 import { QrcodeModule } from './qrcode/qrcode.module';
 import { UserModule } from './user/user.module';
+import { ServerstateModule } from './serverstate/serverstate.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { UserModule } from './user/user.module';
     HttpModule,
     QrcodeModule,
     UserModule,
+    ServerstateModule,
   ],
   controllers: [AppController],
   providers: [AppService],

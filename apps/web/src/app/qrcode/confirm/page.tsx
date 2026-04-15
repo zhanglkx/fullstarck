@@ -1,11 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import styles from "./page.module.scss";
 import { QRCodeScanResult, ApiResponse } from "@fullstack/shared";
 import { apiPost } from "@/lib/api-client";
-import { Button, Spin, message } from "antd";
+import { Button, message } from "antd";
+import { QRCodeConfirmSkeleton } from "@/components/skeletons";
+
+export const dynamic = "force-dynamic";
 
 const scanQrcode = async (uuid?: string) => {
   try {
@@ -31,7 +34,7 @@ const confirmQrcode = async (uuid?: string) => {
   }
 };
 
-const Page = () => {
+const PageContent = () => {
   const searchParams = useSearchParams();
   const uuid = searchParams.get("uuid") || undefined;
 
@@ -68,11 +71,7 @@ const Page = () => {
   };
 
   if (loading) {
-    return (
-      <div style={{ textAlign: "center", padding: "50px" }}>
-        <Spin size="large" />
-      </div>
-    );
+    return <QRCodeConfirmSkeleton />;
   }
 
   return (
@@ -93,6 +92,14 @@ const Page = () => {
         </div>
       </div>
     </>
+  );
+};
+
+const Page = () => {
+  return (
+    <Suspense fallback={<QRCodeConfirmSkeleton />}>
+      <PageContent />
+    </Suspense>
   );
 };
 
