@@ -1,12 +1,7 @@
 import { apiClient } from "./axios";
 import { AxiosRequestConfig } from "axios";
 
-export interface ApiResponse<T = unknown> {
-  data?: T;
-  message?: string;
-  success?: boolean;
-  code?: number;
-}
+export type { ApiResponse } from "@fullstack/shared";
 
 /**
  * 发送 GET 请求

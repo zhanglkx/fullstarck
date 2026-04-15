@@ -1,35 +1,97 @@
-.container {
-  padding: 24px;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  min-height: 100vh;
-  max-width: 1400px;
-  margin: 0 auto;
+/* 覆盖 Ant Design 默认文字色（深色字），避免在深色表面与暗色系统主题下不可见 */
+.pageRoot {
+  color: var(--text-primary);
 
-  @media (max-width: 768px) {
-    padding: 16px;
+  :global(.ant-statistic-content-value) {
+    color: var(--text-primary) !important;
+  }
+
+  :global(.ant-table) {
+    color: var(--text-primary);
+  }
+
+  :global(.ant-table-tbody > tr > td.ant-table-cell) {
+    color: var(--text-primary) !important;
+  }
+
+  :global(.ant-table-tbody .ant-table-cell .anticon) {
+    color: var(--text-tertiary);
+  }
+
+  :global(.ant-pagination) {
+    color: var(--text-secondary);
+  }
+
+  :global(.ant-pagination-item a) {
+    color: var(--text-primary);
+  }
+
+  :global(.ant-pagination-item-link .anticon) {
+    color: var(--text-secondary);
+  }
+
+  :global(.ant-pagination-item-active) {
+    border-color: var(--accent);
+
+    a {
+      color: var(--accent);
+    }
+  }
+
+  :global(.ant-progress-text) {
+    color: var(--text-primary) !important;
+  }
+
+  :global(.ant-progress.ant-progress-circle .ant-progress-text) {
+    color: var(--text-primary) !important;
+  }
+
+  :global(.ant-progress-circle-trail) {
+    stroke: rgba(0, 0, 0, 0.08) !important;
+
+    @media (prefers-color-scheme: dark) {
+      stroke: rgba(255, 255, 255, 0.16) !important;
+    }
+  }
+
+  :global(.ant-btn-default) {
+    color: var(--text-primary);
+    background: var(--surface-elevated);
+    border-color: var(--stroke-hairline);
+
+    &:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: var(--surface-elevated);
+    }
+  }
+
+  :global(.ant-empty-description) {
+    color: var(--text-secondary);
+  }
+
+  :global(.ant-divider-vertical) {
+    border-color: var(--stroke-hairline);
+  }
+
+  :global(.ant-tag) {
+    border-radius: 6px;
+    font-weight: 500;
   }
 }
 
 .headerCard {
-  margin-bottom: 24px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
 
-  h1 {
-    margin: 0;
-    font-size: 28px;
-    font-weight: 700;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    display: flex;
-    align-items: center;
-    gap: 12px;
+  :global(.ant-card) {
+    border-radius: 18px;
+    background: var(--surface-elevated);
+    border: 1px solid var(--stroke-hairline);
+    box-shadow: var(--shadow-card);
+  }
 
-    svg {
-      font-size: 32px;
-    }
+  :global(.ant-card-body) {
+    padding: 22px 24px;
   }
 }
 
@@ -39,46 +101,81 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 16px;
+}
 
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: flex-start;
+.title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  font-size: clamp(20px, 2.8vw, 26px);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: var(--text-primary);
 
-    h1 {
-      font-size: 20px;
-    }
+  :global(.anticon) {
+    font-size: 24px;
+    color: var(--accent);
   }
 }
 
-.card {
-  margin-bottom: 24px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 
-  &:hover {
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-    transform: translateY(-2px);
+  :global(.ant-btn-primary) {
+    border-radius: 980px;
+    font-weight: 500;
+  }
+
+  :global(.ant-btn-default) {
+    border-radius: 980px;
+  }
+}
+
+.dataCard {
+  margin-bottom: 20px;
+
+  :global(.ant-card) {
+    border-radius: 18px;
+    background: var(--surface-elevated);
+    border: 1px solid var(--stroke-hairline);
+    box-shadow: var(--shadow-card);
   }
 
   :global(.ant-card-head) {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-bottom: none;
+    border-bottom: 1px solid var(--stroke-hairline);
+    background: transparent;
+    min-height: 48px;
+  }
 
-    :global(.ant-card-head-title) {
-      color: white;
-      font-weight: 700;
-      font-size: 16px;
-    }
+  :global(.ant-card-head-title) {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
   }
 
   :global(.ant-card-body) {
-    padding: 24px;
+    padding: 22px 24px;
+  }
 
-    @media (max-width: 768px) {
-      padding: 16px;
-    }
+  :global(.ant-statistic-title) {
+    color: var(--text-tertiary);
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  :global(.ant-statistic-content) {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  :global(.ant-statistic-title .anticon) {
+    color: var(--accent);
+    margin-right: 6px;
   }
 }
 
@@ -87,11 +184,10 @@
   align-items: center;
   justify-content: space-around;
   flex-wrap: wrap;
-  gap: 24px;
+  gap: 20px;
 
   @media (max-width: 768px) {
     flex-direction: column;
-    gap: 16px;
   }
 }
 
@@ -102,13 +198,30 @@
   flex-shrink: 0;
 }
 
+.progressFormat {
+  text-align: center;
+}
+
+.progressPercent {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.progressSub {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+}
+
 .cpuDetails,
 .memoryDetails {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   flex: 1;
-  min-width: 150px;
+  min-width: 160px;
 }
 
 .statRow {
@@ -116,7 +229,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 8px 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid var(--stroke-hairline);
   font-size: 14px;
 
   &:last-child {
@@ -124,64 +237,47 @@
   }
 
   span {
-    color: rgba(0, 0, 0, 0.65);
+    color: var(--text-secondary);
     font-weight: 500;
   }
 
   strong {
-    font-weight: 700;
-    color: rgba(0, 0, 0, 0.85);
+    font-weight: 600;
+    color: var(--text-primary);
     font-size: 15px;
   }
 }
 
-:global(.ant-table) {
-  border-radius: 8px;
-  overflow: hidden;
+.tableCard {
+  :global(.ant-table) {
+    background: transparent;
+    color: var(--text-primary);
+  }
 
   :global(.ant-table-thead > tr > th) {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    font-weight: 700;
+    background: var(--surface-page) !important;
+    color: var(--text-primary) !important;
+    font-weight: 600;
+    border-bottom: 1px solid var(--stroke-hairline) !important;
 
-    &:before {
+    &::before {
       display: none;
     }
   }
 
-  :global(.ant-table-tbody > tr) {
-    &:hover > td {
-      background: rgba(102, 126, 234, 0.05);
-    }
+  :global(.ant-table-tbody > tr > td) {
+    border-bottom: 1px solid var(--stroke-hairline);
+  }
+
+  :global(.ant-table-tbody > tr:hover > td) {
+    background: color-mix(in srgb, var(--accent) 6%, transparent) !important;
+  }
+
+  :global(.ant-pagination) {
+    margin-top: 16px;
   }
 }
 
-:global(.ant-empty) {
-  padding: 48px 0;
-}
-
-:global(.ant-statistic-title) {
-  font-size: 14px;
-  font-weight: 500;
-  color: rgba(0, 0, 0, 0.65);
-}
-
-:global(.ant-statistic-title svg) {
-  margin-right: 8px;
-  font-size: 18px;
-}
-
-:global(.ant-statistic-content) {
-  font-size: 20px;
-  font-weight: 700;
-  color: rgba(0, 0, 0, 0.85);
-}
-
-:global(.ant-tag) {
-  border-radius: 6px;
-  font-weight: 600;
-}
-
-:global(.ant-progress-circle-text) {
-  font-weight: 700;
+.emptyWrap {
+  padding: 48px 24px;
 }

@@ -1,19 +1,20 @@
 .container {
-  padding: 24px;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  min-height: 100vh;
-  max-width: 1400px;
-  margin: 0 auto;
-
-  @media (max-width: 768px) {
-    padding: 16px;
-  }
+  padding: 0;
+  background: transparent;
+  min-height: auto;
+  max-width: none;
+  margin: 0;
 }
 
 .headerCard {
   margin-bottom: 24px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 18px;
+  box-shadow: var(--shadow-card, 0 2px 12px rgba(0, 0, 0, 0.06));
+
+  :global(.ant-card) {
+    background: var(--surface-elevated, #fff);
+    border: 1px solid var(--stroke-hairline, rgba(0, 0, 0, 0.06));
+  }
 }
 
 .header {
@@ -31,13 +32,21 @@
 
 .card {
   margin-bottom: 24px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 18px;
+  box-shadow: var(--shadow-card, 0 2px 12px rgba(0, 0, 0, 0.06));
+
+  :global(.ant-card) {
+    background: var(--surface-elevated, #fff);
+    border: 1px solid var(--stroke-hairline, rgba(0, 0, 0, 0.06));
+  }
 
   :global(.ant-card-head) {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-bottom: none;
+    background: transparent;
+    border-bottom: 1px solid var(--stroke-hairline, rgba(0, 0, 0, 0.06));
+  }
+
+  :global(.ant-card-head-title) {
+    color: var(--text-primary, inherit);
   }
 
   :global(.ant-card-body) {

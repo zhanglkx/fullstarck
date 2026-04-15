@@ -1,48 +1,8 @@
+import type { ApiResponse } from "@fullstack/shared";
+import type { CPUStatus, DiskInfo, MemInfo, ServerState, SysInfo } from "@fullstack/shared";
 import { apiGet } from "@/lib/api-client";
 
-export interface CPUStatus {
-  cpuNum: number;
-  sys: string;
-  used: string;
-  free: string;
-}
-
-export interface MemInfo {
-  total: number;
-  used: number;
-  free: number;
-  usage: string;
-}
-
-export interface DiskInfo {
-  dirName: string;
-  typeName: string;
-  total: string;
-  used: string;
-  free: string;
-  usage: string;
-}
-
-export interface SysInfo {
-  computerName: string;
-  computerIp: string;
-  osName: string;
-  osArch: string;
-}
-
-export interface ServerState {
-  cpu: CPUStatus;
-  memory: MemInfo;
-  disks: DiskInfo[];
-  sys: SysInfo;
-}
-
-// API 响应包装类型
-interface ApiResponse<T> {
-  code: number;
-  data: T;
-  msg: string;
-}
+export type { CPUStatus, DiskInfo, MemInfo, ServerState, SysInfo };
 
 /**
  * 获取 CPU 状态

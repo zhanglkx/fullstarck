@@ -6,58 +6,56 @@
 
 ### 功能特性文档
 
-| 文档                                                        | 说明                                         |
-| ----------------------------------------------------------- | -------------------------------------------- |
-| [服务器状态监控](./features/SERVER_STATE_MONITOR.md)       | 服务器 CPU、内存、磁盘监控功能的实现与使用   |
-| [骨架屏实现文档](./features/SKELETON.md)                   | Ant Design Skeleton 组件的使用与页面骨架屏   |
+| 文档 | 说明 |
+|------|------|
+| [服务器状态监控](./features/SERVER_STATE_MONITOR.md) | 服务器 CPU、内存、磁盘监控功能的实现与使用 |
+| [骨架屏实现文档](./features/SKELETON.md) | Ant Design Skeleton 组件的使用与页面骨架屏 |
 
 ### Monorepo 指南
 
-| 文档                                                | 说明                                   |
-| --------------------------------------------------- | -------------------------------------- |
-| [Monorepo 架构指南](./monorepo/index.md)            | 项目架构概览、目录结构、技术选型       |
-| [子包创建指南](./monorepo/subpackage-create.md)     | 如何在 packages/ 下创建新的子包        |
-| [子包使用指南](./monorepo/subpackage-use.md)        | 在 shared 和 apps 中使用子包的各种场景 |
-| [依赖版本管理](./monorepo/dependency-management.md) | workspace 协议、版本策略、发布流程     |
+| 文档 | 说明 |
+|------|------|
+| [Monorepo 架构指南](./monorepo/index.md) | 项目架构概览、目录结构、技术选型 |
+| [子包创建指南](./monorepo/subpackage-create.md) | 如何在 packages/ 下创建新的子包 |
+| [子包使用指南](./monorepo/subpackage-use.md) | 在 shared 和 apps 中使用子包的各种场景 |
+| [依赖版本管理](./monorepo/dependency-management.md) | workspace 协议、版本策略、发布流程 |
 
 ### API 文档
 
-| 文档                                                | 说明                               |
-| --------------------------------------------------- | ---------------------------------- |
-| [模块生成器](./api/generate-module.md)             | 使用 NestJS 模块生成器快速创建模块 |
-| [统一响应格式](./api/unified-response.md)          | API 响应拦截器与统一数据格式       |
+| 文档 | 说明 |
+|------|------|
+| [模块生成器](./api/generate-module.md) | 使用 NestJS 模块生成器快速创建模块 |
+| [统一响应格式](./api/unified-response.md) | API 响应拦截器与统一数据格式 |
+| [后端改进分步指南](./api/backend-improvement-guide.md) | 日志、JWT、数据库、安全、测试等落地步骤 |
 
 ### Web 应用文档
 
-| 文档                                        | 说明                                   |
-| ------------------------------------------- | -------------------------------------- |
-| [Web 应用概览](./web/README.md)             | Next.js 16 Web 应用架构与配置说明      |
-| [快速参考](./web/QUICK-REFERENCE.md)        | 常用代码片段和开发技巧                 |
-| [测试指南](./web/TESTING.md)                | Web 应用测试策略与实践                 |
-| [IP 访问修复](./web/IP-ACCESS-FIX.md)       | 解决 IP 地址访问问题的配置说明         |
-| [Web 功能总结](./web/SUMMARY.md)            | Web 应用已实现功能的总结文档           |
+| 文档 | 说明 |
+|------|------|
+| [Web 应用概览](./web/README.md) | Next.js 16 Web 应用架构、技术栈与页面结构 |
+| [IP 访问修复](./web/IP-ACCESS-FIX.md) | Next.js 16 IP 地址访问问题的完整分析与解决方案 |
+| [IP 访问验证](./web/IP-ACCESS-VERIFY.md) | IP 访问修复后的验证测试步骤 |
 
 ### Mobile 应用文档
 
-| 文档                                                    | 说明                                   |
-| ------------------------------------------------------- | -------------------------------------- |
-| [Mobile 应用概览](./mobile/README.md)                   | Expo 54 移动应用架构与配置说明         |
-| [Expo Router 指南](./mobile/EXPO_ROUTER_GUIDE.md)       | Expo Router 文件路由系统使用指南       |
-| [Zustand 状态管理](./mobile/ZUSTAND_GUIDE.md)          | Zustand 轻量级状态管理库使用指南       |
-| [技术选型 - Claude](./mobile/技术选型-Claude%20code%20建议.md)  | Claude Code 关于移动端技术选型的建议   |
-| [技术选型 - OpenAI](./mobile/技术选型%20OpenAI.md)      | OpenAI 关于移动端技术选型的建议        |
+| 文档 | 说明 |
+|------|------|
+| [Mobile 应用概览](./mobile/README.md) | Expo 55 移动应用架构与配置说明 |
+| [Expo Router 指南](./mobile/EXPO_ROUTER_GUIDE.md) | Expo Router 文件路由系统使用指南 |
+| [Zustand 状态管理](./mobile/ZUSTAND_GUIDE.md) | Zustand 轻量级状态管理库使用指南 |
+| [技术选型参考](./mobile/tech-selection.md) | 移动端现代技术栈推荐（综合整理） |
 
 ### 开发指南
 
-| 文档                                        | 说明                               |
-| ------------------------------------------- | ---------------------------------- |
-| [快速入门](./guides/GETTING_STARTED.md)     | 开发环境配置与项目启动步骤         |
-| [移动端开发指南](./guides/MOBILE_GUIDE.md)  | 移动端应用开发完整指南             |
+| 文档 | 说明 |
+|------|------|
+| [快速入门](./guides/GETTING_STARTED.md) | 开发环境配置与项目启动步骤 |
+| [移动端开发指南](./guides/MOBILE_GUIDE.md) | 移动端应用开发完整指南 |
 
 ### 参考文档
 
-| 文档                                | 说明             |
-| ----------------------------------- | ---------------- |
+| 文档 | 说明 |
+|------|------|
 | [命令参考](./reference/commands.md) | 常用开发命令汇总 |
 
 ---

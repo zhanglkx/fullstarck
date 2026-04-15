@@ -61,7 +61,7 @@ fullstarck/
 | ------------- | ---------- | ---- | ------------------- |
 | `apps/api`    | NestJS 11  | 3000 | REST API 后端       |
 | `apps/web`    | Next.js 16 | 3001 | React 前端          |
-| `apps/mobile` | Expo 54    | -    | React Native 移动端 |
+| `apps/mobile` | Expo 55    | -    | React Native 移动端 |
 
 ### packages/ - 子包层
 

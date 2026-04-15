@@ -2,32 +2,11 @@
 
 import { useEffect, useState, useRef, useCallback } from "react";
 import * as echarts from "echarts";
+import type { ApiResponse, NpmDownloadsEnvelope } from "@fullstack/shared";
 import { apiGet } from "@/lib/api-client";
 import { NpmDataSkeleton } from "@/components/skeletons";
+import apple from "@/styles/apple-page.module.scss";
 import styles from "./page.module.scss";
-
-interface DownloadData {
-  day: string;
-  downloads: number;
-}
-
-interface NpmData {
-  start: string;
-  end: string;
-  package: string;
-  downloads: DownloadData[];
-}
-
-interface NpmDataResponse {
-  success: boolean;
-  data: NpmData;
-}
-
-interface ApiWrappedResponse {
-  code: number;
-  data: NpmDataResponse;
-  msg: string;
-}
 
 interface QueryParams {
   start: string;
@@ -42,7 +21,7 @@ export default function NpmDataPage() {
     package: "react",
   });
 
-  const [data, setData] = useState<NpmDataResponse | null>(null);
+  const [data, setData] = useState<NpmDownloadsEnvelope | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searched, setSearched] = useState(false);
@@ -52,15 +31,12 @@ export default function NpmDataPage() {
   const isInitialMount = useRef(true);
   const prevChartRefDOM = useRef<HTMLDivElement | null>(null);
 
-  // 通用查询函数
   const fetchNpmData = useCallback(async (params: QueryParams) => {
-    console.log("📡 开始查询:", params);
     try {
       setLoading(true);
       setError(null);
 
-      console.log("🔗 使用 Axios 发送请求...");
-      const result = await apiGet<ApiWrappedResponse>("/npmdata/downloads", {
+      const result = await apiGet<ApiResponse<NpmDownloadsEnvelope>>("/npmdata/downloads", {
         params: {
           start: params.start,
           end: params.end,
@@ -68,20 +44,12 @@ export default function NpmDataPage() {
         },
       });
 
-      if (!result.data.success) {
-        throw new Error("API 返回失败");
-      }
-
-      console.log(
-        `✅ 查询成功: 获取 ${result.data.data.downloads.length} 条记录`,
-        result.data.data.downloads[0],
-        result.data.data.downloads[result.data.data.downloads.length - 1],
-      );
+      if (!result.data.success) throw new Error("API 返回失败");
 
       setData(result.data);
       setSearched(true);
     } catch (err) {
-      console.error("❌ 查询失败:", err);
+      if (process.env.NODE_ENV === "development") console.error(err);
       setError(err instanceof Error ? err.message : "查询失败，请重试");
       setData(null);
     } finally {
@@ -89,16 +57,12 @@ export default function NpmDataPage() {
     }
   }, []);
 
-  // 初始化查询（仅首次加载）
   useEffect(() => {
     if (!isInitialMount.current) return;
     isInitialMount.current = false;
-
-    console.log("🚀 页面初始化，执行首次查询");
-    fetchNpmData(queryParams);
+    void fetchNpmData(queryParams);
   }, [fetchNpmData, queryParams]);
 
-  // 🔧 新增：组件卸载时清理 ECharts 实例
   useEffect(() => {
     return () => {
       if (chartInstance.current) {
@@ -108,13 +72,10 @@ export default function NpmDataPage() {
     };
   }, []);
 
-  // 更新图表 - 关键：监听 DOM 节点和数据的变化
   useEffect(() => {
     if (!chartRef.current || !data) return;
 
-    // 🔧 关键检测：DOM 节点是否被替换了
     if (prevChartRefDOM.current !== chartRef.current) {
-      console.log("🔄 检测到 DOM 节点被替换，销毁旧实例");
       if (chartInstance.current) {
         chartInstance.current.dispose();
         chartInstance.current = null;
@@ -122,40 +83,45 @@ export default function NpmDataPage() {
       prevChartRefDOM.current = chartRef.current;
     }
 
-    // 初始化或重新初始化 ECharts
     if (!chartInstance.current) {
-      console.log("✨ 创建新的 ECharts 实例");
       chartInstance.current = echarts.init(chartRef.current, null, {
         renderer: "canvas",
         useDirtyRect: true,
       });
     }
 
-    const downloads = data.data.downloads;
+    const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const accent = isDark ? "#2997ff" : "#0066cc";
+    const titleColor = isDark ? "#f5f5f7" : "#1d1d1f";
+    const axisMuted = isDark ? "#a1a1a6" : "#86868b";
+    const splitLine = isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)";
+
+    const payload = data.data;
+    const downloads = payload.downloads;
     const days = downloads.map((d) => d.day);
     const downloadCounts = downloads.map((d) => d.downloads);
 
     const chartOption: echarts.EChartsOption = {
       title: {
-        text: `${data.data.package} 下载数据统计`,
+        text: `${payload.package} 下载量`,
         left: "center",
         textStyle: {
-          color: "#1a202c",
-          fontSize: 18,
-          fontWeight: "bold",
+          color: titleColor,
+          fontSize: 16,
+          fontWeight: 600,
         },
       },
       tooltip: {
         trigger: "axis",
-        backgroundColor: "rgba(0, 0, 0, 0.8)",
-        borderColor: "transparent",
+        backgroundColor: isDark ? "rgba(28,28,30,0.94)" : "rgba(255,255,255,0.96)",
+        borderColor: isDark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.06)",
         textStyle: {
-          color: "#fff",
+          color: titleColor,
         },
         axisPointer: {
           type: "cross",
           lineStyle: {
-            color: "rgba(102, 126, 234, 0.3)",
+            color: isDark ? "rgba(41,151,255,0.35)" : "rgba(0,102,204,0.35)",
           },
         },
       },
@@ -170,27 +136,23 @@ export default function NpmDataPage() {
         type: "category",
         data: days,
         axisLabel: {
-          color: "#718096",
+          color: axisMuted,
           rotate: 45,
         },
       },
       yAxis: {
         type: "value",
         axisLabel: {
-          color: "#718096",
+          color: axisMuted,
           formatter: (value) => {
-            if (value >= 1000000) {
-              return (value / 1000000).toFixed(1) + "M";
-            }
-            if (value >= 1000) {
-              return (value / 1000).toFixed(1) + "K";
-            }
-            return value.toString();
+            if (value >= 1000000) return (value / 1000000).toFixed(1) + "M";
+            if (value >= 1000) return (value / 1000).toFixed(1) + "K";
+            return String(value);
           },
         },
         splitLine: {
           lineStyle: {
-            color: "#e2e8f0",
+            color: splitLine,
           },
         },
       },
@@ -201,8 +163,8 @@ export default function NpmDataPage() {
           smooth: true,
           sampling: "lttb",
           lineStyle: {
-            color: "#667eea",
-            width: 3,
+            color: accent,
+            width: 2.5,
           },
           areaStyle: {
             color: {
@@ -212,14 +174,14 @@ export default function NpmDataPage() {
               x2: 0,
               y2: 1,
               colorStops: [
-                { offset: 0, color: "rgba(102, 126, 234, 0.3)" },
-                { offset: 1, color: "rgba(102, 126, 234, 0.05)" },
+                { offset: 0, color: isDark ? "rgba(41,151,255,0.22)" : "rgba(0,102,204,0.18)" },
+                { offset: 1, color: isDark ? "rgba(41,151,255,0.02)" : "rgba(0,102,204,0.02)" },
               ],
             },
           },
           itemStyle: {
-            color: "#667eea",
-            borderColor: "#fff",
+            color: accent,
+            borderColor: isDark ? "#1c1c1e" : "#fff",
             borderWidth: 2,
           },
           symbol: "circle",
@@ -227,7 +189,7 @@ export default function NpmDataPage() {
           emphasis: {
             itemStyle: {
               borderWidth: 2,
-              shadowColor: "rgba(102, 126, 234, 0.5)",
+              shadowColor: isDark ? "rgba(41,151,255,0.45)" : "rgba(0,102,204,0.35)",
               shadowBlur: 10,
             },
           },
@@ -255,20 +217,19 @@ export default function NpmDataPage() {
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-
     await fetchNpmData(queryParams);
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.content}>
-        <div className={styles.header}>
-          <h1>📊 NPM 包下载统计</h1>
-          <p>查询任意npm包的下载数据并实时可视化</p>
-        </div>
+    <div className={apple.shell}>
+      <div className={styles.inner}>
+        <header className={`${apple.pageHero} ${styles.pageHeader}`}>
+          <p className={apple.eyebrow}>数据</p>
+          <h1 className={apple.pageTitle}>NPM 下载统计</h1>
+          <p className={apple.pageLede}>选择日期区间与包名，查看 npm registry 公开下载量并生成趋势图。</p>
+        </header>
 
-        {/* 搜索表单 */}
-        <div className={styles.searchCard}>
+        <div className={styles.formPanel}>
           <form onSubmit={handleSearch} className={styles.searchForm}>
             <div className={styles.formGroup}>
               <label htmlFor="start">开始日期</label>
@@ -304,33 +265,22 @@ export default function NpmDataPage() {
               />
             </div>
 
-            <button type="submit" className={styles.searchButton} disabled={loading}>
-              {loading ? "查询中..." : "🔍 查询"}
+            <button type="submit" className={apple.primaryButton} disabled={loading}>
+              {loading ? "查询中…" : "查询"}
             </button>
           </form>
         </div>
 
-        {/* 错误提示 */}
-        {error && (
-          <div className={styles.errorContainer}>
-            <h3>⚠️ 错误</h3>
-            <p>{error}</p>
+        {error ? <div className={apple.errorBanner}>{error}</div> : null}
+
+        {loading ? <NpmDataSkeleton /> : null}
+
+        {searched && !loading && data ? (
+          <div className={styles.chartPanel}>
+            <h2 className={styles.chartTitle}>趋势</h2>
+            <div className={styles.chartContainer} ref={chartRef} />
           </div>
-        )}
-
-        {/* 加载中 */}
-        {loading && <NpmDataSkeleton />}
-
-        {/* 数据展示 */}
-        {searched && !loading && data && (
-          <>
-            {/* 图表 */}
-            <div className={styles.chartCard}>
-              <h2>📈 下载趋势图</h2>
-              <div className={styles.chartContainer} ref={chartRef}></div>
-            </div>
-          </>
-        )}
+        ) : null}
       </div>
     </div>
   );

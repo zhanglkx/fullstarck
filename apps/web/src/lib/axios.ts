@@ -40,58 +40,46 @@ apiClient.interceptors.request.use(
       }
     }
 
-    // 可以在这里添加其他请求处理
-    console.log("请求发送:", config);
+    if (process.env.NODE_ENV === "development") console.debug("[api] request", config.url);
     return config;
   },
   (error) => {
-    console.error("请求错误:", error);
+    if (process.env.NODE_ENV === "development") console.error("[api] request error", error);
     return Promise.reject(error);
   },
 );
 
 // 响应拦截器
 apiClient.interceptors.response.use(
-  (response: AxiosResponse) => {
-    // 处理响应数据
-    console.log("响应收到:", response);
-    return response.data;
-  },
+  (response: AxiosResponse) => response.data,
   (error) => {
-    // 处理响应错误
+    const isDev = process.env.NODE_ENV === "development";
     if (error.response) {
-      // 服务器响应了错误状态码
       const status = error.response.status;
 
       switch (status) {
         case 401:
-          // 未授权 - 清除 token 并重定向到登录
           if (typeof window !== "undefined") {
             localStorage.removeItem("auth_token");
             window.location.href = "/login";
           }
           break;
         case 403:
-          // 禁止访问
-          console.error("禁止访问");
+          if (isDev) console.warn("[api] forbidden");
           break;
         case 404:
-          // 未找到
-          console.error("资源未找到");
+          if (isDev) console.warn("[api] not found");
           break;
         case 500:
-          // 服务器错误
-          console.error("服务器错误");
+          if (isDev) console.error("[api] server error");
           break;
         default:
-          console.error("请求失败:", error.response.data);
+          if (isDev) console.error("[api] request failed", error.response.data);
       }
-    } else if (error.request) {
-      // 请求已发出但没有收到响应
-      console.error("没有收到响应:", error.request);
-    } else {
-      // 其他错误
-      console.error("错误:", error.message);
+    } else if (error.request && isDev) {
+      console.error("[api] no response", error.request);
+    } else if (isDev) {
+      console.error("[api]", error.message);
     }
 
     return Promise.reject(error);

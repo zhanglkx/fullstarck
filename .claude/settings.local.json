@@ -54,7 +54,8 @@
       "Bash(curl -s \"http://localhost:3000/npmdata/downloads?start=2024-01-01&end=2024-01-10&package=react\")"
     ],
     "additionalDirectories": [
-      "/Users/temptrip/Documents/GitHub/fullstarck/apps/api/src/common"
+      "/Users/temptrip/Documents/GitHub/fullstarck/apps/api/src/common",
+      "/Users/temptrip/Documents/GitHub/fullstarck/docs/web"
     ]
   }
 }

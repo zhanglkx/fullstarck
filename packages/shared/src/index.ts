@@ -4,6 +4,8 @@ export const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:3000';
 // ===== 类型定义 =====
 export * from './types/api.types';
 export * from './types/qrcode.types';
+export * from './types/serverstate.types';
+export * from './types/npm.types';
 
 // ===== 工具函数 =====
 

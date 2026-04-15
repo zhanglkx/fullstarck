@@ -25,6 +25,7 @@ import {
 } from "@ant-design/icons";
 import { getServerState, ServerState } from "@/api/serverstate";
 import { ServerStateSkeleton } from "@/components/skeletons";
+import apple from "@/styles/apple-page.module.scss";
 import styles from "./page.module.scss";
 
 export const dynamic = "force-dynamic";
@@ -41,7 +42,7 @@ export default function ServerStateMonitor() {
       const response = await getServerState();
       setData(response);
     } catch (error) {
-      console.error("Failed to fetch server state:", error);
+      if (process.env.NODE_ENV === "development") console.error(error);
       message.error("获取服务器数据失败");
     } finally {
       setLoading(false);
@@ -55,7 +56,7 @@ export default function ServerStateMonitor() {
       setData(response);
       message.success("数据刷新成功");
     } catch (error) {
-      console.error("Failed to fetch server state:", error);
+      if (process.env.NODE_ENV === "development") console.error(error);
       message.error("获取服务器数据失败");
     } finally {
       setRefreshing(false);
@@ -66,7 +67,6 @@ export default function ServerStateMonitor() {
     fetchServerState();
   }, [fetchServerState]);
 
-  // Auto-refresh every 5 seconds
   useEffect(() => {
     if (!autoRefresh) return;
 
@@ -76,9 +76,9 @@ export default function ServerStateMonitor() {
         .then((response) => {
           setData(response);
         })
-        .catch((error) => {
-          console.error("Auto-refresh failed:", error);
-          message.error("自动刷新失败");
+        .catch(() => {
+          message.error("自动刷新失败，已暂停自动刷新");
+          setAutoRefresh(false);
         })
         .finally(() => {
           setRefreshing(false);
@@ -89,12 +89,16 @@ export default function ServerStateMonitor() {
   }, [autoRefresh]);
 
   if (loading) {
-    return <ServerStateSkeleton />;
+    return (
+      <div className={`${apple.shell} ${styles.pageRoot}`}>
+        <ServerStateSkeleton />
+      </div>
+    );
   }
 
   if (!data) {
     return (
-      <div className={styles.container}>
+      <div className={`${apple.shell} ${styles.pageRoot} ${styles.emptyWrap}`}>
         <Empty description="无法加载数据" />
       </div>
     );
@@ -175,13 +179,22 @@ export default function ServerStateMonitor() {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={`${apple.shell} ${styles.pageRoot}`}>
+      <header className={apple.pageHero}>
+        <p className={apple.eyebrow}>观测</p>
+        <h1 className={apple.pageTitle}>服务器状态</h1>
+        <p className={apple.pageLede}>
+          实时查看 CPU、内存、磁盘与系统信息。自动刷新可在异常时暂停，避免无效重试。
+        </p>
+      </header>
+
       <Card className={styles.headerCard}>
         <div className={styles.header}>
-          <h1>
-            <DesktopOutlined /> 服务器状态监控
-          </h1>
-          <Space>
+          <h2 className={styles.title}>
+            <DesktopOutlined aria-hidden />
+            概览与控制
+          </h2>
+          <Space className={styles.toolbar}>
             <Button
               type={autoRefresh ? "primary" : "default"}
               onClick={() => setAutoRefresh(!autoRefresh)}
@@ -201,7 +214,7 @@ export default function ServerStateMonitor() {
       </Card>
 
       {/* System Info */}
-      <Card title="系统信息" className={styles.card}>
+      <Card title="系统信息" className={styles.dataCard}>
         <Row gutter={[24, 24]}>
           <Col xs={24} sm={12} lg={6}>
             <Statistic
@@ -225,7 +238,7 @@ export default function ServerStateMonitor() {
       {/* CPU & Memory Overview */}
       <Row gutter={[24, 24]}>
         <Col xs={24} md={12}>
-          <Card title="CPU 状态" className={styles.card}>
+          <Card title="CPU 状态" className={styles.dataCard}>
             <div className={styles.statusContent}>
               <div className={styles.progressContainer}>
                 <Progress
@@ -234,9 +247,9 @@ export default function ServerStateMonitor() {
                   size={150}
                   strokeColor={getCPUColor(cpuUsage)}
                   format={(percent) => (
-                    <div style={{ textAlign: "center" }}>
-                      <div style={{ fontSize: 24, fontWeight: "bold" }}>{percent}%</div>
-                      <div style={{ fontSize: 12, color: "#666" }}>已用</div>
+                    <div className={styles.progressFormat}>
+                      <div className={styles.progressPercent}>{percent}%</div>
+                      <div className={styles.progressSub}>已用</div>
                     </div>
                   )}
                 />
@@ -265,7 +278,7 @@ export default function ServerStateMonitor() {
         </Col>
 
         <Col xs={24} md={12}>
-          <Card title="内存状态" className={styles.card}>
+          <Card title="内存状态" className={styles.dataCard}>
             <div className={styles.statusContent}>
               <div className={styles.progressContainer}>
                 <Progress
@@ -274,9 +287,9 @@ export default function ServerStateMonitor() {
                   size={150}
                   strokeColor={getMemoryColor(memoryUsage)}
                   format={(percent) => (
-                    <div style={{ textAlign: "center" }}>
-                      <div style={{ fontSize: 24, fontWeight: "bold" }}>{percent}%</div>
-                      <div style={{ fontSize: 12, color: "#666" }}>已用</div>
+                    <div className={styles.progressFormat}>
+                      <div className={styles.progressPercent}>{percent}%</div>
+                      <div className={styles.progressSub}>已用</div>
                     </div>
                   )}
                 />
@@ -308,7 +321,7 @@ export default function ServerStateMonitor() {
       </Row>
 
       {/* Disk Status */}
-      <Card title="磁盘使用情况" className={styles.card}>
+      <Card title="磁盘使用情况" className={`${styles.dataCard} ${styles.tableCard}`}>
         <Table
           columns={diskColumns}
           dataSource={data.disks.map((disk, index) => ({

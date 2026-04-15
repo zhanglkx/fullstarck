@@ -28,6 +28,8 @@ export interface QRCodeGenerate {
 export interface QRCodeCheck {
   /** 二维码当前状态 */
   state: QRCodeState;
+  /** 服务端调试：内存中全部 uuid → 状态（可选） */
+  allStates?: Record<string, QRCodeState>;
 }
 
 /**

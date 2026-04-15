@@ -1,0 +1,174 @@
+/**
+ * 全站子页面共用的 Apple 风格表面与设计令牌。
+ * 在页面根节点使用 .shell，子元素可用 var(--text-primary) 等变量。
+ */
+
+.shell {
+  --text-primary: #1d1d1f;
+  --text-secondary: #6e6e73;
+  --text-tertiary: #86868b;
+  --surface-elevated: #ffffff;
+  --surface-page: #f5f5f7;
+  --stroke-hairline: rgba(0, 0, 0, 0.06);
+  --accent: #0066cc;
+  --danger: #d70015;
+  --success: #248a3d;
+  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.06);
+  --shadow-card-hover: 0 16px 48px rgba(0, 0, 0, 0.1);
+
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1068px;
+  margin: 0 auto;
+  padding: 40px 22px 96px;
+  min-height: 100%;
+
+  @media (max-width: 734px) {
+    padding: 28px 18px 72px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    --text-primary: #f5f5f7;
+    --text-secondary: #a1a1a6;
+    --text-tertiary: #8e8e93;
+    --surface-elevated: #1c1c1e;
+    --surface-page: #000000;
+    --stroke-hairline: rgba(255, 255, 255, 0.08);
+    --accent: #2997ff;
+    --danger: #ff453a;
+    --success: #30d158;
+    --shadow-card: 0 2px 16px rgba(0, 0, 0, 0.35);
+    --shadow-card-hover: 0 20px 56px rgba(0, 0, 0, 0.45);
+  }
+}
+
+.heroGlow {
+  position: absolute;
+  inset: -35% -15% auto -15%;
+  height: 70%;
+  background: radial-gradient(
+    ellipse 65% 50% at 50% 0%,
+    color-mix(in srgb, var(--accent) 14%, transparent),
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.pageHero {
+  position: relative;
+  margin-bottom: 36px;
+  padding-bottom: 8px;
+}
+
+.eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin: 0 0 14px;
+}
+
+.pageTitle {
+  font-size: clamp(28px, 4.2vw, 40px);
+  font-weight: 600;
+  letter-spacing: -0.038em;
+  line-height: 1.1;
+  color: var(--text-primary);
+  margin: 0 0 12px;
+}
+
+.pageLede {
+  max-width: 58ch;
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.5;
+  letter-spacing: -0.015em;
+  color: var(--text-secondary);
+}
+
+.panel {
+  border-radius: 22px;
+  background: var(--surface-page);
+  padding: 28px 22px;
+  border: 1px solid var(--stroke-hairline);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+  @media (max-width: 734px) {
+    padding: 22px 16px;
+    border-radius: 18px;
+  }
+}
+
+.surfaceCard {
+  border-radius: 18px;
+  background: var(--surface-elevated);
+  border: 1px solid var(--stroke-hairline);
+  box-shadow: var(--shadow-card);
+}
+
+.muted {
+  color: var(--text-tertiary);
+}
+
+.accent {
+  color: var(--accent);
+}
+
+.sectionLabel {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-tertiary);
+  margin: 0 0 16px;
+}
+
+.hairline {
+  height: 1px;
+  margin: 28px 0;
+  border: none;
+  background: var(--stroke-hairline);
+}
+
+.primaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 980px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  color: #fff;
+  background: var(--accent);
+  transition:
+    opacity 0.2s ease,
+    transform 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
+
+  &:hover:not(:disabled) {
+    opacity: 0.92;
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.errorBanner {
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--danger) 12%, var(--surface-elevated));
+  border: 1px solid color-mix(in srgb, var(--danger) 28%, transparent);
+  color: var(--danger);
+  font-size: 14px;
+  line-height: 1.45;
+  margin-bottom: 24px;
+}

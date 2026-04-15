@@ -2,43 +2,51 @@ import styles from "./page.module.scss";
 import { apiGet } from "@/lib/api-client";
 import Image from "next/image";
 import QRCodeCheckComponent from "@/components/qrcode";
-import { ApiResponse, QRCodeGenerate } from "@fullstack/shared";
-import { Button } from "antd";
+import type { ApiResponse, QRCodeGenerate } from "@fullstack/shared";
+import apple from "@/styles/apple-page.module.scss";
 
-/**
- * 获取二维码数据
- * @returns 二维码数据（uuid 和 dataUrl）
- */
 async function fetchApiData() {
   try {
-    const result = await apiGet<ApiResponse<QRCodeGenerate>>("/qrcode/generate");
-
-    return result;
+    return await apiGet<ApiResponse<QRCodeGenerate>>("/qrcode/generate");
   } catch (err) {
-    console.error("❌请求失败:", err);
+    if (process.env.NODE_ENV === "development") console.error("qrcode generate failed:", err);
   }
 }
 
 export default async function QrcodePage() {
   const result = await fetchApiData();
+  const payload = result?.data;
+  const uuid = payload?.uuid ?? "";
 
   return (
-    <div className={styles.container}>
-      <h1>QR Code Generator</h1>
-      <p>Click the button below to generate a QR code.</p>
-      <div>{result?.data?.uuid || ""}</div>
+    <div className={apple.shell}>
+      <header className={apple.pageHero}>
+        <p className={apple.eyebrow}>流程</p>
+        <h1 className={apple.pageTitle}>二维码演示</h1>
+        <p className={apple.pageLede}>
+          服务端生成二维码内容，浏览器展示图片并轮询状态；可用于模拟扫码登录类流程。
+        </p>
+      </header>
 
-      <Image
-        src={result?.data.dataUrl || ""}
-        alt="Generated QR Code"
-        width={256}
-        height={256}
-        unoptimized
-      />
+      <div className={styles.panel}>
+        {uuid ? <p className={styles.uuid}>{uuid}</p> : null}
+        <div className={styles.qrFrame}>
+          {payload?.dataUrl ? (
+            <Image
+              src={payload.dataUrl}
+              alt="生成的二维码"
+              width={256}
+              height={256}
+              unoptimized
+              priority
+            />
+          ) : (
+            <div className={styles.placeholder}>未能生成二维码</div>
+          )}
+        </div>
+      </div>
 
-      <Button type="primary">Check QR Code Status</Button>
-
-      <QRCodeCheckComponent uuid={result?.data?.uuid || ""} />
+      {uuid ? <QRCodeCheckComponent uuid={uuid} /> : null}
     </div>
   );
 }

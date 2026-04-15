@@ -1,90 +1,56 @@
-# 文档目录
+# Web 应用文档
 
-本目录包含 Next.js 应用的开发文档和问题解决方案。
+## 概述
 
-## 📚 文档列表
+Web 应用基于 **Next.js 16** + **React 19** + **Ant Design 6** 构建，使用 App Router 和 Server Components。
 
-### 1. [快速参考 (QUICK-REFERENCE.md)](./QUICK-REFERENCE.md)
-**快速查阅 IP 访问问题的修复总结**
-- ⏱️ 阅读时间：2 分钟
-- 📖 内容：问题总结、修改清单、关键代码、验证方法
-- 🎯 适用场景：快速查阅、团队分享
+### 技术栈
 
-### 2. [完整分析 (IP-ACCESS-FIX.md)](./IP-ACCESS-FIX.md)
-**IP 访问问题的深度技术分析和解决方案**
-- ⏱️ 阅读时间：10 分钟
-- 📖 内容：问题根因、技术原理、请求流程、最佳实践
-- 🎯 适用场景：深入学习、架构设计、技术分享
-
-### 3. [测试验证 (TESTING.md)](./TESTING.md)
-**服务器配置验证和测试步骤**
-- ⏱️ 阅读时间：3 分钟
-- 📖 内容：验证结果、测试命令、预期输出、故障排查
-- 🎯 适用场景：问题验证、自测、CI/CD
-
----
-
-## 🚀 快速开始
-
-### 本地开发（默认）
-```bash
-pnpm dev
-# 访问: http://localhost:3001
-```
-
-### 网络模式（IP 访问）
-```bash
-pnpm dev:network
-# 访问: http://10.32.75.123:3001
-```
-
----
-
-## 📋 修改总结
-
-本次修复涉及以下文件：
-
-| 文件 | 修改类型 | 说明 |
-|-----|---------|------|
-| `next.config.ts` | ✏️ 修改 | 添加 HMR 跨域配置 + API 代理 |
-| `src/lib/axios.ts` | ✏️ 修改 | 动态设置 baseURL |
-| `package.json` | ➕ 新增 | 添加 `dev:network` 脚本 |
-| `.env.local` | ✏️ 优化 | 完善配置说明 |
-| `.env.example` | ✏️ 优化 | 完善配置模板 |
-
----
-
-## 🎯 关键问题
-
-### 问题
-用 IP 地址访问 Next.js 应用时，客户端组件不工作。
-
-### 根本原因
-1. HMR WebSocket 跨域阻止
-2. axios baseURL 配置错误
-
-### 解决方案
-1. 配置 `allowedDevOrigins` 允许 IP 访问
-2. axios 拦截器动态设置 baseURL
-
----
-
-## 🔗 相关链接
-
-- [Next.js allowedDevOrigins 文档](https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins)
-- [Next.js Rewrites 文档](https://nextjs.org/docs/app/api-reference/next-config-js/rewrites)
-- [Axios Interceptors 文档](https://axios-http.com/docs/interceptors)
-
----
-
-## 📝 维护记录
-
-| 日期 | 内容 | 作者 |
+| 技术 | 版本 | 用途 |
 |------|------|------|
-| 2026-04-14 | 修复 IP 访问问题，创建文档 | Claude |
+| Next.js | 16 | 框架（App Router） |
+| React | 19 | UI 库（Server Components） |
+| Ant Design | 6 | UI 组件库 |
+| Axios | - | HTTP 客户端 |
+| ECharts | - | 图表可视化 |
+| SCSS Modules | - | 样式方案 |
+
+### 页面结构
+
+```
+app/
+├── page.tsx              # 首页
+├── layout.tsx            # 根布局（AntdProvider 包裹）
+├── api-test/page.tsx     # API 测试页（Server Component 示例）
+├── serverstate/page.tsx  # 服务器状态监控（CPU/内存/磁盘）
+├── npmdata/page.tsx      # NPM 下载量图表（ECharts）
+└── qrcode/
+    ├── page.tsx          # 二维码生成
+    └── confirm/page.tsx  # 二维码确认扫码
+```
+
+### 核心架构
+
+- **API 层**: `src/lib/axios.ts` + `src/lib/api-client.ts` + `src/api/` 按领域组织
+- **SSR/CSR 适配**: axios 拦截器动态设置 baseURL（服务端直连 / 客户端走 rewrites 代理）
+- **组件**: `src/components/AntdProvider.tsx` 提供主题配置，`src/components/skeletons/` 提供骨架屏
+- **样式**: SCSS Modules + Ant Design 组件样式
+
+## 文档列表
+
+| 文档 | 说明 |
+|------|------|
+| [IP 访问修复](./IP-ACCESS-FIX.md) | Next.js 16 IP 地址访问问题的完整分析与解决方案 |
+| [IP 访问验证](./IP-ACCESS-VERIFY.md) | IP 访问修复后的验证测试步骤 |
+
+## 开发命令
+
+```bash
+pnpm dev:web              # 启动开发服务器（localhost:3001）
+pnpm --filter web build   # 构建生产版本
+pnpm --filter web lint    # ESLint 检查
+```
 
 ---
 
-**文档版本:** 1.0  
-**更新日期:** 2026-04-14  
-**适用版本:** Next.js 16.2.2
+**最后更新:** 2026-04-15

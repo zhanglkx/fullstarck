@@ -1,0 +1,130 @@
+.card {
+  height: 100%;
+
+  :global(.ant-card) {
+    height: 100%;
+    border-radius: 18px;
+    background: var(--surface-elevated);
+    border: 1px solid var(--stroke-hairline);
+    box-shadow: var(--shadow-card);
+    color: var(--text-primary);
+  }
+
+  :global(.ant-card-head) {
+    border-bottom: 1px solid var(--stroke-hairline);
+    background: transparent;
+    min-height: 48px;
+  }
+
+  :global(.ant-card-head-title) {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+  }
+
+  :global(.ant-card-body) {
+    padding: 20px;
+  }
+
+  :global(.ant-statistic-title) {
+    color: var(--text-tertiary);
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  :global(.ant-statistic-content) {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+}
+
+.cardIcon {
+  display: inline-flex;
+  margin-right: 8px;
+  color: var(--accent);
+  vertical-align: -0.15em;
+}
+
+.row {
+  margin-bottom: 24px;
+}
+
+.metaLabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  margin-bottom: 4px;
+}
+
+.metaValue {
+  font-size: 15px;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.metaValueBold {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.desc {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.connectionNote {
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
+
+.space {
+  width: 100%;
+}
+
+.versionTag {
+  margin: 0 !important;
+  padding: 4px 12px !important;
+  border-radius: 980px !important;
+  font-weight: 500 !important;
+  border: none !important;
+  background: color-mix(in srgb, var(--accent) 14%, transparent) !important;
+  color: var(--accent) !important;
+}
+
+.codeCard {
+  margin-top: 8px;
+
+  :global(.ant-card) {
+    border-radius: 18px;
+    background: var(--surface-page);
+    border: 1px solid var(--stroke-hairline);
+  }
+
+  :global(.ant-card-head) {
+    border-bottom: 1px solid var(--stroke-hairline);
+  }
+
+  :global(.ant-card-head-title) {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+}
+
+.pre {
+  margin: 0;
+  padding: 16px 18px;
+  border-radius: 12px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 12px;
+  line-height: 1.55;
+  overflow: auto;
+  color: var(--text-secondary);
+  background: color-mix(in srgb, var(--text-primary) 4%, var(--surface-elevated));
+  border: 1px solid var(--stroke-hairline);
+}
+
