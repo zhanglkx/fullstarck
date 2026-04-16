@@ -191,9 +191,9 @@ findOne(@Param('id') id: string) {
 使用 NestJS 内置异常类：
 
 ```typescript
-import { 
-  BadRequestException, 
-  NotFoundException, 
+import {
+  BadRequestException,
+  NotFoundException,
   UnauthorizedException,
   ForbiddenException,
   InternalServerErrorException,

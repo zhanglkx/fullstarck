@@ -44,7 +44,10 @@ function QRCodeChecker(props: QRCodeScanParams) {
           setPollStopped(true);
           return;
         }
-        const backoff = Math.min(MAX_POLL_MS, BASE_POLL_MS * 2 ** Math.min(consecutiveFailures - 1, 4));
+        const backoff = Math.min(
+          MAX_POLL_MS,
+          BASE_POLL_MS * 2 ** Math.min(consecutiveFailures - 1, 4),
+        );
         schedule(backoff);
       }
     };
@@ -64,7 +67,9 @@ function QRCodeChecker(props: QRCodeScanParams) {
   return (
     <div className={styles.qrcodeWrapper}>
       <p className={styles.status}>
-        {pollStopped ? "轮询已暂停（连续失败次数过多），请稍后手动刷新页面。" : checkRes?.state || "加载中..."}
+        {pollStopped
+          ? "轮询已暂停（连续失败次数过多），请稍后手动刷新页面。"
+          : checkRes?.state || "加载中..."}
       </p>
       <div className={styles.sep} aria-hidden="true" />
 

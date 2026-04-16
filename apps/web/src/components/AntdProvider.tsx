@@ -4,9 +4,10 @@ import { ConfigProvider, ThemeConfig } from "antd";
 import type { ReactNode } from "react";
 
 // Ant Design 主题配置
+// 使用 Apple Blue (#0071e3) 符合 DESIGN.md 规范
 const themeConfig: ThemeConfig = {
   token: {
-    colorPrimary: "#1890ff",
+    colorPrimary: "#0071e3",
     borderRadius: 6,
     fontSize: 14,
   },

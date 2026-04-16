@@ -150,7 +150,7 @@ This automatically creates REST API controller, service, module, DTOs, and entit
 ```typescript
 import Image from 'next/image';
 import { Button } from '@/components/Button';
-import { Button as AntButton } from 'antd';  // Ant Design components
+import { Button as AntButton } from 'antd'; // Ant Design components
 ```
 
 ### Mobile (Expo) Patterns
@@ -169,6 +169,7 @@ All projects share common base configurations:
 **TypeScript**: API and Web inherit from `tsconfig.base.json` for consistency. Mobile uses Expo's base config, Shared extends root config.
 
 **ESLint**: All projects use:
+
 - `projectService: true` + `tsconfigRootDir: import.meta.dirname` for proper Monorepo type checking
 - API uses `recommendedTypeChecked` for strictest checking
 - Mobile uses `recommendedTypeChecked` with relaxed rules for React Native compatibility
@@ -394,7 +395,7 @@ docs/
    - All explanatory documentation goes in `docs/` directory
    - `README.md` files stay in their respective directories (root, apps/api, apps/web, apps/mobile)
    - `CLAUDE.md` and `AGENTS.md` stay at the root or in app directories (project instructions)
-   - Never create documentation files in app directories (apps/*) - move them to `docs/`
+   - Never create documentation files in app directories (apps/\*) - move them to `docs/`
 
 2. **Categorization Rules**:
    - `docs/features/` - Feature implementations, UI components, functional modules

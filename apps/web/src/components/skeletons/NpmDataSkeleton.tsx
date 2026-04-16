@@ -19,17 +19,29 @@ export default function NpmDataSkeleton() {
           <div className={styles.searchForm}>
             <div className={styles.formGroup}>
               <Skeleton.Input active size="small" style={{ width: 80, height: 20 }} />
-              <Skeleton.Input active size="large" style={{ width: "100%", height: 40, marginTop: 8 }} />
+              <Skeleton.Input
+                active
+                size="large"
+                style={{ width: "100%", height: 40, marginTop: 8 }}
+              />
             </div>
 
             <div className={styles.formGroup}>
               <Skeleton.Input active size="small" style={{ width: 80, height: 20 }} />
-              <Skeleton.Input active size="large" style={{ width: "100%", height: 40, marginTop: 8 }} />
+              <Skeleton.Input
+                active
+                size="large"
+                style={{ width: "100%", height: 40, marginTop: 8 }}
+              />
             </div>
 
             <div className={styles.formGroup}>
               <Skeleton.Input active size="small" style={{ width: 80, height: 20 }} />
-              <Skeleton.Input active size="large" style={{ width: "100%", height: 40, marginTop: 8 }} />
+              <Skeleton.Input
+                active
+                size="large"
+                style={{ width: "100%", height: 40, marginTop: 8 }}
+              />
             </div>
 
             <Skeleton.Button active size="large" style={{ width: 120, height: 40 }} />
@@ -38,7 +50,11 @@ export default function NpmDataSkeleton() {
 
         {/* Chart Skeleton */}
         <Card className={styles.chartCard}>
-          <Skeleton.Input active size="medium" style={{ width: 200, height: 28, marginBottom: 24 }} />
+          <Skeleton.Input
+            active
+            size="medium"
+            style={{ width: 200, height: 28, marginBottom: 24 }}
+          />
           <div className={styles.chartContainer}>
             <Skeleton active paragraph={{ rows: 8 }} />
           </div>

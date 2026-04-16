@@ -3,8 +3,9 @@
   top: 0;
   z-index: 50;
   backdrop-filter: saturate(180%) blur(20px);
-  background: color-mix(in srgb, var(--background) 82%, transparent);
-  border-bottom: 1px solid color-mix(in srgb, var(--foreground) 8%, transparent);
+  // Apple 规范：translucent dark glass effect
+  background: rgba(0, 0, 0, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .inner {
@@ -21,7 +22,7 @@
   font-size: 15px;
   font-weight: 600;
   letter-spacing: -0.02em;
-  color: var(--foreground);
+  color: #ffffff; // Apple 规范：白色文字在深色背景上
   text-decoration: none;
   white-space: nowrap;
 }
@@ -42,15 +43,15 @@
   font-size: 13px;
   font-weight: 500;
   letter-spacing: -0.01em;
-  color: color-mix(in srgb, var(--foreground) 78%, transparent);
+  color: rgba(255, 255, 255, 0.8); // Apple 规范：80% 白色
   text-decoration: none;
   transition:
     background 0.2s ease,
     color 0.2s ease;
 
   &:hover {
-    color: var(--foreground);
-    background: color-mix(in srgb, var(--foreground) 6%, transparent);
+    color: #ffffff; // 悬停时 100% 白色
+    background: rgba(255, 255, 255, 0.1);
   }
 }
 
@@ -63,8 +64,8 @@
   padding: 0;
   border: none;
   border-radius: 10px;
-  background: color-mix(in srgb, var(--foreground) 6%, transparent);
-  color: var(--foreground);
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
   cursor: pointer;
 
   @media (min-width: 768px) {
@@ -77,8 +78,8 @@
   flex-direction: column;
   padding: 8px 16px 20px;
   gap: 4px;
-  border-top: 1px solid color-mix(in srgb, var(--foreground) 8%, transparent);
-  background: color-mix(in srgb, var(--background) 96%, transparent);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.92); // 深色背景
 
   @media (min-width: 768px) {
     display: none;
@@ -90,10 +91,10 @@
   border-radius: 12px;
   font-size: 15px;
   font-weight: 500;
-  color: var(--foreground);
+  color: #ffffff;
   text-decoration: none;
 
   &:hover {
-    background: color-mix(in srgb, var(--foreground) 6%, transparent);
+    background: rgba(255, 255, 255, 0.1);
   }
 }

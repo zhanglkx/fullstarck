@@ -11,6 +11,7 @@
 **位置**: `apps/web/src/components/skeletons/ServerStateSkeleton.tsx`
 
 **特点**:
+
 - 模拟服务器监控页面的完整布局
 - 包含头部卡片、系统信息、CPU/内存状态和磁盘信息的骨架
 - 使用圆形骨架模拟环形进度条
@@ -23,6 +24,7 @@
 **位置**: `apps/web/src/components/skeletons/NpmDataSkeleton.tsx`
 
 **特点**:
+
 - 模拟 NPM 数据查询页面的布局
 - 包含标题、搜索表单和图表区域的骨架
 - 渐变背景与原页面保持一致
@@ -35,6 +37,7 @@
 **位置**: `apps/web/src/components/skeletons/QRCodeConfirmSkeleton.tsx`
 
 **特点**:
+
 - 模拟二维码确认页面的中心布局
 - 包含标题、二维码图片和按钮的骨架
 - 卡片式设计，居中显示
@@ -73,6 +76,7 @@
 ### 服务器监控页面 (serverstate/page.tsx)
 
 **修改前**:
+
 ```tsx
 if (loading) {
   return (
@@ -86,8 +90,9 @@ if (loading) {
 ```
 
 **修改后**:
+
 ```tsx
-import { ServerStateSkeleton } from "@/components/skeletons";
+import { ServerStateSkeleton } from '@/components/skeletons';
 
 if (loading) {
   return <ServerStateSkeleton />;
@@ -97,27 +102,34 @@ if (loading) {
 ### NPM 数据页面 (npmdata/page.tsx)
 
 **修改前**:
+
 ```tsx
-{loading && (
-  <div className={styles.chartCard}>
-    <div className={styles.loadingContainer}>
-      <div className={styles.spinner}></div>
-      <p>正在加载数据...</p>
+{
+  loading && (
+    <div className={styles.chartCard}>
+      <div className={styles.loadingContainer}>
+        <div className={styles.spinner}></div>
+        <p>正在加载数据...</p>
+      </div>
     </div>
-  </div>
-)}
+  );
+}
 ```
 
 **修改后**:
-```tsx
-import { NpmDataSkeleton } from "@/components/skeletons";
 
-{loading && <NpmDataSkeleton />}
+```tsx
+import { NpmDataSkeleton } from '@/components/skeletons';
+
+{
+  loading && <NpmDataSkeleton />;
+}
 ```
 
 ### 二维码确认页面 (qrcode/confirm/page.tsx)
 
 **修改前**:
+
 ```tsx
 if (loading) {
   return (
@@ -136,6 +148,7 @@ if (loading) {
 ```
 
 **修改后**:
+
 ```tsx
 import { QRCodeConfirmSkeleton } from "@/components/skeletons";
 
@@ -161,6 +174,7 @@ if (loading) {
 **问题**: 后端返回的数据结构为嵌套的格式，需要正确解析
 
 **解决方案**:
+
 ```tsx
 // 定义正确的类型
 interface ApiWrappedResponse {

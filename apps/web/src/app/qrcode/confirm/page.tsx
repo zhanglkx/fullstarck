@@ -71,11 +71,15 @@ function PageContent() {
         <header className={apple.pageHero}>
           <p className={apple.eyebrow}>确认</p>
           <h1 className={apple.pageTitle}>扫码结果</h1>
-          <p className={apple.pageLede}>模拟客户端扫码后的确认步骤，可调用 /qrcode/confirm 完成流程。</p>
+          <p className={apple.pageLede}>
+            模拟客户端扫码后的确认步骤，可调用 /qrcode/confirm 完成流程。
+          </p>
         </header>
 
         <div className={styles.panel}>
-          <p className={styles.statusLine}>{scanResult?.data.success ? "扫码成功" : "扫码未完成"}</p>
+          <p className={styles.statusLine}>
+            {scanResult?.data.success ? "扫码成功" : "扫码未完成"}
+          </p>
           <p className={styles.hint}>
             若扫码成功，可点击下方按钮模拟用户确认。生产环境应替换为真实身份校验与风控逻辑。
           </p>

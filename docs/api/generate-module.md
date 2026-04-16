@@ -54,6 +54,7 @@ pnpm g:api order
 运行命令后，会出现两个交互式问题：
 
 **1. 选择传输层类型：**
+
 ```
 ? What transport layer do you use?
 ❯ REST API
@@ -62,14 +63,17 @@ pnpm g:api order
   Microservice (non-HTTP)
   WebSockets
 ```
+
 使用 **上下方向键** 选择，**回车** 确认（通常选择 REST API）
 
 **2. 是否生成 CRUD 入口点：**
+
 ```
 ? Would you like to generate CRUD entry points?
 ❯ Yes
   No
 ```
+
 使用 **上下方向键** 选择，**回车** 确认（通常选择 Yes）
 
 ## 生成的文件结构
@@ -95,17 +99,18 @@ src/
 
 脚本会自动生成以下 REST API 端点：
 
-- `POST   /user`       - 创建用户
-- `GET    /user`       - 获取所有用户
-- `GET    /user/:id`   - 获取单个用户
-- `PATCH  /user/:id`   - 更新用户
-- `DELETE /user/:id`   - 删除用户
+- `POST   /user` - 创建用户
+- `GET    /user` - 获取所有用户
+- `GET    /user/:id` - 获取单个用户
+- `PATCH  /user/:id` - 更新用户
+- `DELETE /user/:id` - 删除用户
 
 ## 脚本说明
 
 核心脚本位置：`apps/api/scripts/generate-module.js`
 
 该脚本会：
+
 1. 接收模块名称参数
 2. 调用 `nest g resource` 命令
 3. 提供交互式界面选择传输层类型
@@ -124,6 +129,7 @@ src/
 生成模块后，你需要：
 
 1. **定义 DTO 字段**
+
    ```typescript
    // dto/create-user.dto.ts
    export class CreateUserDto {
@@ -133,6 +139,7 @@ src/
    ```
 
 2. **定义 Entity 字段**
+
    ```typescript
    // entities/user.entity.ts
    export class User {
@@ -143,6 +150,7 @@ src/
    ```
 
 3. **实现 Service 业务逻辑**
+
    ```typescript
    // user.service.ts
    @Injectable()
@@ -155,6 +163,7 @@ src/
    ```
 
 4. **格式化代码**
+
    ```bash
    pnpm format
    ```

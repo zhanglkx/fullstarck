@@ -91,7 +91,12 @@ export default async function ApiTestPage() {
                       <div className={styles.metaLabel}>时间戳</div>
                       <div className={styles.metaValue}>{healthData.timestamp}</div>
                     </div>
-                    <Statistic title="运行时长" value={healthData.uptime} precision={2} suffix="s" />
+                    <Statistic
+                      title="运行时长"
+                      value={healthData.uptime}
+                      precision={2}
+                      suffix="s"
+                    />
                   </Space>
                 ) : null}
               </Card>

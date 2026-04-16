@@ -222,12 +222,12 @@
 
 ## 建议实施顺序（路线图）
 
-| 阶段 | 内容 |
-|------|------|
-| 1 | Logger + HTTP 异常规范化 + 环境变量校验 |
-| 2 | JWT 替换 demo-token + helmet + throttler |
-| 3 | 数据库 + 迁移 + Service 改造 |
-| 4 | Swagger + 单测覆盖 + CI |
+| 阶段 | 内容                                     |
+| ---- | ---------------------------------------- |
+| 1    | Logger + HTTP 异常规范化 + 环境变量校验  |
+| 2    | JWT 替换 demo-token + helmet + throttler |
+| 3    | 数据库 + 迁移 + Service 改造             |
+| 4    | Swagger + 单测覆盖 + CI                  |
 
 ---
 

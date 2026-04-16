@@ -226,7 +226,9 @@ export default function NpmDataPage() {
         <header className={`${apple.pageHero} ${styles.pageHeader}`}>
           <p className={apple.eyebrow}>数据</p>
           <h1 className={apple.pageTitle}>NPM 下载统计</h1>
-          <p className={apple.pageLede}>选择日期区间与包名，查看 npm registry 公开下载量并生成趋势图。</p>
+          <p className={apple.pageLede}>
+            选择日期区间与包名，查看 npm registry 公开下载量并生成趋势图。
+          </p>
         </header>
 
         <div className={styles.formPanel}>

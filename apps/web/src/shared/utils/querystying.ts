@@ -5,7 +5,9 @@ type ParamsOptions = {
   /** 指定 URL，默认自动获取当前页面 URL */
   url?: string;
   /** Server Component 传入的 searchParams（Next.js 16 中是 Promise 或普通对象） */
-  searchParams?: Promise<Record<string, string | string[] | undefined>> | Record<string, string | string[] | undefined>;
+  searchParams?:
+    | Promise<Record<string, string | string[] | undefined>>
+    | Record<string, string | string[] | undefined>;
   /** 数组格式处理方式 */
   arrayFormat?: "bracket" | "index" | "comma" | "separator" | "none";
   /** 是否自动转换数字 */
@@ -36,8 +38,14 @@ type ParamsOptions = {
  * const { uuid } = getUrlParams<{ uuid: string }>({ url: 'https://example.com?uuid=123' });
  * ```
  */
-export function getUrlParams<T = Record<string, any>>(options: ParamsOptions = {}): T {
-  const { url, searchParams, arrayFormat = "bracket", parseNumbers = true, parseBooleans = true } = options;
+export function getUrlParams<T = Record<string, unknown>>(options: ParamsOptions = {}): T {
+  const {
+    url,
+    searchParams,
+    arrayFormat = "bracket",
+    parseNumbers = true,
+    parseBooleans = true,
+  } = options;
 
   // 1. 优先：从传入的 searchParams 中获取（Server Component）
   if (searchParams) {
@@ -46,12 +54,12 @@ export function getUrlParams<T = Record<string, any>>(options: ParamsOptions = {
     if (isPromise) {
       throw new Error(
         "searchParams 是 Promise，请使用 await:\n" +
-        "const params = getUrlParams({ searchParams: await searchParams });"
+          "const params = getUrlParams({ searchParams: await searchParams });",
       );
     }
 
     // 转换 Next.js searchParams 格式
-    const result: Record<string, any> = {};
+    const result: Record<string, unknown> = {};
     for (const [key, value] of Object.entries(searchParams)) {
       if (value === undefined) continue;
 
@@ -102,5 +110,3 @@ export function getUrlParams<T = Record<string, any>>(options: ParamsOptions = {
     decode: true,
   }) as T;
 }
-
-
