@@ -7,6 +7,7 @@ import { NpmdataModule } from '@/npmdata/npmdata.module';
 import { QrcodeModule } from './qrcode/qrcode.module';
 import { UserModule } from './user/user.module';
 import { ServerstateModule } from './serverstate/serverstate.module';
+import { MonitorModule } from './monitor/monitor.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ServerstateModule } from './serverstate/serverstate.module';
     QrcodeModule,
     UserModule,
     ServerstateModule,
+    MonitorModule,
   ],
   controllers: [AppController],
   providers: [AppService],

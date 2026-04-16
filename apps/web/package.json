@@ -10,15 +10,16 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@fullstack/shared": "workspace:*",
     "@ant-design/icons": "^6.1.1",
+    "@fullstack/shared": "workspace:*",
     "antd": "^6.3.5",
     "axios": "^1.14.0",
     "echarts": "^6.0.0",
     "next": "16.2.2",
     "query-string": "^9.3.1",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "socket.io-client": "^4.8.3"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",

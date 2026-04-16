@@ -6,6 +6,8 @@ export * from './types/api.types';
 export * from './types/qrcode.types';
 export * from './types/serverstate.types';
 export * from './types/npm.types';
+export * from './types/websocket.types';
+export * from './types/monitor.types';
 
 // ===== 工具函数 =====
 

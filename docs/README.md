@@ -6,12 +6,13 @@
 
 ### 功能特性文档
 
-| 文档                                                       | 说明                                       |
-| ---------------------------------------------------------- | ------------------------------------------ |
-| [服务器状态监控](./features/SERVER_STATE_MONITOR.md)       | 服务器 CPU、内存、磁盘监控功能的实现与使用 |
-| [SSE 实时推送实现](./features/SSE_IMPLEMENTATION.md)       | SSE 实时数据推送完整实现指南（含学习资源） |
-| [SSE 时间戳刷新动画](./features/SSE_TIMESTAMP_UPDATE.md)   | SSE 时间戳接收与 Apple 风格刷新动画实现    |
-| [骨架屏实现文档](./features/SKELETON.md)                   | Ant Design Skeleton 组件的使用与页面骨架屏 |
+| 文档                                                             | 说明                                                   |
+| ---------------------------------------------------------------- | ------------------------------------------------------ |
+| [服务器状态监控](./features/SERVER_STATE_MONITOR.md)             | 服务器 CPU、内存、磁盘监控功能的实现与使用             |
+| [SSE 实时推送实现](./features/SSE_IMPLEMENTATION.md)             | SSE 实时数据推送完整实现指南（含学习资源）             |
+| [SSE 时间戳刷新动画](./features/SSE_TIMESTAMP_UPDATE.md)         | SSE 时间戳接收与 Apple 风格刷新动画实现                |
+| [WebSocket 实时监控](./features/WEBSOCKET_REALTIME_MONITOR.md)   | WebSocket 双向实时监控系统（GPU、网络、进程等）完整实现 |
+| [骨架屏实现文档](./features/SKELETON.md)                         | Ant Design Skeleton 组件的使用与页面骨架屏             |
 
 ### Monorepo 指南
 

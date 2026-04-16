@@ -98,9 +98,96 @@
 .header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   flex-wrap: wrap;
   gap: 16px;
+}
+
+.headerMeta {
+  justify-content: flex-end;
+}
+
+.channelGroup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+}
+
+.channelLabel {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: -0.12px;
+  line-height: 1.33;
+  color: var(--text-tertiary);
+  min-width: 5.5em;
+}
+
+.channelTag {
+  margin-inline-end: 0 !important;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  background: var(--surface-page) !important;
+}
+
+.channelTagOn {
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--surface-page)) !important;
+}
+
+.alertBanner {
+  margin-top: 16px;
+  border-radius: 8px;
+  border: none !important;
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--surface-elevated)) !important;
+}
+
+.categoryBlock {
+  margin-bottom: 8px;
+}
+
+.categoryHeading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 14px;
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: 0.231px;
+  line-height: 1.19;
+  color: var(--text-primary);
+}
+
+.categoryHeadingIcon {
+  display: inline-flex;
+  color: var(--accent);
+  font-size: 22px;
+}
+
+.subRow {
+  margin-top: 0;
+}
+
+.nestedMetricCard {
+  :global(.ant-card) {
+    border-radius: 8px;
+    background: var(--surface-page);
+    border: 1px solid var(--stroke-hairline);
+    box-shadow: none;
+  }
+}
+
+.neutralTag {
+  margin: 0 !important;
+  color: var(--text-primary) !important;
+  background: var(--surface-page) !important;
+  border-color: var(--stroke-hairline) !important;
+}
+
+.numericStrong {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
 }
 
 .title {
