@@ -120,7 +120,7 @@ export default async function ApiTestPage() {
                     </div>
                     <div>
                       <div className={styles.metaLabel}>版本</div>
-                      <Tag bordered={false} className={styles.versionTag}>
+                      <Tag variant="filled" className={styles.versionTag}>
                         {apiInfo.version}
                       </Tag>
                     </div>
