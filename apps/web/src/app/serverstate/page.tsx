@@ -1,94 +1,30 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { Card, Row, Col, Progress, Table, Statistic, Divider, Tag, Empty } from "antd";
 import {
-  Card,
-  Row,
-  Col,
-  Progress,
-  Table,
-  Space,
-  Button,
-  Empty,
-  message,
-  Statistic,
-  Divider,
-  Tag,
-} from "antd";
-import {
-  ReloadOutlined,
   DesktopOutlined,
   AppstoreOutlined,
   DatabaseOutlined,
   GlobalOutlined,
   WindowsOutlined,
+  ClockCircleOutlined,
 } from "@ant-design/icons";
-import { getServerState, ServerState } from "@/api/serverstate";
+import { useServerStateStream } from "@/api/serverstate";
 import { ServerStateSkeleton } from "@/components/skeletons";
 import apple from "@/styles/apple-page.module.scss";
 import styles from "./page.module.scss";
+import { useMemo } from "react";
 
 export const dynamic = "force-dynamic";
 
 export default function ServerStateMonitor() {
-  const [data, setData] = useState<ServerState | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [refreshing, setRefreshing] = useState<boolean>(false);
-  const [autoRefresh, setAutoRefresh] = useState<boolean>(true);
+  // 使用 SSE Hook
+  const { data, error, isConnected, lastUpdateTime } = useServerStateStream();
 
-  const fetchServerState = useCallback(async () => {
-    try {
-      setLoading(true);
-      const response = await getServerState();
-      setData(response);
-    } catch (error) {
-      if (process.env.NODE_ENV === "development") console.error(error);
-      message.error("获取服务器数据失败");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  // 格式化更新时间
+  const formattedTime = useMemo(() => new Date(lastUpdateTime).toLocaleString(), [lastUpdateTime]);
 
-  const handleRefresh = useCallback(async () => {
-    try {
-      setRefreshing(true);
-      const response = await getServerState();
-      setData(response);
-      message.success("数据刷新成功");
-    } catch (error) {
-      if (process.env.NODE_ENV === "development") console.error(error);
-      message.error("获取服务器数据失败");
-    } finally {
-      setRefreshing(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchServerState();
-  }, [fetchServerState]);
-
-  useEffect(() => {
-    if (!autoRefresh) return;
-
-    const interval = setInterval(() => {
-      setRefreshing(true);
-      getServerState()
-        .then((response) => {
-          setData(response);
-        })
-        .catch(() => {
-          message.error("自动刷新失败，已暂停自动刷新");
-          setAutoRefresh(false);
-        })
-        .finally(() => {
-          setRefreshing(false);
-        });
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [autoRefresh]);
-
-  if (loading) {
+  if (!isConnected || !data) {
     return (
       <div className={`${apple.shell} ${styles.pageRoot}`}>
         <ServerStateSkeleton />
@@ -96,7 +32,7 @@ export default function ServerStateMonitor() {
     );
   }
 
-  if (!data) {
+  if (error) {
     return (
       <div className={`${apple.shell} ${styles.pageRoot} ${styles.emptyWrap}`}>
         <Empty description="无法加载数据" />
@@ -194,22 +130,11 @@ export default function ServerStateMonitor() {
             <DesktopOutlined aria-hidden />
             概览与控制
           </h2>
-          <Space className={styles.toolbar}>
-            <Button
-              type={autoRefresh ? "primary" : "default"}
-              onClick={() => setAutoRefresh(!autoRefresh)}
-            >
-              {autoRefresh ? "自动刷新中" : "自动刷新关闭"}
-            </Button>
-            <Button
-              type="primary"
-              icon={<ReloadOutlined spin={refreshing} />}
-              onClick={handleRefresh}
-              loading={refreshing}
-            >
-              手动刷新
-            </Button>
-          </Space>
+          <div className={styles.updateTime} key={lastUpdateTime}>
+            <ClockCircleOutlined className={styles.updateIcon} />
+            <span className={styles.updateLabel}>最后更新</span>
+            <span className={styles.updateValue}>{formattedTime}</span>
+          </div>
         </div>
       </Card>
 

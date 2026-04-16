@@ -37,4 +37,5 @@ export interface ServerState {
   memory: MemInfo;
   disks: DiskInfo[];
   sys: SysInfo;
+  timestamp?: number; // SSE 时间戳（毫秒）
 }
