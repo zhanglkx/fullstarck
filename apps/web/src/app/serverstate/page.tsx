@@ -601,7 +601,7 @@ export default function ServerStateMonitor() {
           <Card title="GPU" className={`${styles.dataCard} ${styles.tableCard}`}>
             <Table
               dataSource={realtime.gpu}
-              rowKey={(r, i) => `${r.model}-${r.vendor}-${i}`}
+              rowKey={(r) => `${r.model}|${r.vendor}|${r.vram}`}
               pagination={false}
               scroll={{ x: GPU_COL_WIDTH }}
               columns={gpuColumns}

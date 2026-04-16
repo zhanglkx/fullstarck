@@ -11,7 +11,12 @@ import {
 import { Logger } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { MonitorService } from './monitor.service';
-import type { ClientMessage, MonitorModule, ServerMessage } from '@fullstack/shared';
+import type {
+  ClientMessage,
+  MonitorModule,
+  RealtimeMonitorData,
+  ServerMessage,
+} from '@fullstack/shared';
 
 @WebSocketGateway({
   namespace: '/monitor', // WebSocket 命名空间：ws://localhost:3000/monitor
@@ -101,7 +106,7 @@ export class MonitorGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 
     try {
       const fullData = await this.monitorService.getFullMonitorData([module]);
-      const responseData = fullData[module];
+      const responseData = getMonitorSlice(fullData, module);
 
       const message: ServerMessage = {
         type: 'response',
@@ -136,25 +141,27 @@ export class MonitorGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     // 如果已经在推送，先停止
     this.stopPushing(client.id);
 
-    const interval = setInterval(async () => {
-      const subscriptions = this.clientSubscriptions.get(client.id);
-      if (!subscriptions || subscriptions.size === 0) {
-        return;
-      }
+    const interval = setInterval(() => {
+      void (async () => {
+        const subscriptions = this.clientSubscriptions.get(client.id);
+        if (!subscriptions || subscriptions.size === 0) {
+          return;
+        }
 
-      try {
-        const modules = Array.from(subscriptions);
-        const data = await this.monitorService.getFullMonitorData(modules);
+        try {
+          const modules = Array.from(subscriptions);
+          const data = await this.monitorService.getFullMonitorData(modules);
 
-        const message: ServerMessage = {
-          type: 'data',
-          payload: data,
-        };
+          const message: ServerMessage = {
+            type: 'data',
+            payload: data,
+          };
 
-        client.emit('message', message);
-      } catch (error) {
-        this.logger.error(`Push error for client ${client.id}:`, error);
-      }
+          client.emit('message', message);
+        } catch (error) {
+          this.logger.error(`Push error for client ${client.id}:`, error);
+        }
+      })();
     }, 2000); // 每 2 秒推送一次
 
     this.pushIntervals.set(client.id, interval);
@@ -168,6 +175,35 @@ export class MonitorGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     if (interval) {
       clearInterval(interval);
       this.pushIntervals.delete(clientId);
+    }
+  }
+}
+
+function getMonitorSlice(data: RealtimeMonitorData, module: MonitorModule): unknown {
+  switch (module) {
+    case 'cpu':
+      return data.cpu;
+    case 'memory':
+      return data.memory;
+    case 'disk':
+      return data.disks;
+    case 'sys':
+      return data.sys;
+    case 'gpu':
+      return data.gpu;
+    case 'network':
+      return data.network;
+    case 'processes':
+      return data.topProcesses;
+    case 'temperature':
+      return data.temperature;
+    case 'load':
+      return data.loadAverage;
+    case 'docker':
+      return data.docker;
+    default: {
+      const _exhaustive: never = module;
+      return _exhaustive;
     }
   }
 }
