@@ -12,7 +12,7 @@ This is a **pnpm workspace monorepo** containing a full-stack application:
 - `packages/shared` - Shared TypeScript utilities and types
 
 **Package Manager**: pnpm 10.33.0 (ALWAYS use `pnpm`, never npm or yarn)
-**Node.js**: >= 20.0.0
+**Node.js**: >= 24.0.0
 
 ## Essential Commands
 

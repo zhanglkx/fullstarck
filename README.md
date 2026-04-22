@@ -24,7 +24,7 @@
 
 ## 开发环境要求
 
-- Node.js >= 20.0.0
+- Node.js >= 24.0.0
 - pnpm >= 10.0.0
 - 对于移动端开发：Expo CLI（可选）
 
@@ -146,6 +146,61 @@ cp .env.example .env
 ```typescript
 import { API_BASE_URL, formatDate } from '@fullstack/shared';
 ```
+
+## Docker
+
+项目已提供完整的 Docker 化方案，包含：
+
+| 服务       | 镜像                    | 端口（宿主机）      | 说明                               |
+| ---------- | ----------------------- | ------------------- | ---------------------------------- |
+| `postgres` | `postgres:17-alpine`    | `5432`              | 关系型数据库，带健康检查           |
+| `redis`    | `redis:7-alpine`        | `6379`              | 缓存 / 队列，开启持久化与密码      |
+| `pgadmin`  | `dpage/pgadmin4:latest` | `5050`              | 数据库 Web 管理（profile `tools`） |
+| `api`      | 本地构建（NestJS）      | `3000`              | 多阶段构建的生产镜像               |
+| `web`      | 本地构建（Next.js）     | `3001`              | 基于 Next standalone 的精简镜像    |
+
+### 前置条件
+
+- 安装 Docker Desktop / Docker Engine（含 Compose V2）
+- 复制环境变量文件：`cp .env.example .env`
+
+### 常用命令
+
+```bash
+# 仅启动基础设施（开发本地 API/Web 时使用）
+pnpm docker:up:infra
+
+# 启动全部服务（包含 api + web）
+pnpm docker:build
+pnpm docker:up
+
+# 同时启动可选工具（pgAdmin）
+pnpm docker:up:tools
+
+# 查看运行状态与日志
+pnpm docker:ps
+pnpm docker:logs
+
+# 停止（保留数据卷）
+pnpm docker:down
+
+# 停止并清空数据卷（慎用）
+pnpm docker:down:volumes
+```
+
+### 连接信息
+
+- **API**：http://localhost:3000
+- **Web**：http://localhost:3001
+- **PostgreSQL**：`postgresql://postgres:postgres@localhost:5432/fullstack`
+- **Redis**：`redis://default:redis@localhost:6379`
+- **pgAdmin**：http://localhost:5050（账号见 `.env`）
+
+容器内服务通过内部网络 `app-network` 以服务名互通：`api` → `postgres:5432` / `redis:6379`；`web` → `api:3000`。
+
+### PostgreSQL 初始化
+
+首次启动（数据卷为空）时会执行 `docker/postgres/init/` 下的 SQL 脚本，默认启用 `uuid-ossp` 与 `pgcrypto` 扩展，可按需在该目录新增 schema / 种子脚本。
 
 ## 开发建议
 

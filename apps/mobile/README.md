@@ -143,7 +143,7 @@ import { useCustomHook } from '@/hooks/useCustomHook';
 
 - **iOS**: 15.4+
 - **Android**: SDK 24+ (Android 7.0+)
-- **Node.js**: 20.0.0+
+- **Node.js**: 24.0.0+
 - **pnpm**: 10.33.0
 
 ## 下一步

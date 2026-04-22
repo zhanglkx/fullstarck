@@ -19,7 +19,16 @@
     "clean": "pnpm --filter './apps/*' clean && rm -rf node_modules",
     "clean:cache": "rm -rf node_modules/.cache && pnpm store prune",
     "generate:api": "pnpm --filter api generate",
-    "g:api": "pnpm --filter api g"
+    "g:api": "pnpm --filter api g",
+    "docker:build": "docker compose build",
+    "docker:up": "docker compose up -d",
+    "docker:up:infra": "docker compose up -d postgres redis",
+    "docker:up:tools": "docker compose --profile tools up -d",
+    "docker:down": "docker compose down",
+    "docker:down:volumes": "docker compose down -v",
+    "docker:logs": "docker compose logs -f",
+    "docker:ps": "docker compose ps",
+    "docker:restart": "docker compose restart"
   },
   "devDependencies": {
     "@eslint/js": "^9.18.0",
@@ -29,7 +38,7 @@
     "typescript-eslint": "^8.20.0"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=24.0.0"
   },
   "packageManager": "pnpm@10.33.0"
 }

@@ -12,7 +12,7 @@ This is a pnpm workspace-based monorepo containing:
 - **packages/shared**: Shared TypeScript utilities and types
 
 **Package Manager**: pnpm 10.33.0 (use `pnpm` commands, not npm or yarn)
-**Node.js**: >= 20.0.0
+**Node.js**: >= 24.0.0
 
 ## Build/Lint/Test Commands
 

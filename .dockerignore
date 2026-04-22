@@ -1,0 +1,63 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# 依赖
+**/node_modules
+**/.pnpm-store
+
+# 构建产物
+**/dist
+**/build
+**/.next
+**/.expo
+**/out
+**/coverage
+**/*.tsbuildinfo
+
+# 环境变量
+.env
+.env.*
+!.env.example
+
+# IDE / OS
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+*.swp
+
+# 日志
+*.log
+logs
+
+# 缓存
+.cache
+.parcel-cache
+.turbo
+.next/cache
+
+# 文档与脚手架
+docs
+README.md
+AGENTS.md
+CLAUDE.md
+DESIGN.md
+skills-lock.json
+.agents
+.claude
+
+# Docker 自身
+docker-compose*.yml
+Dockerfile
+**/Dockerfile
+.dockerignore
+**/.dockerignore
+
+# 移动端源码不参与 Web/API 镜像构建（保留 package.json 以维持 workspace 锁文件一致）
+apps/mobile/src
+apps/mobile/assets
+apps/mobile/android
+apps/mobile/ios
+apps/mobile/.expo
