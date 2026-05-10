@@ -1,0 +1,39 @@
+{
+  "name": "coeurvers",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "CoeurVers — 极简、高度可定制的新标签页扩展（Vite + React 19 + Tailwind v4）",
+  "scripts": {
+    "dev": "vite",
+    "dev:network": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --port 3002",
+    "pack": "vite build && cd dist && zip -r ../CoeurVers-extension.zip . -x '*.DS_Store' && echo 'Extension packed: CoeurVers-extension.zip'",
+    "lint": "eslint . --ext .ts,.tsx --fix",
+    "clean": "rm -rf dist node_modules"
+  },
+  "dependencies": {
+    "@fullstack/shared": "workspace:*",
+    "lucide-react": "^0.555.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.17",
+    "@types/node": "^25.5.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^5.0.0",
+    "autoprefixer": "^10.4.22",
+    "eslint": "^9.18.0",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "globals": "^17.4.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.17",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.20.0",
+    "vite": "^6.2.0"
+  }
+}
