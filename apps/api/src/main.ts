@@ -23,7 +23,13 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionsFilter(), new HttpExceptionFilter());
 
   app.enableCors({
-    origin: ['http://localhost:3001', 'http://localhost:3000'],
+    origin: [
+      'http://localhost:3001',
+      'http://localhost:3000',
+      'http://localhost:3002',
+      // Allow all chrome-extension:// origins
+      /^chrome-extension:\/\//,
+    ],
     credentials: true,
   });
 
