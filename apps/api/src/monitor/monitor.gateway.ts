@@ -179,7 +179,7 @@ export class MonitorGateway implements OnGatewayInit, OnGatewayConnection, OnGat
   }
 }
 
-function getMonitorSlice(data: RealtimeMonitorData, module: MonitorModule): unknown {
+function getMonitorSlice(data: Partial<RealtimeMonitorData>, module: MonitorModule): unknown {
   switch (module) {
     case 'cpu':
       return data.cpu;

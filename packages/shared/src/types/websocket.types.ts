@@ -21,7 +21,7 @@ export type ClientMessage =
 
 /** 服务端消息类型 */
 export type ServerMessage =
-  | { type: 'data'; payload: RealtimeMonitorData }
+  | { type: 'data'; payload: Partial<RealtimeMonitorData> }
   | { type: 'response'; module: MonitorModule; data: unknown }
   | { type: 'pong' }
   | { type: 'error'; message: string };

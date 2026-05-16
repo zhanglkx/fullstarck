@@ -21,7 +21,7 @@ export class MonitorService {
   /**
    * 获取完整监控数据
    */
-  async getFullMonitorData(modules: MonitorModule[]): Promise<RealtimeMonitorData> {
+  async getFullMonitorData(modules: MonitorModule[]): Promise<Partial<RealtimeMonitorData>> {
     const promises: Record<string, Promise<unknown>> = {};
 
     // 基础数据（始终返回）
@@ -71,7 +71,7 @@ export class MonitorService {
       }
     });
 
-    return data as RealtimeMonitorData;
+    return data;
   }
 
   /**
