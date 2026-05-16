@@ -3,7 +3,7 @@ name: fullstack
 services:
   # ---------- 基础设施 ----------
   postgres:
-    image: postgres:17-alpine
+    image: postgres:16-alpine
     container_name: fullstack-postgres
     restart: unless-stopped
     environment:
@@ -12,12 +12,12 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-fullstack}
       TZ: Asia/Shanghai
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      - '${POSTGRES_PORT:-5432}:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-fullstack}"]
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-fullstack}']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -28,13 +28,13 @@ services:
     image: redis:7-alpine
     container_name: fullstack-redis
     restart: unless-stopped
-    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD:-redis}"]
+    command: ['redis-server', '--appendonly', 'yes', '--requirepass', '${REDIS_PASSWORD:-redis}']
     ports:
-      - "${REDIS_PORT:-6379}:6379"
+      - '${REDIS_PORT:-6379}:6379'
     volumes:
       - redis_data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-redis}", "ping"]
+      test: ['CMD', 'redis-cli', '-a', '${REDIS_PASSWORD:-redis}', 'ping']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -46,13 +46,13 @@ services:
     image: dpage/pgadmin4:latest
     container_name: fullstack-pgadmin
     restart: unless-stopped
-    profiles: ["tools"]
+    profiles: ['tools']
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@example.com}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
-      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
     ports:
-      - "${PGADMIN_PORT:-5050}:80"
+      - '${PGADMIN_PORT:-5050}:80'
     volumes:
       - pgadmin_data:/var/lib/pgadmin
     depends_on:
@@ -72,18 +72,25 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3000
+      # Database connection (individual variables for TypeORM)
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-fullstack}
+      # Legacy DATABASE_URL for other services
       DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-fullstack}
       REDIS_URL: redis://default:${REDIS_PASSWORD:-redis}@redis:6379
       TZ: Asia/Shanghai
     ports:
-      - "${API_PORT:-3000}:3000"
+      - '${API_PORT:-3000}:3000'
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/ >/dev/null 2>&1 || exit 1"]
+      test: ['CMD-SHELL', 'wget -qO- http://localhost:3000/ >/dev/null 2>&1 || exit 1']
       interval: 30s
       timeout: 5s
       retries: 5
@@ -109,7 +116,7 @@ services:
       API_PROXY_URL: http://api:3000
       TZ: Asia/Shanghai
     ports:
-      - "${WEB_PORT:-3001}:3001"
+      - '${WEB_PORT:-3001}:3001'
     depends_on:
       api:
         condition: service_healthy

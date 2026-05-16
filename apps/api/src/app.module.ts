@@ -8,6 +8,7 @@ import { QrcodeModule } from './qrcode/qrcode.module';
 import { UserModule } from './user/user.module';
 import { ServerstateModule } from './serverstate/serverstate.module';
 import { MonitorModule } from './monitor/monitor.module';
+import { NavigationModule } from './navigation/navigation.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
@@ -21,13 +22,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     UserModule,
     ServerstateModule,
     MonitorModule,
+    NavigationModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.POSTGRES_HOST,
-      port: process.env.POSTGRES_PORT as unknown as number,
+      port: parseInt(process.env.POSTGRES_PORT ?? '5432', 10),
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
+      synchronize: false, // Use migrations for schema management
+      autoLoadEntities: true, // Automatically load entities from modules
     }),
   ],
   controllers: [AppController],
