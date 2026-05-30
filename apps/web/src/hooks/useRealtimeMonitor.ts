@@ -24,7 +24,7 @@ export function useRealtimeMonitor(options: UseRealtimeMonitorOptions = {}) {
   } = options;
 
   // 状态
-  const [data, setData] = useState<RealtimeMonitorData | null>(null);
+  const [data, setData] = useState<Partial<RealtimeMonitorData> | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [subscribedModules, setSubscribedModules] = useState<Set<MonitorModule>>(new Set());
@@ -131,7 +131,8 @@ export function useRealtimeMonitor(options: UseRealtimeMonitorOptions = {}) {
 
       switch (message.type) {
         case "data":
-          setData(message.payload);
+          // 服务端按模块增量推送，合并到已有数据上以累积完整状态
+          setData((prev) => ({ ...prev, ...message.payload }));
           break;
 
         case "response":
