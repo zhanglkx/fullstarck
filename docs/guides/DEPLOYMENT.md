@@ -555,6 +555,71 @@ compose 用 `depends_on` + `condition: service_healthy` 保证启动顺序：pos
 
 ---
 
+## 9.5 数据库表结构初始化（极易遗漏，导致接口 500）
+
+### 问题：生产容器跑不了 TypeORM migration
+
+本项目后端 `synchronize: false`，表结构靠 TypeORM migration 管理。但有个致命盲区：
+
+```jsonc
+// apps/api/package.json
+"migration:run": "pnpm typeorm migration:run -d ./src/data-source.ts"
+// data-source.ts: migrations: ['src/migrations/*.ts']  ← 指向 TS 源码
+```
+
+`migration:run` 用 ts-node 跑 `src/` 源码，而**生产镜像只含编译后的 `dist`，没有 ts-node 和源码**，根本跑不了。结果：部署后数据库一张表都没有，依赖数据库的接口全部 500。
+
+**实测复现**（部署后忘了建表）：
+
+```bash
+docker exec fullstack-postgres psql -U postgres -d fullstack -c '\dt'
+# Did not find any relations.   ← 没有任何表
+
+curl http://<IP>/api/navigation/groups
+# {"code":500,"msg":"relation \"nav_groups\" does not exist"}  ← 接口挂了
+```
+
+**思考：`synchronize: false` 是生产正确做法**（自动同步会误删数据），但它把「建表」责任交给了 migration。一旦 migration 在生产跑不起来，表就永远不会被创建。部署清单里**必须**显式包含「初始化数据库表结构」这一步，否则功能看似部署成功，实则一调用就崩。
+
+### 解决方案：幂等 SQL 初始化脚本
+
+把建表逻辑写成幂等 SQL（全部 `IF NOT EXISTS`），放到 `docker/postgres/init/`。这个目录有两个用途：
+
+1. **全新部署**：postgres 容器首次启动（数据卷为空）时，`/docker-entrypoint-initdb.d` 下的 `*.sql` 会自动执行——新环境零手动操作。
+2. **已存在的库**：手动执行一次即可补建。
+
+```sql
+-- docker/postgres/init/02-nav-schema.sql（节选，全部 IF NOT EXISTS 可重复执行）
+CREATE TABLE IF NOT EXISTS nav_groups (
+  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name varchar(100) NOT NULL,
+  ...
+);
+CREATE TABLE IF NOT EXISTS nav_items ( ... "groupId" uuid NOT NULL, ... );
+CREATE INDEX IF NOT EXISTS "IDX_nav_groups_sortOrder" ON nav_groups ("sortOrder");
+-- 外键用 DO $$ ... information_schema 判断存在性后再加
+```
+
+> `uuid_generate_v4()` 依赖 `uuid-ossp` 扩展，已在 `01-init.sql` 里 `CREATE EXTENSION` 创建。init 脚本按文件名顺序执行，所以扩展脚本编号要靠前。
+
+对**已运行**的数据库手动执行：
+
+```bash
+docker exec -i fullstack-postgres psql -U postgres -d fullstack < docker/postgres/init/02-nav-schema.sql
+docker exec fullstack-postgres psql -U postgres -d fullstack -c '\dt'   # 确认表已建
+```
+
+### 初始数据（seed）
+
+seed 脚本（`navigation/seed.ts`）同样依赖 ts-node + 源码，生产跑不了。两个替代办法：
+
+- 调用后端提供的导入接口：`POST /api/navigation/import`（把 JSON 数据 POST 进去）。
+- 或在本地连接生产库执行 seed（需临时开放数据库访问，不推荐）。
+
+> **思考：migration 和 seed 这类「需要源码/CLI」的运维脚本，在「只含 dist 的生产镜像」模式下都会失效。** 根本解法是在镜像构建时把 migration 也编译进 dist 并改用编译后的 JS 跑（`migrations: ['dist/migrations/*.js']`），或像本文一样用 SQL 脚本兜底。设计部署方案时要专门考虑这类「带外操作」如何在生产执行。
+
+---
+
 ## 10. 安全加固（重点）
 
 ### 10.1 数据库/Redis 公网暴露问题
@@ -675,6 +740,9 @@ curl -s -o /dev/null -w "npm => %{http_code}\n" \
 # SSE 端点可达（长连接，能建立即正常）
 curl -s -o /dev/null -w "SSE => %{http_code}\n" --max-time 3 "$base/api/serverstate/stream"
 
+# 依赖数据库的接口（验证表已建，应 200 而非 500）
+curl -s -o /dev/null -w "DB接口 => %{http_code}\n" "$base/api/navigation/groups"
+
 # 确认内部端口已对公网关闭（应 unreachable）
 curl -s -o /dev/null -w "3000 => %{http_code}\n" --connect-timeout 8 "$base:3000/" || echo "3000 已关闭 ✓"
 ```
@@ -721,26 +789,44 @@ docker image prune -f
 
 ---
 
+## 13.5 其他实用要点（容易忽略）
+
+- **首次部署的正确顺序**（避免遗漏）：
+  1. SSH 连上服务器 → 加 swap → 装 Docker + 配加速器
+  2. clone 代码 → 写 `.env`（强密码、`NEXT_PUBLIC_API_URL=/api`）
+  3. 本地构建 amd64 镜像 → 传到服务器
+  4. `docker compose up -d --no-build`
+  5. **初始化数据库表结构**（见 9.5，极易漏）
+  6. 安全组只放行 80 + SSH → 验证清单逐项过
+- **时区**：compose 里给容器设了 `TZ: Asia/Shanghai`，postgres 也设了。否则容器默认 UTC，日志/时间戳会差 8 小时。
+- **容器自启验证**：所有服务配了 `restart: unless-stopped`，且 `systemctl enable docker` 让 Docker 开机自启。重启服务器后应自动拉起全部容器。可主动验证一次：`reboot` 后等几分钟再 `docker compose ps`。
+- **磁盘监控**：镜像、日志、数据卷会持续占盘。定期 `df -h /`、`docker system df` 查看，必要时 `docker image prune -f`。日志已用 `log-opts` 限制单容器大小。
+- **数据卷的持久性**：`postgres_data`、`redis_data` 是 named volume，`docker compose down` 不会删，`docker compose down -v` 才会删（危险，会清空数据库）。日常停服务务必用不带 `-v` 的 `down` 或 `stop`。
+- **pgAdmin 按需启用**：compose 里 pgAdmin 用了 `profiles: ['tools']`，默认不启动，需要时 `docker compose --profile tools up -d pgadmin`。注意它会暴露端口，用完关掉。
+
+---
+
 ## 14. 问题速查表
 
-| 现象                                      | 根因                                  | 解决                                                     |
-| ----------------------------------------- | ------------------------------------- | -------------------------------------------------------- |
-| SSH `port 22 timed out`                   | 用了内网 IP / 安全组没放行本机公网 IP | 用公网 IP；`curl ifconfig.me` 查本机公网 IP 加到安全组   |
-| SSH `kex_exchange_identification: closed` | 缺密钥 / IP 错误                      | `-i 密钥.pem` + 正确公网 IP                              |
-| `REMOTE HOST IDENTIFICATION CHANGED`      | IP 复用过旧实例                       | `ssh-keygen -R <IP>`                                     |
-| dnf 装 docker 报 alinux4 源 404           | `--releasever=9` 影响了系统源         | 只 sed 替换 docker-ce.repo 里的 `$releasever`            |
-| 拉 Docker Hub 镜像 EOF/极慢               | 国内网络                              | 配 registry-mirrors（服务器 + 本地 Docker 都要配）       |
-| 某镜像加速器拉不动                        | 加速器对该镜像不稳                    | 换 daocloud 全限定名拉取后 `docker tag` 回标准名         |
-| 构建卡死、SSH 无响应                      | 小内存 Next.js 构建 OOM               | 本地构建镜像传上去；或加大 swap / 升配                   |
-| `ERR_PNPM_DEPLOY_NONINJECTED_WORKSPACE`   | pnpm 10 deploy 默认行为变更           | deploy 命令加 `--legacy`                                 |
-| `Failed to fetch Geist from Google Fonts` | 构建期访问 Google 失败                | 改用 `geist` npm 包（内置字体）                          |
-| 跨架构镜像无法运行                        | Mac arm64 vs 服务器 amd64             | buildx `--platform linux/amd64`                          |
-| 数据库端口公网可连                        | Docker 绑定 `0.0.0.0`                 | 端口改 `127.0.0.1:5432:5432`                             |
-| 容器重建后 Nginx 502                      | Nginx 启动时缓存了上游 IP             | `resolver 127.0.0.11` + 变量式 `proxy_pass`              |
-| SSE 前端收不到实时数据                    | Nginx 缓冲了响应                      | `proxy_buffering off` + 调大超时                         |
-| WebSocket 连不上                          | 缺 Upgrade 头 / path 不对             | `map` 设 Connection 头；socket.io `path: /api/socket.io` |
-| 改 NEXT_PUBLIC_API_URL 不生效             | 该变量构建期烤入 bundle               | 必须重新构建 web 镜像                                    |
-| SSR 页面 fetch failed                     | 容器内 `localhost` 指向自己           | 服务端 fetch 用 `http://api:3000`（服务名）              |
+| 现象                                      | 根因                                     | 解决                                                     |
+| ----------------------------------------- | ---------------------------------------- | -------------------------------------------------------- |
+| SSH `port 22 timed out`                   | 用了内网 IP / 安全组没放行本机公网 IP    | 用公网 IP；`curl ifconfig.me` 查本机公网 IP 加到安全组   |
+| SSH `kex_exchange_identification: closed` | 缺密钥 / IP 错误                         | `-i 密钥.pem` + 正确公网 IP                              |
+| `REMOTE HOST IDENTIFICATION CHANGED`      | IP 复用过旧实例                          | `ssh-keygen -R <IP>`                                     |
+| dnf 装 docker 报 alinux4 源 404           | `--releasever=9` 影响了系统源            | 只 sed 替换 docker-ce.repo 里的 `$releasever`            |
+| 拉 Docker Hub 镜像 EOF/极慢               | 国内网络                                 | 配 registry-mirrors（服务器 + 本地 Docker 都要配）       |
+| 某镜像加速器拉不动                        | 加速器对该镜像不稳                       | 换 daocloud 全限定名拉取后 `docker tag` 回标准名         |
+| 构建卡死、SSH 无响应                      | 小内存 Next.js 构建 OOM                  | 本地构建镜像传上去；或加大 swap / 升配                   |
+| `ERR_PNPM_DEPLOY_NONINJECTED_WORKSPACE`   | pnpm 10 deploy 默认行为变更              | deploy 命令加 `--legacy`                                 |
+| `Failed to fetch Geist from Google Fonts` | 构建期访问 Google 失败                   | 改用 `geist` npm 包（内置字体）                          |
+| 跨架构镜像无法运行                        | Mac arm64 vs 服务器 amd64                | buildx `--platform linux/amd64`                          |
+| 数据库端口公网可连                        | Docker 绑定 `0.0.0.0`                    | 端口改 `127.0.0.1:5432:5432`                             |
+| 容器重建后 Nginx 502                      | Nginx 启动时缓存了上游 IP                | `resolver 127.0.0.11` + 变量式 `proxy_pass`              |
+| SSE 前端收不到实时数据                    | Nginx 缓冲了响应                         | `proxy_buffering off` + 调大超时                         |
+| WebSocket 连不上                          | 缺 Upgrade 头 / path 不对                | `map` 设 Connection 头；socket.io `path: /api/socket.io` |
+| 改 NEXT_PUBLIC_API_URL 不生效             | 该变量构建期烤入 bundle                  | 必须重新构建 web 镜像                                    |
+| SSR 页面 fetch failed                     | 容器内 `localhost` 指向自己              | 服务端 fetch 用 `http://api:3000`（服务名）              |
+| 接口 500 `relation "xxx" does not exist`  | 生产容器跑不了 ts-node migration，表未建 | 用幂等 SQL 放 `docker/postgres/init/` 或手动 psql 执行   |
 
 ---
 
@@ -770,6 +856,7 @@ docker image prune -f
 6. **分清代码执行位置**：浏览器 / 服务端 / 构建期，`localhost` 在每处含义不同。
 7. **长连接要特殊照顾**：SSE 关缓冲、WS 传 Upgrade 头、超时调长。
 8. **部署前本地跑生产构建**：`pnpm build` 能提前暴露类型错误、字体等构建期问题。
+9. **别忘了数据库表结构**：`synchronize: false` 时表靠 migration 建，而生产镜像跑不了 ts-node migration——用 init SQL 或编译后的 migration 兜底，否则接口一调就 500。
 
 ---
 
