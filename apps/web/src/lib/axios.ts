@@ -24,8 +24,9 @@ apiClient.interceptors.request.use(
       // 客户端：使用 /api 前缀
       config.baseURL = process.env.NEXT_PUBLIC_API_URL || "/api";
     } else {
-      // 服务端：直接访问后端
-      config.baseURL = process.env.API_BASE_URL || "http://localhost:3000";
+      // 服务端（容器内）：通过 Docker 服务名访问后端
+      config.baseURL =
+        process.env.API_PROXY_URL || process.env.API_BASE_URL || "http://localhost:3000";
     }
 
     // 从 localStorage 获取 token（如果有）
