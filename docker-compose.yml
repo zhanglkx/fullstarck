@@ -12,7 +12,8 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-fullstack}
       TZ: Asia/Shanghai
     ports:
-      - '${POSTGRES_PORT:-5432}:5432'
+      # 仅绑定宿主机本地回环，不暴露到公网；api 通过 Docker 内网服务名访问
+      - '127.0.0.1:${POSTGRES_PORT:-5432}:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
@@ -30,7 +31,8 @@ services:
     restart: unless-stopped
     command: ['redis-server', '--appendonly', 'yes', '--requirepass', '${REDIS_PASSWORD:-redis}']
     ports:
-      - '${REDIS_PORT:-6379}:6379'
+      # 仅绑定宿主机本地回环，不暴露到公网；api 通过 Docker 内网服务名访问
+      - '127.0.0.1:${REDIS_PORT:-6379}:6379'
     volumes:
       - redis_data:/data
     healthcheck:
@@ -81,9 +83,12 @@ services:
       # Legacy DATABASE_URL for other services
       DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-fullstack}
       REDIS_URL: redis://default:${REDIS_PASSWORD:-redis}@redis:6379
+      # 生产环境允许的跨域源（Nginx 统一入口）
+      CORS_ORIGIN: ${PUBLIC_ORIGIN:-http://8.159.144.140}
       TZ: Asia/Shanghai
     ports:
-      - '${API_PORT:-3000}:3000'
+      # 仅绑定宿主机本地回环，公网通过 Nginx(80) 反代访问
+      - '127.0.0.1:${API_PORT:-3000}:3000'
     depends_on:
       postgres:
         condition: service_healthy
@@ -103,8 +108,8 @@ services:
       context: .
       dockerfile: apps/web/Dockerfile
       args:
-        # 构建期注入到 Next.js 的公开环境变量
-        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3000}
+        # 构建期注入到 Next.js 的公开环境变量：同源 /api，经 Nginx 反代到后端
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-/api}
     image: fullstack/web:latest
     container_name: fullstack-web
     restart: unless-stopped
@@ -116,10 +121,26 @@ services:
       API_PROXY_URL: http://api:3000
       TZ: Asia/Shanghai
     ports:
-      - '${WEB_PORT:-3001}:3001'
+      # 仅绑定宿主机本地回环，公网通过 Nginx(80) 反代访问
+      - '127.0.0.1:${WEB_PORT:-3001}:3001'
     depends_on:
       api:
         condition: service_healthy
+    networks:
+      - app-network
+
+  # ---------- 反向代理（统一 80 端口入口）----------
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: fullstack-nginx
+    restart: unless-stopped
+    ports:
+      - '${NGINX_PORT:-80}:80'
+    volumes:
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d:ro
+    depends_on:
+      - web
+      - api
     networks:
       - app-network
 

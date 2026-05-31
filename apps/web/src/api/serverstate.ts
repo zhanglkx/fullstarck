@@ -62,7 +62,7 @@ export function useServerStateStream() {
   const [lastUpdateTime, setLastUpdateTime] = useState<number | null>(null);
 
   useEffect(() => {
-    // 1. 构造 SSE URL
+    // 1. 构造 SSE URL（同源经 Nginx /api 代理；本地开发回退后端直连）
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
     const url = `${apiUrl}/serverstate/stream`;
 

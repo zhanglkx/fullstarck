@@ -90,8 +90,17 @@ export function useRealtimeMonitor(options: UseRealtimeMonitorOptions = {}) {
 
   // 组件挂载时连接，卸载时断开
   useEffect(() => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-    const socket = io(`${apiUrl}/monitor`, {
+    // 同源连接：通过 Nginx 反代到后端（/api/socket.io）。
+    // NEXT_PUBLIC_API_URL 为 "/api" 时使用同源地址；本地开发回退到后端直连。
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+    const isProxyPath = apiBase.startsWith("/");
+    const socketUrl = isProxyPath
+      ? `${typeof window !== "undefined" ? window.location.origin : ""}/monitor`
+      : `${apiBase}/monitor`;
+    const socketPath = isProxyPath ? "/api/socket.io" : "/socket.io";
+
+    const socket = io(socketUrl, {
+      path: socketPath,
       transports: ["websocket", "polling"],
       reconnectionDelay: reconnectDelay,
       reconnection: true,
