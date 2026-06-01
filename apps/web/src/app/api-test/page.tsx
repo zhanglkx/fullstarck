@@ -26,7 +26,9 @@ interface ApiInfoResponse {
 }
 
 async function fetchApiData() {
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
+  // 服务端（容器内）通过 Docker 服务名访问后端；本地开发回退 localhost
+  const API_BASE_URL =
+    process.env.API_PROXY_URL || process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
 
   try {
     const [healthRes, infoRes, downloadsRes] = await Promise.all([

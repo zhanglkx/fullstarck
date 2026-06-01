@@ -21,7 +21,11 @@ import type {
 @WebSocketGateway({
   namespace: '/monitor', // WebSocket 命名空间：ws://localhost:3000/monitor
   cors: {
-    origin: ['http://localhost:3001', 'http://localhost:3000'],
+    origin: [
+      'http://localhost:3001',
+      'http://localhost:3000',
+      ...(process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : []),
+    ],
     credentials: true,
   },
 })
@@ -179,7 +183,7 @@ export class MonitorGateway implements OnGatewayInit, OnGatewayConnection, OnGat
   }
 }
 
-function getMonitorSlice(data: RealtimeMonitorData, module: MonitorModule): unknown {
+function getMonitorSlice(data: Partial<RealtimeMonitorData>, module: MonitorModule): unknown {
   switch (module) {
     case 'cpu':
       return data.cpu;

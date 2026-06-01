@@ -24,7 +24,7 @@ export function useRealtimeMonitor(options: UseRealtimeMonitorOptions = {}) {
   } = options;
 
   // 状态
-  const [data, setData] = useState<RealtimeMonitorData | null>(null);
+  const [data, setData] = useState<Partial<RealtimeMonitorData> | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [subscribedModules, setSubscribedModules] = useState<Set<MonitorModule>>(new Set());
@@ -90,8 +90,17 @@ export function useRealtimeMonitor(options: UseRealtimeMonitorOptions = {}) {
 
   // 组件挂载时连接，卸载时断开
   useEffect(() => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-    const socket = io(`${apiUrl}/monitor`, {
+    // 同源连接：通过 Nginx 反代到后端（/api/socket.io）。
+    // NEXT_PUBLIC_API_URL 为 "/api" 时使用同源地址；本地开发回退到后端直连。
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+    const isProxyPath = apiBase.startsWith("/");
+    const socketUrl = isProxyPath
+      ? `${typeof window !== "undefined" ? window.location.origin : ""}/monitor`
+      : `${apiBase}/monitor`;
+    const socketPath = isProxyPath ? "/api/socket.io" : "/socket.io";
+
+    const socket = io(socketUrl, {
+      path: socketPath,
       transports: ["websocket", "polling"],
       reconnectionDelay: reconnectDelay,
       reconnection: true,
@@ -131,7 +140,8 @@ export function useRealtimeMonitor(options: UseRealtimeMonitorOptions = {}) {
 
       switch (message.type) {
         case "data":
-          setData(message.payload);
+          // 服务端按模块增量推送，合并到已有数据上以累积完整状态
+          setData((prev) => ({ ...prev, ...message.payload }));
           break;
 
         case "response":

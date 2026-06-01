@@ -35,7 +35,7 @@ RUN pnpm --filter @fullstack/shared build \
 
 # 裁剪为仅含生产依赖
 RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
-    pnpm --filter api --prod deploy /app/out
+    pnpm --filter api --prod deploy --legacy /app/out
 
 # ---------- 运行时 ----------
 FROM node:24-alpine AS runner

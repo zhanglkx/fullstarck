@@ -23,7 +23,15 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionsFilter(), new HttpExceptionFilter());
 
   app.enableCors({
-    origin: ['http://localhost:3001', 'http://localhost:3000'],
+    origin: [
+      'http://localhost:3001',
+      'http://localhost:3000',
+      'http://localhost:3002',
+      // 生产环境通过环境变量配置允许的源（Nginx 同源访问）
+      ...(process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : []),
+      // Allow all chrome-extension:// origins
+      /^chrome-extension:\/\//,
+    ],
     credentials: true,
   });
 

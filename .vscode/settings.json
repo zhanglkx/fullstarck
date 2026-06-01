@@ -86,7 +86,7 @@
     "**/eslint.config.mjs": true,
     "**/.eslintignore": true,
     "**/AGENTS.md": true,
-    "**/.gitignore": true,
+    // "**/.gitignore": true,
     "**/CLAUDE.md": true,
     "**/.npmrc": true,
     "**/.prettierrc": true,
